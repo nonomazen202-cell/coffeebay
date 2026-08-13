@@ -5,6 +5,7 @@ import { redeemService } from '../../../services/redeem-service';
 import { telemetry } from '../../../lib/telemetry';
 import { getPayloadClient } from '../../../lib/payload';
 import { validateAndNormalizePhone } from '../../../lib/validators/phone-validator';
+import { alertEmailService } from '../../../services/alert-email-service';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -186,6 +187,20 @@ export async function POST(req: NextRequest) {
   } catch (err: unknown) {
     console.error(`[${requestId}] ROUTE ERROR`, err);
     const message = err instanceof Error ? err.message : 'Internal Server Error';
+    const stack = err instanceof Error ? err.stack : undefined;
+
+    void alertEmailService.sendDeveloperAlert({
+      severity: 'CRITICAL',
+      title: 'Redemption Route Crash (500)',
+      message,
+      component: 'redeem-route',
+      operation: 'Redeem Code POST',
+      requestId,
+      occurredAt: new Date(),
+      environment: process.env.NODE_ENV || 'development',
+      stack,
+    });
+
     return NextResponse.json(
       { success: false, errors: [message], requestId },
       { status: 500 }

@@ -726,6 +726,10 @@ export interface Setting {
    * The phone number where system alerts and winner notifications will be sent. If left empty, it falls back to the WHATSAPP_ADMIN_PHONE environment variable.
    */
   whatsapp_admin_phone?: string | null;
+  /**
+   * Toggle to enable or disable winner and developer SMTP email alerts to the administrator.
+   */
+  enable_email_alerts?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -735,6 +739,7 @@ export interface Setting {
  */
 export interface SettingsSelect<T extends boolean = true> {
   whatsapp_admin_phone?: T;
+  enable_email_alerts?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

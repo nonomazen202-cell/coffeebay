@@ -4,6 +4,7 @@ import { getPayloadClient } from '../lib/payload';
 import { verificationService } from './verification-service';
 import { notificationService } from './notification-service';
 import { validateAndNormalizePhone } from '../lib/validators/phone-validator';
+import { alertEmailService } from './alert-email-service';
 
 export interface RedeemRequest {
   name: string;
@@ -351,6 +352,17 @@ export class RedeemService {
       await payload.db.commitTransaction(transactionID!);
       timer?.endStep('db_commit_transaction');
       console.log(`[${requestId}] STEP 8 -> Commit`);
+
+      // ─── Send Admin Alert Email (Non-blocking, best-effort after commit) ──────
+      if (resultStatus === 'WIN') {
+        void alertEmailService.sendWinnerAlert({
+          participantName: name,
+          participantPhone: phone,
+          prizeName,
+          serialCode: uppercaseSerial,
+          occurredAt: new Date(), // Using current timestamp when the win was finalized in database
+        });
+      }
 
       return {
         success: true,
