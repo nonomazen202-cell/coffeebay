@@ -1,0 +1,745 @@
+import React from "react";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { getAuthUser } from "@/lib/security/auth-helper";
+import { Gutter } from "@payloadcms/ui";
+import { VerifyWidget } from "./VerifyWidget";
+import { ClaimsTable } from "./ClaimsTable";
+import { RefreshButton } from "./RefreshButton";
+import type { User } from "@/payload-types";
+
+export async function CustomDashboard(props: { user?: User | null }) {
+  // 1. Get current logged-in user
+  const user = props.user || (await getAuthUser());
+  const isAdmin = user?.role === "ADMIN";
+
+  // 2. Fetch statistics from PostgreSQL via Payload Local API
+  const payload = await getPayload({ config });
+
+  // Query all statistics in parallel for speed
+  const [
+    totalCodesResult,
+    claimedCodesResult,
+    remainingCodesResult,
+    totalWinnersResult,
+    unclaimedWinnersResult,
+    claimedWinnersResult,
+    totalClaimsResult,
+    pendingClaimsResult,
+    deliveredClaimsResult,
+    totalEntriesResult,
+    totalParticipantsResult,
+    recentClaimsResult,
+  ] = await Promise.all([
+    // Group 1: Codes
+    payload.count({ collection: "codes" }),
+    payload.count({
+      collection: "codes",
+      where: { claimed: { equals: true } },
+    }),
+    payload.count({
+      collection: "codes",
+      where: { claimed: { equals: false } },
+    }),
+    // Group 2: Winners
+    payload.count({
+      collection: "codes",
+      where: { is_winner: { equals: true } },
+    }),
+    payload.count({
+      collection: "codes",
+      where: {
+        and: [{ is_winner: { equals: true } }, { claimed: { equals: false } }],
+      },
+    }),
+    payload.count({
+      collection: "codes",
+      where: {
+        and: [{ is_winner: { equals: true } }, { claimed: { equals: true } }],
+      },
+    }),
+    // Group 3: Claims Pipeline
+    payload.count({ collection: "prize-claims" }),
+    payload.count({
+      collection: "prize-claims",
+      where: { status: { equals: "PENDING" } },
+    }),
+    payload.count({
+      collection: "prize-claims",
+      where: { status: { equals: "DELIVERED" } },
+    }),
+    // Group 4: Users and Scans
+    payload.count({ collection: "entries" }),
+    payload.count({ collection: "participants" }),
+    // Recent claims data for the table
+    payload.find({
+      collection: "prize-claims",
+      limit: 50,
+      sort: "-createdAt",
+      depth: 3,
+    }),
+  ]);
+
+  const totalCodes = totalCodesResult.totalDocs;
+  const claimedCodes = claimedCodesResult.totalDocs;
+  const remainingCodes = remainingCodesResult.totalDocs;
+
+  const totalWinners = totalWinnersResult.totalDocs;
+  const unclaimedWinners = unclaimedWinnersResult.totalDocs;
+  const claimedWinners = claimedWinnersResult.totalDocs;
+
+  const totalClaims = totalClaimsResult.totalDocs;
+  const pendingClaims = pendingClaimsResult.totalDocs;
+  const deliveredClaims = deliveredClaimsResult.totalDocs;
+
+  const totalEntries = totalEntriesResult.totalDocs;
+  const totalParticipants = totalParticipantsResult.totalDocs;
+  const recentClaims = recentClaimsResult.docs;
+
+  // Calculate percentage progress of codes claimed
+  const progressPercent =
+    totalCodes > 0 ? Math.round((claimedCodes / totalCodes) * 100) : 0;
+
+  return (
+    <Gutter className="dashboard">
+      <style>{`
+        .dashboard {
+          padding-top: 2.5rem !important;
+        }
+        .dashboard-header-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #1b1819;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-left: 6px solid #2BA8E0;
+          border-radius: 1rem;
+          padding: 1.75rem 2rem;
+          margin-bottom: 2.5rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+        }
+        .dashboard-section {
+          background: #1b1819;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1rem;
+          padding: 1.75rem;
+          margin-bottom: 2.5rem;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        .dashboard-section-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #ffffff;
+          margin-bottom: 1.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 0.75rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dashboard-section-title-left {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .dashboard-section-title-right {
+          font-size: 0.95rem;
+          color: #2BA8E0;
+          font-weight: 700;
+        }
+        .grid-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 1.5rem;
+        }
+        .glassy-card {
+          background: #1b1819;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 0.75rem;
+          padding: 1.5rem 1.75rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          position: relative;
+          transition: all 0.22s ease;
+          min-height: 125px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        .glassy-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 3px;
+          background: transparent;
+          transition: all 0.22s ease;
+          border-top-left-radius: 0.75rem;
+          border-bottom-left-radius: 0.75rem;
+        }
+        .glassy-card:hover {
+          background: #1e1b1c;
+          border-color: rgba(255, 255, 255, 0.12);
+          transform: translateY(-2px);
+        }
+        .glassy-card.card-blue::before {
+          background: #2BA8E0;
+        }
+        .glassy-card.card-blue:hover {
+          border-color: rgba(43, 168, 224, 0.3);
+          box-shadow: 0 8px 25px rgba(43, 168, 224, 0.06);
+        }
+        .glassy-card.card-brown::before {
+          background: #7B3B1B;
+        }
+        .glassy-card.card-brown:hover {
+          border-color: rgba(123, 59, 27, 0.3);
+          box-shadow: 0 8px 25px rgba(123, 59, 27, 0.06);
+        }
+        .glassy-card.card-muted::before {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .glassy-card.card-muted:hover {
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .kpi-title {
+          font-size: 0.825rem;
+          font-weight: 600;
+          color: #ffffff;
+          margin-bottom: 0.15rem;
+          letter-spacing: 0.02em;
+        }
+        .kpi-subtitle {
+          font-size: 0.725rem;
+          font-weight: 500;
+          color: #a1a1aa;
+          margin-bottom: 1rem;
+        }
+        .kpi-value {
+          font-size: 2.25rem;
+          font-weight: 600;
+          color: #ffffff;
+          line-height: 1;
+          margin: 0;
+        }
+        .card-blue .kpi-value {
+          color: #2BA8E0;
+        }
+        .card-brown .kpi-value {
+          color: #ffffff;
+        }
+        .kpi-footer {
+          font-size: 0.825rem;
+          color: #a1a1aa;
+          margin-top: auto;
+        }
+      `}</style>
+
+      {/* Header with Glassmorphism and Vector Logo */}
+      <div className="dashboard-header-container">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1.25rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {/* Embedded Vector Brand Logo */}
+          <div
+            style={{
+              width: "56px",
+              height: "48px",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <svg
+              id="Layer_1"
+              data-name="Layer 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 110.08 94.26"
+              style={{ width: "100%", height: "100%" }}
+            >
+              <defs>
+                <style>{`
+                  .logo-cls-1{fill:#7b3b1b;}
+                  .logo-cls-2{fill:#ffffff;}
+                  .logo-cls-3{fill:#2ba8e0;}
+                `}</style>
+              </defs>
+              <path
+                className="logo-cls-1"
+                d="M93.66,83.84a20,20,0,0,0,4.42,7.4,17.33,17.33,0,0,0,3.3,2.56,22.19,22.19,0,0,1-3.26-11.89,23.65,23.65,0,0,1,1.23-7.63c-5.75-4.67-12.82-5.8-17.13-2.69a19.79,19.79,0,0,1,6.66,4.31A21.58,21.58,0,0,1,93.66,83.84Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-1"
+                d="M92.15,84.45a20,20,0,0,0-4.42-7.4,18.47,18.47,0,0,0-6.86-4.23c-4.12,4.65-2.49,13.29,3.79,19.57,6,6,14.17,7.76,18.93,4.31a19.74,19.74,0,0,1-6.66-4.31A21.66,21.66,0,0,1,92.15,84.45Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-1"
+                d="M112.56,65.48a19.66,19.66,0,0,1,1.66,7.75,21.58,21.58,0,0,1-2.23,9,20.06,20.06,0,0,0-2.11,8.37,18.36,18.36,0,0,0,1.86,7.84c6.2-.37,11.16-7.64,11.16-16.52C122.9,73.42,118.37,66.41,112.56,65.48Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-1"
+                d="M110.49,81.59a20,20,0,0,0,2.1-8.36,18.35,18.35,0,0,0-1.85-7.84c-6.2.37-11.16,7.64-11.16,16.52,0,8.49,4.53,15.5,10.34,16.43a19.66,19.66,0,0,1-1.66-7.75A21.63,21.63,0,0,1,110.49,81.59Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M58.87,130.07a8,8,0,0,1,2.66.61v2H61a.25.25,0,0,1-.27-.22s0-.23,0-.54,0-.49,0-.54c-1.8-.57-3.13-.37-4,.59a3.49,3.49,0,0,0-.88,2.48,3.6,3.6,0,0,0,.86,2.5,2.76,2.76,0,0,0,2.13.88,3.41,3.41,0,0,0,1.14-.14,3.2,3.2,0,0,0,1-.62.3.3,0,0,1,.19-.1.27.27,0,0,1,.2.07l.45.51a4.3,4.3,0,0,1-6.07.07,4.55,4.55,0,0,1-1.12-3.17,4.39,4.39,0,0,1,1.19-3.17,4.32,4.32,0,0,1,3.2-1.22Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M73,134.5a4.79,4.79,0,0,1-.3,1.76,3.87,3.87,0,0,1-2.19,2.29,4.7,4.7,0,0,1-3.46,0,4.05,4.05,0,0,1-1.34-.9,3.93,3.93,0,0,1-.86-1.39,5.08,5.08,0,0,1,0-3.55,3.93,3.93,0,0,1,.86-1.39,3.79,3.79,0,0,1,1.34-.91,4.7,4.7,0,0,1,3.46,0,3.79,3.79,0,0,1,1.34.89,4.07,4.07,0,0,1,.86,1.4,4.8,4.8,0,0,1,.3,1.77Zm-1.2,0a4.53,4.53,0,0,0-.21-1.43A3.17,3.17,0,0,0,71,132a2.7,2.7,0,0,0-1-.66,3.54,3.54,0,0,0-1.27-.23,3.35,3.35,0,0,0-1.25.23,2.62,2.62,0,0,0-1,.66,3,3,0,0,0-.62,1.07,4.25,4.25,0,0,0-.22,1.43,4.17,4.17,0,0,0,.22,1.41,3,3,0,0,0,.62,1.06,2.76,2.76,0,0,0,1,.67,3.41,3.41,0,0,0,1.26.24,3.49,3.49,0,0,0,1.26-.24,2.86,2.86,0,0,0,1-.67,3.14,3.14,0,0,0,.61-1.06,4.44,4.44,0,0,0,.22-1.41Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M82.49,130.18v2.07H81.9a.21.21,0,0,1-.24-.2s0-.35-.1-.93h-3.4v3h3.26v.93H78.16v2.83c.09,0,.31.06.67.13a.23.23,0,0,1,.19.23v.5h-2.9v-.5a.22.22,0,0,1,.18-.23l.68-.13v-6.85l-.68-.14a.22.22,0,0,1-.18-.23v-.5h6.37Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M91.89,130.18v2.07h-.58a.21.21,0,0,1-.24-.2s0-.35-.1-.93H87.56v3h3.27v.93H87.56v2.83c.1,0,.32.06.68.13a.23.23,0,0,1,.19.23v.5h-2.9v-.5a.22.22,0,0,1,.18-.23l.68-.13v-6.85l-.68-.14a.22.22,0,0,1-.18-.23v-.5h6.36Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M101.1,130.18v2.07h-.58a.22.22,0,0,1-.25-.2s0-.35-.08-.93H97V134h3.17v.91H97v2.94h3.22c0-.53.07-.83.07-.86s.12-.2.26-.2h.58v2H94.93v-.5a.22.22,0,0,1,.18-.23l.69-.13v-6.85l-.69-.14a.22.22,0,0,1-.18-.23v-.5Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M110.54,130.18v2.07H110a.23.23,0,0,1-.26-.2s0-.35-.08-.93h-3.21V134h3.16v.91h-3.16v2.94h3.21c.05-.53.07-.83.07-.86s.12-.2.27-.2h.57v2h-6.16v-.5a.22.22,0,0,1,.18-.23l.68-.13v-6.85l-.68-.14a.22.22,0,0,1-.18-.23v-.5Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M125.71,136.32a2.15,2.15,0,0,1-.79,1.76,3.34,3.34,0,0,1-2.23.68h-3.9v-.52A.2.2,0,0,1,119,138l.68-.14V131l-.68-.14a.21.21,0,0,1-.18-.22v-.53h3.61c1.53,0,2.48.45,2.85,1.31a2.49,2.49,0,0,1,.08,1.57,2.35,2.35,0,0,1-.29.54,2.49,2.49,0,0,1-1.23.78C125.09,134.6,125.71,135.26,125.71,136.32Zm-4.89-2.3h1.53q1.44,0,1.8-.87a1.69,1.69,0,0,0,.12-.6,1.27,1.27,0,0,0-.46-1.1,2.25,2.25,0,0,0-1.41-.36h-1.58Zm1.85,3.83c1,0,1.55-.31,1.79-.93a1.81,1.81,0,0,0,.1-.63,1.3,1.3,0,0,0-.46-1,2.14,2.14,0,0,0-1.43-.38h-1.85v3h1.85Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M137.32,138.29v.47h-2.47v-.47a.19.19,0,0,1,.17-.2l.49-.14-.67-1.73h-3.7l-.68,1.73.5.14a.19.19,0,0,1,.15.2v.47h-2.46v-.47a.19.19,0,0,1,.16-.2l.48-.14,3.12-7.77h1.17l3.11,7.77.48.14A.2.2,0,0,1,137.32,138.29Zm-2-2.91-1.27-3.31a5.29,5.29,0,0,1-.27-.8,6,6,0,0,1-.24.81l-1.28,3.3Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M147,130.18v.53a.18.18,0,0,1-.15.21l-.62.15-2.63,4.29v2.54c.05,0,.28.07.69.14a.21.21,0,0,1,.18.22v.52h-2.89v-.52a.22.22,0,0,1,.19-.22l.67-.14v-2.54l-2.61-4.29-.6-.15a.2.2,0,0,1-.17-.23v-.51h2.88v.51a.21.21,0,0,1-.18.23l-.69.13,1.61,2.74a4.78,4.78,0,0,1,.35.75,3.64,3.64,0,0,1,.34-.76L145,131l-.69-.13a.21.21,0,0,1-.17-.23v-.5Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M82.72,145.49a.91.91,0,0,1-.33.74,1.38,1.38,0,0,1-.93.28H79.84v-.22a.08.08,0,0,1,.07-.09l.29-.06v-2.85l-.29-.06a.08.08,0,0,1-.07-.09v-.22h1.5c.64,0,1,.19,1.19.55a1,1,0,0,1,0,.65.72.72,0,0,1-.12.23,1,1,0,0,1-.51.32C82.46,144.78,82.72,145.05,82.72,145.49Zm-2-1h.64q.6,0,.75-.36a.7.7,0,0,0,.05-.25.54.54,0,0,0-.19-.46,1,1,0,0,0-.59-.15h-.66Zm.78,1.6c.4,0,.64-.13.74-.39a.71.71,0,0,0,0-.26.55.55,0,0,0-.19-.44.9.9,0,0,0-.59-.16h-.78v1.25Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M87.23,142.93v.22a.08.08,0,0,1-.06.09l-.26.06-1.09,1.79v1.06l.28.06a.09.09,0,0,1,.08.09v.22H85v-.22a.09.09,0,0,1,.08-.09l.28-.06v-1.06l-1.09-1.79-.25-.06a.08.08,0,0,1-.07-.09v-.22h1.2v.22a.08.08,0,0,1-.07.09l-.29.06.67,1.14a1.79,1.79,0,0,1,.15.31,1.61,1.61,0,0,1,.14-.32l.67-1.14-.29,0a.09.09,0,0,1-.07-.1v-.21Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M92.27,144.62a.82.82,0,0,1,.54.8,1.09,1.09,0,0,1-.31.81,1.2,1.2,0,0,1-.89.32,2.85,2.85,0,0,1-.49,0,3.29,3.29,0,0,1-.4-.1l-.15,0v-.9h.25a.09.09,0,0,1,.1.09s0,.1,0,.24,0,.22,0,.22a1.91,1.91,0,0,0,.61.14,1.18,1.18,0,0,0,.37-.05.58.58,0,0,0,.23-.13.62.62,0,0,0,.19-.48.48.48,0,0,0-.27-.44,1.11,1.11,0,0,0-.27-.12,6.22,6.22,0,0,1-.63-.21,1,1,0,0,1-.27-.18.81.81,0,0,1-.27-.67,1,1,0,0,1,.28-.68,1.13,1.13,0,0,1,.81-.3,2.59,2.59,0,0,1,1,.2v.83H92.5a.09.09,0,0,1-.1-.09s0-.15,0-.44a2.35,2.35,0,0,0-.59-.1.72.72,0,0,0-.5.16.53.53,0,0,0-.17.4.46.46,0,0,0,.27.42,1.18,1.18,0,0,0,.28.12l.63.23Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M96.67,142.93v.87h-.24a.09.09,0,0,1-.1-.09s0-.14,0-.38H95v1.19h1.32v.38H95v1.22h1.34q0-.33,0-.36c0-.06.05-.08.11-.08h.24v.83H94.1v-.21a.09.09,0,0,1,.08-.09l.28-.06V143.3l-.28-.06a.1.1,0,0,1-.08-.1v-.21Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M101.61,146.31v.2h-1v-.2a.08.08,0,0,1,.07-.08l.2-.06-.28-.72H99l-.28.72.2.06a.08.08,0,0,1,.07.08v.2H98v-.2a.08.08,0,0,1,.06-.08l.21-.06,1.3-3.24h.49l1.29,3.24.2.06A.08.08,0,0,1,101.61,146.31Zm-1.17-1.21-.53-1.38a1.82,1.82,0,0,1-.11-.33c0,.15-.07.26-.1.34l-.54,1.37Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M104.6,144.62a.82.82,0,0,1,.54.8,1.09,1.09,0,0,1-.31.81,1.2,1.2,0,0,1-.89.32,2.77,2.77,0,0,1-.49,0,2.87,2.87,0,0,1-.4-.1l-.15,0v-.9h.24a.1.1,0,0,1,.11.09s0,.1,0,.24,0,.22,0,.22a1.91,1.91,0,0,0,.61.14,1.18,1.18,0,0,0,.37-.05.58.58,0,0,0,.23-.13.62.62,0,0,0,.19-.48.48.48,0,0,0-.27-.44,1.11,1.11,0,0,0-.27-.12,6.22,6.22,0,0,1-.63-.21,1,1,0,0,1-.28-.18.85.85,0,0,1-.27-.67.92.92,0,0,1,.29-.68,1.1,1.1,0,0,1,.8-.3,2.63,2.63,0,0,1,1,.2v.83h-.24a.1.1,0,0,1-.11-.09s0-.15,0-.44a2.35,2.35,0,0,0-.59-.1.72.72,0,0,0-.5.16.53.53,0,0,0-.17.4.46.46,0,0,0,.27.42,1,1,0,0,0,.28.12l.63.23Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M109.69,143.29v2.86l.3.06a.08.08,0,0,1,.06.09v.21h-1.21v-.21a.1.1,0,0,1,.08-.1l.28,0v-1.27h-1.93v1.27q.36.07.36.15v.21h-1.21v-.21a.1.1,0,0,1,.08-.1l.28,0v-2.86l-.3-.06a.08.08,0,0,1-.06-.09v-.21h1.21v.21c0,.05,0,.08,0,.09l-.31.06v1.24h1.93v-1.24l-.3-.06a.08.08,0,0,1-.06-.09v-.21h1.21v.21a.09.09,0,0,1-.07.1Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M113.94,142.93v.87h-.24a.09.09,0,0,1-.1-.09s0-.14,0-.38h-1.34v1.19h1.32v.38h-1.32v1.22h1.34q0-.33,0-.36c0-.06,0-.08.11-.08h.24v.83h-2.57v-.21a.08.08,0,0,1,.07-.09l.29-.06V143.3l-.29-.06a.09.09,0,0,1-.07-.1v-.21Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M117.82,146.51H115.3v-.21a.11.11,0,0,1,.08-.1l.29,0v-2.86l-.29,0a.11.11,0,0,1-.08-.1v-.21h1.21v.21a.1.1,0,0,1-.08.1l-.28,0v2.81h1.29a1.86,1.86,0,0,1,0-.28.11.11,0,0,1,.1-.09h.25Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-2"
+                d="M121.67,146.51h-2.52v-.21a.1.1,0,0,1,.08-.1l.28,0v-2.86l-.28,0a.1.1,0,0,1-.08-.1v-.21h1.21v.21a.1.1,0,0,1-.08.1l-.28,0v2.81h1.29a1.86,1.86,0,0,1,0-.28.11.11,0,0,1,.1-.09h.25Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-3"
+                d="M116.46,59h.38l1.11.07.38,0,.43,0,1,.1,1.12.18.31.05.31.06.65.14a27.8,27.8,0,0,1,6.2,2.14c.57.26,1.14.59,1.73.91l.88.53c.3.17.59.38.89.57a28.27,28.27,0,0,1,3.49,2.81,26.87,26.87,0,0,1,5.91,8.14,26.31,26.31,0,0,1,1.9,17A26.78,26.78,0,0,1,141,97.65a25.86,25.86,0,0,1-8.46,9.84,21.23,21.23,0,0,1-5.73,2.87,20.45,20.45,0,0,1-6.14.94,42.45,42.45,0,0,1-12.77-2.38c-4.2-1.34-8.27-2.93-12.22-4.3-2-.69-3.92-1.32-5.83-1.88s-3.8-1-5.63-1.34l-1.37-.23L81.54,101l-1.29-.16c-.42-.06-.84-.07-1.26-.11l-1.22-.09-.6,0h-.59c-.78,0-1.53,0-2.26,0l-2.11.07-.5,0-.49,0-1,.09c-1.25.08-2.37.28-3.38.42-.25,0-.49.07-.73.12l-.68.13-1.24.25c-.39.07-.73.18-1,.25l-.87.22c-.52.14-.91.23-1.17.32l-.39.12.41,0c.26,0,.67-.07,1.2-.13l.88-.08c.33,0,.68-.07,1.07-.08l1.24-.06.69,0c.24,0,.48,0,.73,0,1,0,2.11,0,3.32,0l.93,0,.47,0,.49,0,2,.19a60.68,60.68,0,0,1,9.29,1.9c1.68.5,3.41,1.11,5.18,1.81s3.58,1.49,5.45,2.33c3.74,1.67,7.69,3.58,12,5.28a57.85,57.85,0,0,0,6.85,2.25,35.08,35.08,0,0,0,7.57,1.13,25.3,25.3,0,0,0,8-1,26.14,26.14,0,0,0,7.47-3.64,29.42,29.42,0,0,0,6.07-5.59,31,31,0,0,0,4.21-6.8,30.55,30.55,0,0,0,2.26-7.35,29.58,29.58,0,0,0-3.67-20,28.82,28.82,0,0,0-11.86-11.12c-.35-.17-.69-.35-1-.5l-1-.44c-.69-.26-1.34-.53-2-.72a26.61,26.61,0,0,0-6.79-1.28l-.68,0h-1.81l-1,.06-.43,0-.39,0-1.1.13-.28,0Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-3"
+                d="M137.07,73.14l.29.65c.11.2.21.46.34.77.06.16.13.32.21.5l.2.57a26,26,0,0,1,.9,3,24.48,24.48,0,0,1,.61,3.92,24,24,0,0,1-.12,4.68,23.25,23.25,0,0,1-1.19,5.06,24.66,24.66,0,0,1-2.5,5.08,25.57,25.57,0,0,1-3.86,4.57l-.57.5-.28.25-.3.23-.58.47-.6.42-.6.42c-.2.12-.4.24-.59.37-.39.27-.79.44-1.18.66a15.47,15.47,0,0,1-4.76,1.6,22.48,22.48,0,0,1-5.22.25,43.18,43.18,0,0,1-5.29-.7c-1.71-.32-3.3-.68-4.74-1s-2.71-.68-3.76-.94l-2.44-.62-.87-.21s1.06.65,3,1.72c.95.54,2.1,1.18,3.43,1.87s2.85,1.44,4.53,2.16a39.19,39.19,0,0,0,5.52,1.91,23.8,23.8,0,0,0,6.34.77,18.16,18.16,0,0,0,6.76-1.41,22.87,22.87,0,0,0,6.43-4.16,24.57,24.57,0,0,0,4.76-6.1,24.17,24.17,0,0,0,2.44-6.74,22.91,22.91,0,0,0,.39-6.36,21.82,21.82,0,0,0-1.09-5.35,20.28,20.28,0,0,0-1.82-4A19.55,19.55,0,0,0,139,75.15l-.4-.49-.37-.4q-.35-.39-.6-.63Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-3"
+                d="M147.31,65.58l.24.39c.15.26.39.63.68,1.14a40.06,40.06,0,0,1,2.2,4.59,37,37,0,0,1,2.11,7.65l.09.58c0,.19.05.39.08.59,0,.39.09.79.14,1.2.05.82.13,1.65.13,2.52s0,1.75,0,2.66c0,.45-.07.91-.1,1.38l-.06.7c0,.24-.07.47-.1.71a35.22,35.22,0,0,1-12.42,22.48l-.71.58c-.24.19-.49.36-.74.55-.5.36-1,.74-1.53,1.06l-.79.5c-.27.17-.53.35-.81.49-.57.31-1.12.62-1.7.92a28.58,28.58,0,0,1-7.51,2.49,30.74,30.74,0,0,1-8.07.31,45.8,45.8,0,0,1-7.86-1.47c-2.56-.7-5-1.53-7.34-2.39s-4.59-1.76-6.78-2.61A95,95,0,0,0,84,108.46c-1-.23-1.93-.41-2.89-.56l-1.45-.2-.71-.1-.71-.06-1.41-.12c-.23,0-.47,0-.7,0l-.69,0-1.36,0-1.33,0a42.62,42.62,0,0,0-9.65,1.35,50.33,50.33,0,0,0-13,5.51c-1.44.88-2.54,1.58-3.27,2.1l-1.12.78,1.25-.54c.81-.38,2-.87,3.56-1.47a55.88,55.88,0,0,1,13.13-3.35,44.82,44.82,0,0,1,9-.17l1.21.1,1.23.16.62.08.62.1,1.26.23.63.11.64.15,1.29.29.32.07.31.09.61.17c.41.1.84.25,1.27.37,3.43,1.08,7.28,2.73,11.57,4.58,2.16.93,4.43,1.9,6.87,2.85a82.33,82.33,0,0,0,7.87,2.64,48.15,48.15,0,0,0,9,1.59,34.84,34.84,0,0,0,9.68-.59,32.49,32.49,0,0,0,9-3.33c.66-.38,1.31-.77,2-1.16.32-.19.62-.41.92-.62l.9-.63c.6-.42,1.16-.88,1.72-1.33.27-.23.56-.45.82-.68l.79-.72a37.47,37.47,0,0,0,12.06-26.15c0-.26,0-.51,0-.77s0-.51,0-.77c0-.51,0-1,0-1.5-.07-1-.13-1.93-.27-2.84s-.28-1.81-.43-2.66c-.1-.43-.2-.85-.29-1.26l-.15-.61c-.06-.19-.11-.39-.17-.59a35.23,35.23,0,0,0-3.14-7.65A37.38,37.38,0,0,0,148.45,67c-.36-.46-.66-.8-.85-1Z"
+                transform="translate(-45.71 -52.29)"
+              />
+              <path
+                className="logo-cls-3"
+                d="M92.93,66l1.27-1.25a37.2,37.2,0,0,1,3.94-3.18c.45-.31.94-.61,1.45-.94s1.07-.63,1.64-1c.29-.16.59-.3.9-.46s.61-.32,1-.46c.65-.29,1.32-.61,2-.86a31,31,0,0,1,4.68-1.41l1.28-.26c.43-.08.88-.13,1.32-.2.23,0,.45-.07.68-.09l.69-.07c.46,0,.92-.09,1.4-.1a32.1,32.1,0,0,1,12.06,1.72,30.66,30.66,0,0,1,6.09,2.88,31.68,31.68,0,0,1,5.57,4.34,31.09,31.09,0,0,1,7.85,12.69,30.9,30.9,0,0,1-2,23.47,31.91,31.91,0,0,1-4.46,6.51,30.06,30.06,0,0,1-5.76,5,25.75,25.75,0,0,1-6.65,3.24,26,26,0,0,1-7,1.17,34.88,34.88,0,0,1-6.69-.46,75.39,75.39,0,0,1-11.53-3c-3.44-1.13-6.49-2.22-9.17-3.09s-5-1.53-6.83-2c-.47-.12-.91-.2-1.32-.29l-.6-.13-.56-.11-1-.17-.82-.12c-.48-.06-.85-.12-1.11-.14l-.38,0,.37.1c.25.06.6.18,1.06.33l.78.25.94.33.52.19.57.22c.39.16.8.3,1.24.49,1.75.71,3.89,1.67,6.4,2.87s5.41,2.62,8.77,4.14c1.69.75,3.48,1.53,5.44,2.26a56.49,56.49,0,0,0,6.38,2,37.64,37.64,0,0,0,7.51,1.07,29.83,29.83,0,0,0,8.43-.91,30.29,30.29,0,0,0,8.25-3.52,34.3,34.3,0,0,0,7.09-5.76,35.91,35.91,0,0,0,5.52-7.68,34.89,34.89,0,0,0,3.34-9.15c.09-.41.18-.81.26-1.22l.18-1.22c.14-.81.19-1.63.27-2.45,0-.41,0-.81.06-1.22l0-1.23c0-.4,0-.8,0-1.21s0-.8-.06-1.2l-.1-1.2c0-.4-.1-.8-.15-1.19-.09-.8-.25-1.58-.4-2.35a35.17,35.17,0,0,0-3.09-8.78c-.35-.68-.7-1.35-1.1-2-.2-.32-.38-.65-.59-1l-.62-.93c-.2-.32-.43-.61-.65-.91s-.43-.59-.66-.88l-.7-.86-.35-.42-.36-.4-.73-.8L144,62.3c-.5-.52-1-1-1.56-1.46a34.5,34.5,0,0,0-6.78-4.65,33.89,33.89,0,0,0-7.19-2.79,34.53,34.53,0,0,0-7.07-1.07c-1.14-.06-2.26,0-3.34,0l-1.61.12c-.53,0-1.05.13-1.57.2s-1,.17-1.51.26l-.74.14-.73.17-1.41.37-1.35.42a33.3,33.3,0,0,0-4.8,2,32.13,32.13,0,0,0-6.78,4.71A33.61,33.61,0,0,0,94,64.54Z"
+                transform="translate(-45.71 -52.29)"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              style={{
+                fontSize: "1.75rem",
+                fontWeight: "600",
+                letterSpacing: "-0.025em",
+                color: "#ffffff",
+                marginBottom: "0.15rem",
+                textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+              }}
+            >
+              CoffeeBay Lucky Cup System
+            </h1>
+            <p style={{ color: "#a1a1aa", fontSize: "0.875rem", margin: 0 }}>
+              Welcome back,{" "}
+              <strong style={{ color: "#2BA8E0" }}>
+                {user?.name || "Staff Member"}
+              </strong>{" "}
+              • Role:{" "}
+              <span
+                style={{
+                  textTransform: "uppercase",
+                  fontWeight: "700",
+                  color: isAdmin ? "#2BA8E0" : "#7B3B1B",
+                }}
+              >
+                {user?.role || "STAFF"}
+              </span>
+            </p>
+          </div>
+        </div>
+        <RefreshButton />
+      </div>
+
+      {/* Section 1: Campaign Serials (Visible to Admin Only) */}
+      {isAdmin && (
+        <div className="dashboard-section">
+          <h2 className="dashboard-section-title">
+            <span className="dashboard-section-title-left">
+              <span
+                style={{
+                  color: "#2BA8E0",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                  <path d="m3.3 7 8.7 5 8.7-5" />
+                  <path d="M12 22V12" />
+                </svg>
+              </span>
+              Campaign Codes Management
+            </span>
+            <span className="dashboard-section-title-right">
+              متابعة وإدارة أكواد الحملة
+            </span>
+          </h2>
+          <div className="grid-container">
+            <div className="glassy-card card-blue">
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span className="kpi-title">Total Seeded Codes</span>
+                <span className="kpi-subtitle">إجمالي الأكواد بالمنظومة</span>
+              </div>
+              <div className="kpi-value">{totalCodes.toLocaleString()}</div>
+            </div>
+            <div className="glassy-card card-blue">
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span className="kpi-title">Scanned / Claimed Serials</span>
+                <span className="kpi-subtitle">
+                  الأكواد الممسوحة والمستخدمة
+                </span>
+              </div>
+              <div className="kpi-value">{claimedCodes.toLocaleString()}</div>
+            </div>
+            <div className="glassy-card card-brown">
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span className="kpi-title">Remaining Active Serials</span>
+                <span className="kpi-subtitle">
+                  الأكواد النشطة المتبقية بالسوق
+                </span>
+              </div>
+              <div className="kpi-value">{remainingCodes.toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Section 2: Winning Cups Info */}
+      <div className="dashboard-section">
+        <h2 className="dashboard-section-title">
+          <span className="dashboard-section-title-left">
+            <span
+              style={{
+                color: "#7B3B1B",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                <path d="M12 2a6 6 0 0 1 6 6v3.58a6 6 0 0 1-1.92 4.41L12 19l-4.08-3a6 6 0 0 1-1.92-4.41V8a6 6 0 0 1 6-6Z" />
+              </svg>
+            </span>
+            Winning Serials
+          </span>
+          <span className="dashboard-section-title-right">
+            أكواب الفوز اللي اتوزعت في الحملة
+          </span>
+        </h2>
+        <div className="grid-container">
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Total Winning Serials</span>
+              <span className="kpi-subtitle">
+                إجمالي الأكواب الكسبانة بالمنظومة
+              </span>
+            </div>
+            <div className="kpi-value">{totalWinners.toLocaleString()}</div>
+          </div>
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Scanned Winners</span>
+              <span className="kpi-subtitle">الكسبانين المسجلين بالسيستم</span>
+            </div>
+            <div className="kpi-value">{claimedWinners.toLocaleString()}</div>
+          </div>
+          <div className="glassy-card card-brown">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Unclaimed Winning Cups</span>
+              <span className="kpi-subtitle">أكواب الفوز المتبقية بالسوق</span>
+            </div>
+            <div className="kpi-value">{unclaimedWinners.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 3: Staff Delivery Pipeline */}
+      <div className="dashboard-section">
+        <h2 className="dashboard-section-title">
+          <span className="dashboard-section-title-left">
+            <span
+              style={{
+                color: "#7B3B1B",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                <path d="M9 12h6" />
+                <path d="M9 16h6" />
+              </svg>
+            </span>
+            Prize Delivery Pipeline
+          </span>
+          <span className="dashboard-section-title-right">
+            مراحل تسليم الجوائز للزبائن
+          </span>
+        </h2>
+        <div className="grid-container">
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Total Registered Claims</span>
+              <span className="kpi-subtitle">إجمالي طلبات الجوائز المسجلة</span>
+            </div>
+            <div className="kpi-value">{totalClaims.toLocaleString()}</div>
+          </div>
+          <div className="glassy-card card-brown">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Pending Delivery</span>
+              <span className="kpi-subtitle">الجوائز قيد التسليم للزبائن</span>
+            </div>
+            <div className="kpi-value">{pendingClaims.toLocaleString()}</div>
+          </div>
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Delivered Prizes</span>
+              <span className="kpi-subtitle">الجوائز المسلّمة بالكامل</span>
+            </div>
+            <div className="kpi-value">{deliveredClaims.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 4: Participation & Engagement */}
+      <div className="dashboard-section">
+        <h2 className="dashboard-section-title">
+          <span className="dashboard-section-title-left">
+            <span
+              style={{
+                color: "#2BA8E0",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </span>
+            User Engagement
+          </span>
+          <span className="dashboard-section-title-right">
+            نشاط وحركة الزبائن على السيستم
+          </span>
+        </h2>
+        <div className="grid-container">
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Total Scan Entries</span>
+              <span className="kpi-subtitle">إجمالي محاولات إدخال الرموز</span>
+            </div>
+            <div className="kpi-value">{totalEntries.toLocaleString()}</div>
+          </div>
+          <div className="glassy-card card-blue">
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span className="kpi-title">Registered Participants</span>
+              <span className="kpi-subtitle">الزبائن المسجلين والمشاركين</span>
+            </div>
+            <div className="kpi-value">
+              {totalParticipants.toLocaleString()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Campaign Progress Bar for Admin */}
+      {isAdmin && totalCodes > 0 && (
+        <div
+          className="glassy-card"
+          style={{
+            marginBottom: "2.5rem",
+            padding: "1.5rem",
+            minHeight: "auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "0.875rem",
+              fontWeight: "600",
+              marginBottom: "0.75rem",
+            }}
+          >
+            <span>
+              Campaign Redemption Progress (نسبة الأكواد اللي اتسحبت واتفعلت في
+              الحملة)
+            </span>
+            <span style={{ color: "#2BA8E0" }}>
+              {progressPercent}% ({claimedCodes} / {totalCodes})
+            </span>
+          </div>
+          <div
+            style={{
+              width: "100%",
+              height: "8px",
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              borderRadius: "9999px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                width: `${progressPercent}%`,
+                height: "100%",
+                backgroundColor: "#2BA8E0",
+                backgroundImage:
+                  "linear-gradient(90deg, #2BA8E0 0%, #156285 100%)",
+                transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Main Content Sections split in two columns */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "2rem",
+          alignItems: "start",
+        }}
+      >
+        {/* Verification and Cashier Widget */}
+        <VerifyWidget />
+
+        {/* Recent Claims Table Widget */}
+        <ClaimsTable initialClaims={recentClaims} />
+      </div>
+    </Gutter>
+  );
+}

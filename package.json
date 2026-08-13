@@ -1,0 +1,45 @@
+{
+  "name": "coffeebay-lucky-cup-system",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -H 127.0.0.1",
+    "save": "git add . && git commit -m \"Auto Save $(powershell -Command Get-Date -Format 'yyyy-MM-dd HH:mm:ss')\"",
+    "lint": "eslint",
+    "payload": "payload",
+    "generate:types": "payload generate:types",
+    "notification-worker": "tsx src/workers/notification.worker.ts",
+    "generate:importmap": "payload generate:importmap"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.85.0",
+    "@payloadcms/next": "^3.85.0",
+    "@payloadcms/richtext-lexical": "^3.85.0",
+    "@payloadcms/ui": "^3.88.0",
+    "@vercel/blob": "^0.23.4",
+    "drizzle-orm": "^0.45.2",
+    "framer-motion": "^12.40.0",
+    "graphql": "^16.14.1",
+    "next": "15.4.11",
+    "payload": "^3.85.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sharp": "^0.34.5",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.170.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.11",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
