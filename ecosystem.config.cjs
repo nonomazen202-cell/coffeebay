@@ -28,8 +28,8 @@ module.exports = {
       time: true,
       merge_logs: true,
 
-      out_file: "/var/www/logs/coffeebay/web-out.log",
-      error_file: "/var/www/logs/coffeebay/web-error.log",
+      out_file: "/var/www/logs/web-out.log",
+      error_file: "/var/www/logs/web-error.log",
 
       env: {
         NODE_ENV: "production",
@@ -42,7 +42,7 @@ module.exports = {
 
       cwd: "/var/www/coffeebay",
 
-      script: "npm",
+      script: "pnpm",
 
       args: "run notification-worker",
 
@@ -64,8 +64,8 @@ module.exports = {
       time: true,
       merge_logs: true,
 
-      out_file: "/var/www/logs/coffeebay/worker-out.log",
-      error_file: "/var/www/logs/coffeebay/worker-error.log",
+      out_file: "/var/www/logs/worker-out.log",
+      error_file: "/var/www/logs/worker-error.log",
 
       env: {
         NODE_ENV: "production",

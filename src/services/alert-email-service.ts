@@ -238,7 +238,7 @@ Winner Details:
     try {
       const transporter = this.getTransporter();
       const info = await transporter.sendMail({
-        from: `"CoffeeBay Alerts" <${fromAddress}>`,
+        from: `"CoffeeBay-Lucky-Cup" <${fromAddress}>`,
         to: adminEmail,
         subject: emailSubject,
         text: textContent,
@@ -445,7 +445,7 @@ ${stack || "N/A"}
     try {
       const transporter = this.getTransporter();
       const info = await transporter.sendMail({
-        from: `"CoffeeBay Alerts" <${fromAddress}>`,
+        from: `"CoffeeBay-Lucky-Cup" <${fromAddress}>`,
         to: devEmail,
         subject: emailSubject,
         text: textContent,
