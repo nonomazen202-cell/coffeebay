@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useCallback, useRef, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -117,8 +117,10 @@ function PhoneIcon() {
 //  Main Component
 // ─────────────────────────────────────────────────────────────────────
 
-export default function ClaimPage() {
+function ClaimPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const codeParam = searchParams.get("code");
 
   const [isHydrated, setIsHydrated] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
@@ -139,6 +141,31 @@ export default function ClaimPage() {
 
   const honeypotRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Auto-fill serialCode from URL 'code' parameter if not already set (e.g. from user input or session storage)
+  useEffect(() => {
+    if (!codeParam) return;
+
+    const clean = codeParam
+      .replace(/[^A-Za-z0-9]/g, "")
+      .toUpperCase()
+      .slice(0, 8);
+
+    const formatted =
+      clean.length > 4
+        ? `${clean.slice(0, 4)}-${clean.slice(4)}`
+        : clean;
+
+    setValues((prev) => {
+      // Do not overwrite user-entered or session-restored code
+      if (prev.serialCode) return prev;
+
+      return {
+        ...prev,
+        serialCode: formatted,
+      };
+    });
+  }, [codeParam]);
 
   // Load state from sessionStorage on mount
   useEffect(() => {
@@ -954,5 +981,19 @@ export default function ClaimPage() {
         </AnimatePresence>
       </main>
     </div>
+  );
+}
+
+export default function ClaimPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-brand-gradient min-h-dvh flex flex-col items-center justify-center">
+          <Logo width={120} height={48} className="animate-pulse" />
+        </div>
+      }
+    >
+      <ClaimPageContent />
+    </Suspense>
   );
 }
