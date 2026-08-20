@@ -12,6 +12,7 @@
     "payload": "payload",
     "generate:types": "payload generate:types",
     "notification-worker": "tsx src/workers/notification.worker.ts",
+    "update-prizes": "tsx src/scripts/update-campaign-prizes.ts",
     "generate:importmap": "payload generate:importmap"
   },
   "dependencies": {

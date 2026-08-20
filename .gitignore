@@ -45,6 +45,7 @@ next-env.d.ts
 # Custom exclusions
 /src/migrations/
 /src/scripts/*
+!/src/scripts/update-campaign-prizes.ts
 !/src/scripts/testing/
 /src/scripts/testing/*
 !/src/scripts/testing/reset-environment.ts
