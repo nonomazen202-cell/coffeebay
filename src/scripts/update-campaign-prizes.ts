@@ -167,7 +167,7 @@ async function main() {
   const newCountRes = await payload.db.drizzle.execute(
     sql`SELECT COUNT(*)::int as total FROM codes`
   );
-  let totalCodes = (newCountRes.rows[0] as { total: number })?.total || 0;
+  const totalCodes = (newCountRes.rows[0] as { total: number })?.total || 0;
   console.log(`✅ Database synced with exactly ${totalCodes.toLocaleString()} printed codes.`);
 
   // ── Step 4: Configure 4 Clean GSM Prizes ──────────────────────────────
