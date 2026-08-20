@@ -125,66 +125,50 @@ async function main() {
   );
   console.log("✅ Transactional tables cleared.");
 
-  // ── Step 2: Delete the 80 Unprinted Codes from database ────────────────
-  console.log(`\n🗑️ Step 2: Removing ${UNPRINTED_CODES_SET.size} unprinted codes from database...`);
-  const unprintedListSql = Array.from(UNPRINTED_CODES_SET).map((c) => `'${c}'`).join(", ");
-  const deleteUnprintedRes = await payload.db.drizzle.execute(
-    sql.raw(`DELETE FROM codes WHERE serial_code IN (${unprintedListSql})`)
-  );
-  console.log(`✅ Removed ${deleteUnprintedRes.rowCount || 0} unprinted codes from 'codes' table.`);
+  // ── Step 2: Clean and Sync Database with 3,920 Printed Codes ─────────
+  console.log("\n📦 Step 2: Syncing database with exact 3,920 printed codes from all-codes.csv...");
+  const csvPath = path.resolve(process.cwd(), "generated-codes/all-codes.csv");
+  if (!fs.existsSync(csvPath)) {
+    console.error(`❌ CSV File not found at: ${csvPath}`);
+    process.exit(1);
+  }
 
-  // ── Step 3: Check and Ensure Printed Codes Table ───────────────────────
-  console.log("\n🔍 Step 3: Verifying printed codes in database...");
-  const codesCountRes = await payload.db.drizzle.execute(
+  const csvContent = fs.readFileSync(csvPath, "utf8");
+  const lines = csvContent.split(/\r?\n/);
+  const printedCodes: string[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const serial = line.split(",")[0]?.trim().toUpperCase();
+    if (serial && !UNPRINTED_CODES_SET.has(serial)) {
+      printedCodes.push(serial);
+    }
+  }
+
+  // Wiping codes table and re-inserting exact 3920 printed codes cleanly
+  await payload.db.drizzle.execute(sql`TRUNCATE TABLE codes CASCADE`);
+
+  const batchSize = 1000;
+  for (let i = 0; i < printedCodes.length; i += batchSize) {
+    const chunk = printedCodes.slice(i, i + batchSize);
+    const valuesSql = chunk.map(
+      (code) => `('${code}', false, NULL, false, NOW(), NOW())`
+    );
+    await payload.db.drizzle.execute(
+      sql.raw(`
+        INSERT INTO codes (serial_code, is_winner, prize_id_id, claimed, created_at, updated_at) 
+        VALUES ${valuesSql.join(", ")}
+        ON CONFLICT (serial_code) DO NOTHING
+      `)
+    );
+  }
+
+  const newCountRes = await payload.db.drizzle.execute(
     sql`SELECT COUNT(*)::int as total FROM codes`
   );
-  let totalCodes = (codesCountRes.rows[0] as { total: number })?.total || 0;
-
-  if (totalCodes === 0) {
-    console.log("💡 Codes table is empty. Importing printed codes from generated-codes/all-codes.csv...");
-    const csvPath = path.resolve(process.cwd(), "generated-codes/all-codes.csv");
-    if (!fs.existsSync(csvPath)) {
-      console.error(`❌ CSV File not found at: ${csvPath}`);
-      process.exit(1);
-    }
-
-    const csvContent = fs.readFileSync(csvPath, "utf8");
-    const lines = csvContent.split(/\r?\n/);
-    const codesToInsert: string[] = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const serial = line.split(",")[0]?.trim().toUpperCase();
-      // Only insert if NOT in unprinted list
-      if (serial && !UNPRINTED_CODES_SET.has(serial)) {
-        codesToInsert.push(serial);
-      }
-    }
-
-    const batchSize = 1000;
-    for (let i = 0; i < codesToInsert.length; i += batchSize) {
-      const chunk = codesToInsert.slice(i, i + batchSize);
-      const valuesSql = chunk.map(
-        (code) => `('${code}', false, NULL, false, NOW(), NOW())`
-      );
-      await payload.db.drizzle.execute(
-        sql.raw(`
-          INSERT INTO codes (serial_code, is_winner, prize_id_id, claimed, created_at, updated_at) 
-          VALUES ${valuesSql.join(", ")}
-          ON CONFLICT (serial_code) DO NOTHING
-        `)
-      );
-    }
-
-    const newCountRes = await payload.db.drizzle.execute(
-      sql`SELECT COUNT(*)::int as total FROM codes`
-    );
-    totalCodes = (newCountRes.rows[0] as { total: number })?.total || 0;
-    console.log(`✅ Loaded ${totalCodes.toLocaleString()} printed codes into database.`);
-  } else {
-    console.log(`📊 Found ${totalCodes.toLocaleString()} valid printed codes in database.`);
-  }
+  let totalCodes = (newCountRes.rows[0] as { total: number })?.total || 0;
+  console.log(`✅ Database synced with exactly ${totalCodes.toLocaleString()} printed codes.`);
 
   // ── Step 4: Configure 4 Clean GSM Prizes ──────────────────────────────
   console.log("\n🎁 Step 4: Setting up 4 Clean GSM-Friendly Prizes in database...");
@@ -344,8 +328,8 @@ async function main() {
       (a, idx) => `${idx + 1},${a.serialCode},${a.prizeId},"${a.prizeName}"`
     ),
   ];
-  const csvPath = path.join(outDir, "winners-120-audit.csv");
-  fs.writeFileSync(csvPath, csvLines.join("\n"), "utf8");
+  const auditCsvPath = path.join(outDir, "winners-120-audit.csv");
+  fs.writeFileSync(auditCsvPath, csvLines.join("\n"), "utf8");
 
   // 2. Audit TXT Report
   const txtLines: string[] = [
