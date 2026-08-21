@@ -325,23 +325,28 @@ export class RedeemService {
           req: { transactionID } as unknown as PayloadRequest,
         });
 
-        // Queue WhatsApp Notifications inside the same transaction
-        if (process.env.DISABLE_NOTIFICATION_QUEUE !== 'true') {
-          await notificationService.queueWinnerNotification({
-            phone,
-            participantName: name,
-            serialCode: uppercaseSerial,
-            prizeName,
-            verificationCode,
-            prizeImageUrl,
-          }, transactionID as string);
+        // Queue WhatsApp / SMS Notifications inside the same transaction
+        // We skip SMS for "Spin The Wheel at the branch" to conserve SMS quota
+        const isSpinTheWheel = codeRow.prize_id_id === 4 || prizeName.toLowerCase().includes('spin the wheel');
 
-          await notificationService.queueAdminAlert({
-            participantName: name,
-            participantPhone: phone,
-            prizeName,
-            serialCode: uppercaseSerial,
-          }, transactionID as string);
+        if (process.env.DISABLE_NOTIFICATION_QUEUE !== 'true') {
+          if (!isSpinTheWheel) {
+            await notificationService.queueWinnerNotification({
+              phone,
+              participantName: name,
+              serialCode: uppercaseSerial,
+              prizeName,
+              verificationCode,
+              prizeImageUrl,
+            }, transactionID as string);
+
+            await notificationService.queueAdminAlert({
+              participantName: name,
+              participantPhone: phone,
+              prizeName,
+              serialCode: uppercaseSerial,
+            }, transactionID as string);
+          }
         }
       }
       timer?.endStep('db_create_claim_and_notifications');

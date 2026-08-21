@@ -235,11 +235,17 @@ Winner Details:
       </html>
     `;
 
+    // Clean and split multiple recipient addresses safely
+    const recipients = adminEmail
+      .split(",")
+      .map((e) => e.replace(/['"]/g, "").trim())
+      .filter((e) => e.length > 0 && e.includes("@"));
+
     try {
       const transporter = this.getTransporter();
       const info = await transporter.sendMail({
-        from: `"CoffeeBay-Lucky-Cup" <${fromAddress}>`,
-        to: adminEmail,
+        from: `"CoffeeBay Lucky Cup" <${fromAddress}>`,
+        to: recipients,
         subject: emailSubject,
         text: textContent,
         html: htmlContent,

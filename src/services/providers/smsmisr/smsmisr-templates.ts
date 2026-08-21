@@ -27,7 +27,7 @@ export class SmsMisrTemplateBuilder {
         const prize = (payload.variables.prizeName || "Prize").toUpperCase();
         const ticket = payload.variables.verificationCode || "";
 
-        return `CoffeeBay - YOU WON!\nCongratulations ${firstName}!\nPrize: ${prize}\nTicket: ${ticket}\nShow this SMS at any CoffeeBay branch.`;
+        return `CoffeeBay: Congratulations ${firstName}! You won ${prize}. Ticket: ${ticket}. Show this SMS at any CoffeeBay branch.`;
       }
 
       case "admin-alert": {
