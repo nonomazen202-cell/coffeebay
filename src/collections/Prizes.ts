@@ -48,5 +48,15 @@ export const Prizes: CollectionConfig = {
       required: true,
       defaultValue: true,
     },
+    {
+      name: 'winner_notification_enabled',
+      type: 'checkbox',
+      label: 'Winner Notification Enabled',
+      required: true,
+      defaultValue: true,
+      admin: {
+        description: 'Toggle whether to send winner SMS/WhatsApp notification when this prize is won. Default is true.',
+      },
+    },
   ],
 };

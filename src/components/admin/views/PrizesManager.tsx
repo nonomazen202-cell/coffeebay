@@ -17,6 +17,7 @@ interface Prize {
   description?: string;
   image?: string | number | Media | null;
   active: boolean;
+  winner_notification_enabled?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -434,25 +435,40 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                   )}
 
                   {/* Active Capsule Status badge */}
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '0.75rem',
-                      right: '0.75rem',
-                      fontSize: '0.7rem',
-                      fontWeight: '800',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '9999px',
-                      backgroundColor: prize.active ? 'rgba(43, 168, 224, 0.2)' : 'rgba(0,0,0,0.6)',
-                      border: '1px solid',
-                      borderColor: prize.active ? '#2BA8E0' : 'rgba(255, 255, 255, 0.2)',
-                      color: prize.active ? '#2BA8E0' : '#a1a1aa',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em'
-                    }}
-                  >
-                    {prize.active ? 'Active' : 'Inactive'}
-                  </span>
+                  <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', display: 'flex', gap: '0.35rem', zIndex: 10 }}>
+                    <span
+                      style={{
+                        fontSize: '0.65rem',
+                        fontWeight: '800',
+                        padding: '0.2rem 0.45rem',
+                        borderRadius: '9999px',
+                        backgroundColor: prize.winner_notification_enabled !== false ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        border: '1px solid',
+                        borderColor: prize.winner_notification_enabled !== false ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)',
+                        color: prize.winner_notification_enabled !== false ? '#4ade80' : '#f87171',
+                        letterSpacing: '0.04em'
+                      }}
+                      title={prize.winner_notification_enabled !== false ? 'Winner SMS notifications enabled' : 'Winner SMS notifications disabled'}
+                    >
+                      {prize.winner_notification_enabled !== false ? 'SMS ON' : 'SMS OFF'}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '0.7rem',
+                        fontWeight: '800',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '9999px',
+                        backgroundColor: prize.active ? 'rgba(43, 168, 224, 0.2)' : 'rgba(0,0,0,0.6)',
+                        border: '1px solid',
+                        borderColor: prize.active ? '#2BA8E0' : 'rgba(255, 255, 255, 0.2)',
+                        color: prize.active ? '#2BA8E0' : '#a1a1aa',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em'
+                      }}
+                    >
+                      {prize.active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Content info section */}

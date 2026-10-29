@@ -1,0 +1,15 @@
+import * as migration_20260813_220723_init_schema from './20260813_220723_init_schema';
+import * as migration_20261029_160000_add_winner_notification_enabled from './20261029_160000_add_winner_notification_enabled';
+
+export const migrations = [
+  {
+    up: migration_20260813_220723_init_schema.up,
+    down: migration_20260813_220723_init_schema.down,
+    name: '20260813_220723_init_schema',
+  },
+  {
+    up: migration_20261029_160000_add_winner_notification_enabled.up,
+    down: migration_20261029_160000_add_winner_notification_enabled.down,
+    name: '20261029_160000_add_winner_notification_enabled',
+  },
+];

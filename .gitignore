@@ -43,7 +43,6 @@ yarn-error.log*
 next-env.d.ts
 
 # Custom exclusions
-/src/migrations/
 /src/scripts/*
 !/src/scripts/update-campaign-prizes.ts
 # !/src/scripts/inspect-db-codes.ts
@@ -58,3 +57,11 @@ next-env.d.ts
 /AGENT.md
 /Evolution/
 /G-4000-qr-code/
+
+# Code exports & sensitive campaign operational files (PostgreSQL DB is the sole source of truth)
+/generated-codes/
+/all-codes.csv
+/winners-120-audit.txt
+/winners-120-audit.csv
+/winners.csv
+/winners-report.txt

@@ -25,6 +25,7 @@ export async function CustomListPrizes() {
     description: doc.description || undefined,
     image: doc.image || null,
     active: Boolean(doc.active),
+    winner_notification_enabled: doc.winner_notification_enabled !== false,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   }));

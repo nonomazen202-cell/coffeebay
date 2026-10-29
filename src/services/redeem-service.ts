@@ -44,6 +44,7 @@ interface PrizeRow {
   name: string;
   quantity: number;
   image_id: number | null;
+  winner_notification_enabled?: boolean | null;
 }
 
 interface MediaRow {
@@ -252,6 +253,7 @@ export class RedeemService {
       let prizeName = '';
       let prizeImageUrl = '';
       let verificationCode = '';
+      let shouldSendWinnerNotification = true;
 
       // ─── Handle winner logic ───────────────────────────────────────────────────
       if (isWinner && codeRow.prize_id_id) {
@@ -262,7 +264,7 @@ export class RedeemService {
           UPDATE prizes 
           SET quantity = quantity - 1, updated_at = NOW()
           WHERE id = ${prizeId} AND quantity > 0
-          RETURNING id, name, quantity, image_id
+          RETURNING *
         `);
         timer?.endStep('db_update_prize_decrement');
 
@@ -274,6 +276,10 @@ export class RedeemService {
         } else {
           const prizeRow = prizeResult.rows[0] as unknown as PrizeRow;
           prizeName = prizeRow.name;
+
+          // Determine if winner notification should be sent for this prize
+          // Completely driven by the prize setting in database/admin panel. Defaults to true if unconfigured.
+          shouldSendWinnerNotification = prizeRow.winner_notification_enabled !== false;
 
           // Get prize image URL if available
           if (prizeRow.image_id) {
@@ -310,7 +316,7 @@ export class RedeemService {
       timer?.endStep('db_create_entry');
       console.log(`[${requestId}] STEP 6 -> Entry Saved`);
 
-      // ─── Create prize claim and queue WhatsApp notifications (winners only) ────────────────────
+      // ─── Create prize claim and queue notifications (winners only) ─────────────
       timer?.startStep('db_create_claim_and_notifications');
       if (resultStatus === 'WIN' && verificationCode) {
         // Create prize claim record
@@ -326,11 +332,9 @@ export class RedeemService {
         });
 
         // Queue WhatsApp / SMS Notifications inside the same transaction
-        // We skip SMS for "Spin The Wheel at the branch" to conserve SMS quota
-        const isSpinTheWheel = codeRow.prize_id_id === 4 || prizeName.toLowerCase().includes('spin the wheel');
-
         if (process.env.DISABLE_NOTIFICATION_QUEUE !== 'true') {
-          if (!isSpinTheWheel) {
+          // 1. Queue winner notification to participant only if enabled for this prize
+          if (shouldSendWinnerNotification) {
             await notificationService.queueWinnerNotification({
               phone,
               participantName: name,
@@ -339,14 +343,19 @@ export class RedeemService {
               verificationCode,
               prizeImageUrl,
             }, transactionID as string);
-
-            await notificationService.queueAdminAlert({
-              participantName: name,
-              participantPhone: phone,
-              prizeName,
-              serialCode: uppercaseSerial,
-            }, transactionID as string);
+          } else {
+            console.log(
+              `[REDEEM] Customer notification skipped for prize "${prizeName}" (ID: ${codeRow.prize_id_id}) per prize configuration.`
+            );
           }
+
+          // 2. Admin alert is ALWAYS queued for all winners regardless of prize setting
+          await notificationService.queueAdminAlert({
+            participantName: name,
+            participantPhone: phone,
+            prizeName,
+            serialCode: uppercaseSerial,
+          }, transactionID as string);
         }
       }
       timer?.endStep('db_create_claim_and_notifications');

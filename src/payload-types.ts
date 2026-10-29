@@ -175,6 +175,7 @@ export interface Prize {
   description?: string | null;
   image?: (number | null) | Media;
   active: boolean;
+  winner_notification_enabled?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }

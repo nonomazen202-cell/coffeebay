@@ -9,3 +9,7 @@ export async function getPayloadClient(): Promise<Payload> {
   }
   return cachedPromise;
 }
+
+export function setPayloadClientForTesting(client: Payload | null): void {
+  cachedPromise = client ? Promise.resolve(client) : null;
+}
