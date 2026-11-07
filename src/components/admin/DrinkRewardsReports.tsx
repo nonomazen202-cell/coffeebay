@@ -152,7 +152,7 @@ export function DrinkRewardsReports() {
 
   // Export CSV
   const handleExportCSV = () => {
-    let csvRows: string[][] = [];
+    const csvRows: string[][] = [];
     let filename = 'drink-rewards-report.csv';
 
     if (activeTab === 'drinks') {
@@ -216,6 +216,7 @@ export function DrinkRewardsReports() {
           <div className={styles.badgeRow}>
             <span className={styles.auditBadge}>ADMIN AUDIT & ANALYTICS</span>
             <span className={styles.auditSubtitle}>إحصائيات وتقارير المشروبات</span>
+            {loading && <span className={styles.auditSubtitle} style={{ color: '#2563EB', fontWeight: 600 }}>• جاري التحديث...</span>}
           </div>
           <h1 className={styles.title}>
             Drink Rewards Reports & Audit <span style={{ fontSize: '1.2rem', fontWeight: 600, opacity: 0.85 }}>/ تقارير حركة صرف المشروبات</span>

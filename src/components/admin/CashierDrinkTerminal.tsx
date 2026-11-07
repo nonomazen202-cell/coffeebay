@@ -282,7 +282,7 @@ export function CashierDrinkTerminal() {
             </svg>
           </div>
           <div className={styles.kpiMeta}>
-            <span className={styles.kpiLabel}>Today's Handed Over / اتسلم النهاردة</span>
+            <span className={styles.kpiLabel}>Today&apos;s Handed Over / اتسلم النهاردة</span>
             <span className={styles.kpiValue} style={{ color: '#059669' }}>
               {kpi.todayRedeemed.toLocaleString()} <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>مشروب</span>
             </span>

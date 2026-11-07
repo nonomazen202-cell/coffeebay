@@ -41,7 +41,6 @@ export function DrinkVouchersManager({
   initialVouchers,
   currentPage,
   totalPages,
-  totalDocs: _totalDocs,
   totalCount,
   issuedCount,
   redeemedCount,

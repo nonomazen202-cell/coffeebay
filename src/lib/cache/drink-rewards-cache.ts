@@ -162,8 +162,7 @@ export async function getOrLoadCachedCampaign<T>(
   }
 
   const versionAtStart = getDrinkRewardsCacheVersion();
-  let loadPromise: Promise<T> | undefined;
-  loadPromise = (async () => {
+  const loadPromise: Promise<T> = (async () => {
     try {
       const freshData = await loader();
       const versionAtFinish = getDrinkRewardsCacheVersion();

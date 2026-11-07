@@ -285,6 +285,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
               paddingRight: "0.5rem",
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/drink-rewards/coffeebay-white-logo.png"
               alt="Coffee Bay"

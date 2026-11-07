@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { sql } from 'drizzle-orm';
 import { getPayloadClient } from '@/lib/payload';
 import { getAuthUser } from '@/lib/security/auth-helper';
@@ -6,7 +6,7 @@ import { drinkRedemptionService } from '@/services/drink-rewards/drink-redemptio
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const user = await getAuthUser();
     if (!user) {
