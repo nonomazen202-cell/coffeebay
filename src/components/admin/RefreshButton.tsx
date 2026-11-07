@@ -64,14 +64,14 @@ export function RefreshButton() {
           align-items: center;
           justify-content: center;
           padding: 0.95rem;
-          background: rgba(21, 19, 20, 0.75) !important;
+          background: #150958 !important;
           backdrop-filter: blur(12px) !important;
           -webkit-backdrop-filter: blur(12px) !important;
-          border: 1px solid rgba(43, 168, 224, 0.4) !important;
+          border: 1px solid rgba(192, 192, 192, 0.45) !important;
           border-radius: 9999px !important;
-          color: #2BA8E0 !important;
+          color: #FFFFFF !important;
           cursor: pointer;
-          box-shadow: 0 0 20px rgba(43, 168, 224, 0.15), inset 0 0 10px rgba(43, 168, 224, 0.05) !important;
+          box-shadow: 0 6px 20px rgba(21, 9, 88, 0.25), inset 0 0 8px rgba(255, 255, 255, 0.08) !important;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
           outline: none;
         }
@@ -103,19 +103,19 @@ export function RefreshButton() {
         /* Hover States - scale and glow only, no text expansion */
         .futuristic-fab:hover:not(:disabled) {
           color: #ffffff !important;
-          border-color: #2BA8E0 !important;
-          background: rgba(43, 168, 224, 0.15) !important;
-          box-shadow: 0 0 30px rgba(43, 168, 224, 0.45), inset 0 0 15px rgba(43, 168, 224, 0.2) !important;
+          border-color: #FFFFFF !important;
+          background: #1E117A !important;
+          box-shadow: 0 10px 28px rgba(21, 9, 88, 0.38) !important;
           transform: scale(1.05);
         }
 
         /* Active/Refreshing State - expands with text */
         .futuristic-fab.refreshing {
-          background: rgba(43, 168, 224, 0.25) !important;
-          border-color: #2BA8E0 !important;
+          background: #150958 !important;
+          border-color: #C0C0C0 !important;
           color: #ffffff !important;
           padding: 0.95rem 1.6rem !important;
-          box-shadow: 0 0 35px rgba(43, 168, 224, 0.6), inset 0 0 20px rgba(43, 168, 224, 0.3) !important;
+          box-shadow: 0 10px 30px rgba(21, 9, 88, 0.4) !important;
         }
 
         .futuristic-fab.refreshing .fab-text {
@@ -130,9 +130,9 @@ export function RefreshButton() {
 
         /* Cooldown State - remains a compact circle */
         .futuristic-fab.cooling-down {
-          background: rgba(43, 168, 224, 0.1) !important;
-          border-color: rgba(43, 168, 224, 0.3) !important;
-          color: #2BA8E0 !important;
+          background: #FFFFFF !important;
+          border-color: #CBD5E1 !important;
+          color: #150958 !important;
           cursor: not-allowed;
         }
 

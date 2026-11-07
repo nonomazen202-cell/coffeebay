@@ -12,7 +12,13 @@ import { SmsMisrProvider } from './providers/smsmisr/smsmisr-provider';
 
 // ── Notification Payload (structured, not strings) ──────────────────────
 
-export type TemplateType = 'verification' | 'winner-notification' | 'admin-alert';
+export type TemplateType =
+  | 'verification'
+  | 'winner-notification'
+  | 'admin-alert'
+  | 'drink-reward-otp'
+  | 'drink-reward-voucher'
+  | 'drink-reward-admin-alert';
 
 export interface NotificationPayload {
   type: TemplateType;
@@ -147,17 +153,18 @@ let cachedProvider: NotificationProvider | null = null;
 export function createNotificationProvider(): NotificationProvider {
   if (cachedProvider) return cachedProvider;
 
-  const providerName = process.env.NOTIFICATION_PROVIDER || 'evolution';
+  const providerName = process.env.NOTIFICATION_PROVIDER || 'smsmisr';
   let providerInstance: NotificationProvider;
 
-  if (providerName === 'evolution') {
-    providerInstance = new EvolutionProvider();
-  } else if (providerName === 'smsmisr') {
+  if (providerName === 'smsmisr') {
     providerInstance = new SmsMisrProvider();
+  } else if (providerName === 'evolution') {
+    console.warn('[NotificationProvider] WARNING: Evolution API provider is deprecated and not recommended. Defaulting to SMS Misr for customer deliveries.');
+    providerInstance = new EvolutionProvider();
   } else {
     throw new Error(
       `Invalid notification provider: "${providerName}". ` +
-      `Supported providers: "evolution", "smsmisr".`,
+      `Supported providers: "smsmisr", "evolution".`,
     );
   }
 

@@ -134,7 +134,7 @@ export function EntriesManager({
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', minHeight: '100vh', backgroundColor: '#231F20' }}>
+    <div style={{ padding: '2rem 1.75rem', minHeight: '100vh', backgroundColor: '#F4F6FB' }}>
       
       {/* Header Section */}
       <div 
@@ -146,14 +146,23 @@ export function EntriesManager({
           gap: '1rem',
           marginBottom: '2rem',
           paddingBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          borderBottom: '1px solid #E2E8F0'
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#2BA8E0' }}>🎫</span> Scan Entries / محاولات المسح والاشتراك
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#150958', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ color: '#150958', display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                <line x1="7" x2="17" y1="12" y2="12" />
+              </svg>
+            </span>
+            Scan Entries / محاولات المسح والاشتراك
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.35rem 0 0 0' }}>
             Monitor real-time participation scans, campaign outcomes, and validation logs.
           </p>
         </div>
@@ -161,26 +170,28 @@ export function EntriesManager({
           <Link
             href="/admin/collections/entries/create"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.65rem 1.4rem',
+              backgroundColor: '#150958',
+              color: '#FFFFFF',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               textDecoration: 'none',
-              border: '1px solid #7B3B1B',
+              border: '1px solid #150958',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(123, 59, 27, 0.3)',
+              marginBottom: '1rem',
+              marginRight: '0.25rem',
+              boxShadow: '0 4px 12px rgba(21, 9, 88, 0.16)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#9c4c24';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#1E117A';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#7B3B1B';
+              e.currentTarget.style.backgroundColor = '#150958';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -199,29 +210,29 @@ export function EntriesManager({
           marginBottom: '2rem' 
         }}
       >
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Entries</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem' }}>{stats.total.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Entries</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{stats.total.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #2BA8E0', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Wins</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{stats.win.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #150958', borderRadius: '1rem', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Wins</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{stats.win.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Loses</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem' }}>{stats.lose.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Loses</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{stats.lose.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #7B3B1B', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Invalid Codes</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#7B3B1B', marginTop: '0.5rem', textShadow: '0 0 10px rgba(123, 59, 27, 0.2)' }}>{stats.invalid.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #94A3B8', borderRadius: '1rem', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Invalid Codes</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{stats.invalid.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #7B3B1B', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Already Used</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#7B3B1B', marginTop: '0.5rem', textShadow: '0 0 10px rgba(123, 59, 27, 0.2)' }}>{stats.used.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #94A3B8', borderRadius: '1rem', padding: '1.25rem 1.4rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Already Used</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{stats.used.toLocaleString()}</span>
         </div>
       </div>
 
@@ -234,11 +245,11 @@ export function EntriesManager({
           flexWrap: 'wrap', 
           gap: '1rem', 
           marginBottom: '1.5rem',
-          background: '#1b1819',
-          padding: '1rem',
-          borderRadius: '0.75rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)'
+          background: '#FFFFFF',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 14px rgba(21, 9, 88, 0.04)'
         }}
       >
         {/* Search */}
@@ -250,19 +261,19 @@ export function EntriesManager({
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: '100%',
-              backgroundColor: '#151314',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '0.5rem',
-              padding: '0.625rem 1rem 0.625rem 2.5rem',
-              color: '#ffffff',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #CBD5E1',
+              borderRadius: '9999px',
+              padding: '0.7rem 1.25rem 0.7rem 2.65rem',
+              color: '#1E293B',
               fontSize: '0.9rem',
               outline: 'none',
               transition: 'all 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-            onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onFocus={(e) => e.target.style.borderColor = '#150958'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
           />
-          <span style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B', display: 'flex', alignItems: 'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
@@ -270,42 +281,28 @@ export function EntriesManager({
         </div>
 
         {/* Filters */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem' }}>
           {(['ALL', 'WIN', 'LOSE', 'INVALID', 'ALREADY_USED'] as const).map((tab) => {
             const isSelected = filter === tab;
             let label = 'All';
-            let activeColor = '#2BA8E0';
-            let activeBg = 'rgba(43, 168, 224, 0.15)';
-
-            if (tab === 'WIN') {
-              label = 'Wins';
-            } else if (tab === 'LOSE') {
-              label = 'Loses';
-              activeColor = '#ffffff';
-              activeBg = 'rgba(255, 255, 255, 0.12)';
-            } else if (tab === 'INVALID') {
-              label = 'Invalid';
-              activeColor = '#7B3B1B';
-              activeBg = 'rgba(123, 59, 27, 0.2)';
-            } else if (tab === 'ALREADY_USED') {
-              label = 'Already Used';
-              activeColor = '#7B3B1B';
-              activeBg = 'rgba(123, 59, 27, 0.2)';
-            }
+            if (tab === 'WIN') label = 'Wins';
+            else if (tab === 'LOSE') label = 'Loses';
+            else if (tab === 'INVALID') label = 'Invalid';
+            else if (tab === 'ALREADY_USED') label = 'Already Used';
 
             return (
               <button
                 key={tab}
                 onClick={() => handleFilterChange(tab)}
                 style={{
-                  padding: '0.5rem 0.85rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.85rem',
+                  padding: '0.55rem 1.1rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.825rem',
                   fontWeight: '700',
                   border: '1px solid',
-                  borderColor: isSelected ? activeColor : 'rgba(255, 255, 255, 0.1)',
-                  backgroundColor: isSelected ? activeBg : 'rgba(0, 0, 0, 0.2)',
-                  color: isSelected ? activeColor : '#d4d4d8',
+                  borderColor: isSelected ? '#150958' : '#CBD5E1',
+                  backgroundColor: isSelected ? '#150958' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#150958',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
@@ -324,16 +321,16 @@ export function EntriesManager({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            background: 'rgba(123, 59, 27, 0.15)', 
-            border: '1px solid #7B3B1B', 
+            background: '#EEF2FF', 
+            border: '1px solid #C7D2FE', 
             padding: '0.85rem 1.25rem', 
-            borderRadius: '0.75rem',
+            borderRadius: '0.875rem',
             marginBottom: '1rem',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.06)',
             animation: 'fadeIn 0.2s ease'
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+          <span style={{ color: '#150958', fontSize: '0.875rem', fontWeight: '700' }}>
             Selected {selectedIds.length} entry/entries • تم تحديد {selectedIds.length} محاولة
           </span>
           <button
@@ -341,20 +338,20 @@ export function EntriesManager({
             disabled={deleting}
             style={{
               padding: '0.5rem 1.25rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
+              backgroundColor: '#DC2626',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: '0.375rem',
-              fontWeight: '800',
+              borderRadius: '9999px',
+              fontWeight: '700',
               fontSize: '0.8rem',
               cursor: deleting ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#9c4c24';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#B91C1C';
             }}
             onMouseLeave={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#7B3B1B';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#DC2626';
             }}
           >
             {deleting ? 'Deleting...' : 'Delete Selected / حذف المحدد'}
@@ -368,11 +365,11 @@ export function EntriesManager({
           style={{ 
             padding: '5rem 2rem', 
             textAlign: 'center', 
-            color: '#a1a1aa', 
+            color: '#64748B', 
             fontSize: '0.95rem',
-            border: '1px dashed rgba(255, 255, 255, 0.1)', 
-            borderRadius: '0.75rem',
-            background: '#1b1819'
+            border: '1px dashed #CBD5E1', 
+            borderRadius: '1rem',
+            background: '#FFFFFF'
           }}
         >
           No scan entries found matching current criteria.
@@ -380,19 +377,19 @@ export function EntriesManager({
       ) : (
         <div 
           style={{ 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '0.75rem',
-            backgroundColor: '#1b1819',
+            border: '1px solid #E2E8F0',
+            borderRadius: '1rem',
+            backgroundColor: '#FFFFFF',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
+            boxShadow: '0 6px 24px rgba(21, 9, 88, 0.06)',
             opacity: isPending ? 0.7 : 1,
             transition: 'opacity 0.2s ease',
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
-              <tr style={{ background: '#151314', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff' }}>
-                <th style={{ padding: '1.25rem', width: '48px', textAlign: 'center' }}>
+              <tr style={{ background: '#150958', color: '#FFFFFF' }}>
+                <th style={{ padding: '1.15rem 1.25rem', width: '48px', textAlign: 'center' }}>
                   <input
                     type="checkbox"
                     checked={initialEntries.length > 0 && initialEntries.every(e => selectedIds.includes(e.id))}
@@ -405,14 +402,14 @@ export function EntriesManager({
                         setSelectedIds(prev => Array.from(new Set([...prev, ...newIds])));
                       }
                     }}
-                    style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                    style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                   />
                 </th>
-                <th style={{ padding: '1.25rem 1.25rem', fontWeight: '600' }}>Customer / Participant</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Cup Code</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Outcome</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Request Log / IP</th>
-                <th style={{ padding: '1.25rem 1.25rem', fontWeight: '600', textAlign: 'right' }}>Scanned At</th>
+                <th style={{ padding: '1.15rem 1.25rem', fontWeight: '700' }}>Customer / Participant</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Cup Code</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Outcome</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Request Log / IP</th>
+                <th style={{ padding: '1.15rem 1.25rem', fontWeight: '700', textAlign: 'right' }}>Scanned At</th>
               </tr>
             </thead>
             <tbody>
@@ -423,31 +420,31 @@ export function EntriesManager({
                 // Format outcome labels
                 let outcomeLabel = 'LOSE / خسارة';
                 let outcomeStyle = {
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  color: '#d4d4d8',
+                  backgroundColor: '#F1F5F9',
+                  border: '1px solid #E2E8F0',
+                  color: '#475569',
                 };
 
                 if (entry.result === 'WIN') {
                   outcomeLabel = '★ WIN / فوز';
                   outcomeStyle = {
-                    backgroundColor: 'rgba(43, 168, 224, 0.15)',
-                    border: '1px solid rgba(43, 168, 224, 0.35)',
-                    color: '#2BA8E0',
+                    backgroundColor: '#EEF2FF',
+                    border: '1px solid #C7D2FE',
+                    color: '#150958',
                   };
                 } else if (entry.result === 'INVALID') {
                   outcomeLabel = 'INVALID / غير صالح';
                   outcomeStyle = {
-                    backgroundColor: 'rgba(123, 59, 27, 0.2)',
-                    border: '1px solid rgba(123, 59, 27, 0.4)',
-                    color: '#7B3B1B',
+                    backgroundColor: '#FEF2F2',
+                    border: '1px solid #FECACA',
+                    color: '#B91C1C',
                   };
                 } else if (entry.result === 'ALREADY_USED') {
                   outcomeLabel = 'USED / مستخدم';
                   outcomeStyle = {
-                    backgroundColor: 'rgba(123, 59, 27, 0.2)',
-                    border: '1px solid rgba(123, 59, 27, 0.4)',
-                    color: '#7B3B1B',
+                    backgroundColor: '#FEF3C7',
+                    border: '1px solid #FDE68A',
+                    color: '#92400E',
                   };
                 }
 
@@ -455,11 +452,11 @@ export function EntriesManager({
                   <tr 
                     key={entry.id}
                     style={{ 
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                      borderBottom: '1px solid #EEF2F6',
                       transition: 'all 0.15s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                      e.currentTarget.style.backgroundColor = '#F8FAFC';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = 'transparent';
@@ -477,7 +474,7 @@ export function EntriesManager({
                               : [...prev, entry.id]
                           );
                         }}
-                        style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                        style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                       />
                     </td>
                     {/* Customer */}
@@ -488,23 +485,23 @@ export function EntriesManager({
                             href={`/admin/collections/participants/${entry.participant.id}`}
                             style={{ 
                               fontWeight: '700', 
-                              color: '#ffffff',
+                              color: '#1E293B',
                               fontSize: '0.925rem',
                               textDecoration: 'none'
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#2BA8E0'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#150958'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                           >
                             {entry.participant.name}
                           </Link>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                            <span style={{ fontSize: '0.8rem', color: '#a1a1aa' }}>{entry.participant.phone}</span>
+                            <span style={{ fontSize: '0.8rem', color: '#64748B' }}>{entry.participant.phone}</span>
                             <button
                               onClick={() => handleCopy(entry.id, entry.participant!.phone, 'phone')}
                               style={{
                                 background: 'none',
                                 border: 'none',
-                                color: isPhoneCopied ? '#2BA8E0' : '#71717a',
+                                color: isPhoneCopied ? '#150958' : '#64748B',
                                 cursor: 'pointer',
                                 padding: '0.1rem',
                                 display: 'inline-flex',
@@ -526,7 +523,7 @@ export function EntriesManager({
                           </div>
                         </div>
                       ) : (
-                        <span style={{ color: '#71717a', fontStyle: 'italic' }}>Anonymous / Unknown</span>
+                        <span style={{ color: '#94A3B8', fontStyle: 'italic' }}>Anonymous / Unknown</span>
                       )}
                     </td>
 
@@ -537,28 +534,26 @@ export function EntriesManager({
                           href={`/admin/collections/codes/${entry.code.id}`}
                           style={{
                             fontFamily: 'monospace',
-                            fontWeight: '600',
-                            color: '#ffffff',
+                            fontWeight: '700',
+                            color: '#150958',
                             textDecoration: 'none',
-                            backgroundColor: 'rgba(255,255,255,0.05)',
-                            padding: '0.2rem 0.4rem',
-                            borderRadius: '4px',
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            backgroundColor: '#EEF2FF',
+                            padding: '0.25rem 0.6rem',
+                            borderRadius: '0.375rem',
+                            border: '1px solid #C7D2FE',
                             fontSize: '0.85rem'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#2BA8E0';
-                            e.currentTarget.style.borderColor = '#2BA8E0';
+                            e.currentTarget.style.backgroundColor = '#E0E7FF';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.color = '#ffffff';
-                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                            e.currentTarget.style.backgroundColor = '#EEF2FF';
                           }}
                         >
                           {entry.code.serialCode}
                         </Link>
                       ) : (
-                        <span style={{ color: '#71717a', fontFamily: 'monospace', fontSize: '0.85rem' }}>-</span>
+                        <span style={{ color: '#94A3B8', fontFamily: 'monospace', fontSize: '0.85rem' }}>-</span>
                       )}
                     </td>
 
@@ -572,18 +567,12 @@ export function EntriesManager({
                           style={{
                             fontSize: '0.725rem',
                             fontWeight: '800',
-                            padding: '0.25rem 0.5rem',
-                            borderRadius: '4px',
+                            padding: '0.25rem 0.65rem',
+                            borderRadius: '9999px',
                             display: 'inline-block',
                             cursor: 'pointer',
                             transition: 'all 0.15s ease',
                             ...outcomeStyle
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.filter = 'brightness(1.2)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.filter = 'none';
                           }}
                         >
                           {outcomeLabel}
@@ -596,7 +585,7 @@ export function EntriesManager({
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', fontSize: '0.8rem' }}>
                         {entry.requestId ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                            <span style={{ color: '#ffffff', fontFamily: 'monospace' }}>
+                            <span style={{ color: '#1E293B', fontFamily: 'monospace', fontWeight: '600' }}>
                               Req: {entry.requestId.substring(0, 8)}...
                             </span>
                             <button
@@ -604,7 +593,7 @@ export function EntriesManager({
                               style={{
                                 background: 'none',
                                 border: 'none',
-                                color: isReqIdCopied ? '#2BA8E0' : '#71717a',
+                                color: isReqIdCopied ? '#150958' : '#64748B',
                                 cursor: 'pointer',
                                 padding: '0.1rem',
                                 display: 'inline-flex',
@@ -626,13 +615,13 @@ export function EntriesManager({
                           </div>
                         ) : null}
                         {entry.ip ? (
-                          <span style={{ color: '#71717a' }}>IP: {entry.ip}</span>
+                          <span style={{ color: '#64748B' }}>IP: {entry.ip}</span>
                         ) : null}
                       </div>
                     </td>
 
                     {/* Scanned At */}
-                    <td style={{ padding: '1.15rem 1.25rem', textAlign: 'right', color: '#a1a1aa', fontSize: '0.8rem' }}>
+                    <td style={{ padding: '1.15rem 1.25rem', textAlign: 'right', color: '#64748B', fontSize: '0.8rem' }}>
                       {new Date(entry.createdAt).toLocaleString()}
                     </td>
                   </tr>
@@ -650,7 +639,7 @@ export function EntriesManager({
       )}
 
       {/* Total entries count banner */}
-      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#71717a' }}>
+      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#64748B' }}>
         Showing {initialEntries.length} entries of {totalDocs.toLocaleString()} matches.
       </div>
     </div>

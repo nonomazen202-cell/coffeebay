@@ -37,6 +37,9 @@ export const Notifications: CollectionConfig = {
         { label: 'Verification', value: 'verification' },
         { label: 'Winner Notification', value: 'winner-notification' },
         { label: 'Admin Alert', value: 'admin-alert' },
+        { label: 'Drink Reward OTP', value: 'drink-reward-otp' },
+        { label: 'Drink Reward Voucher', value: 'drink-reward-voucher' },
+        { label: 'Drink Reward Admin Alert', value: 'drink-reward-admin-alert' },
       ],
     },
     {

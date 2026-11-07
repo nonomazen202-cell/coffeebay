@@ -33,12 +33,37 @@ export interface VerificationData {
   attemptId?: string;
 }
 
+export interface DrinkOtpData {
+  code: string;
+  campaignSlug?: string;
+}
+
+export interface DrinkVoucherData {
+  customerName: string;
+  voucherCode: string;
+  drinkName: string;
+  campaignTitle: string;
+  expiresAt: string;
+  branchName?: string | null;
+}
+
+export interface DrinkAdminAlertData {
+  customerName: string;
+  customerPhone: string;
+  drinkName: string;
+  voucherCode: string;
+  campaignTitle: string;
+}
+
 // ── Priority & TTL Configuration ────────────────────────────────────────
 
 export const TEMPLATE_PRIORITY: Record<TemplateType, number> = {
   'verification': 100,
   'winner-notification': 90,
   'admin-alert': 80,
+  'drink-reward-otp': 100,
+  'drink-reward-voucher': 90,
+  'drink-reward-admin-alert': 80,
 };
 
 /** TTL in milliseconds. null = no expiry. */
@@ -46,6 +71,9 @@ export const TEMPLATE_TTL_MS: Record<TemplateType, number | null> = {
   'verification': 5 * 60 * 1000,     // 5 minutes
   'winner-notification': 24 * 60 * 60 * 1000, // 24 hours
   'admin-alert': 24 * 60 * 60 * 1000,         // 24 hours
+  'drink-reward-otp': 5 * 60 * 1000,          // 5 minutes
+  'drink-reward-voucher': 14 * 24 * 60 * 60 * 1000, // 14 days
+  'drink-reward-admin-alert': 24 * 60 * 60 * 1000,  // 24 hours
 };
 
 // ── Payload Builders ────────────────────────────────────────────────────
@@ -87,5 +115,46 @@ export function buildVerificationPayload(data: VerificationData): NotificationPa
     variables,
   };
 }
+
+export function buildDrinkOtpPayload(data: DrinkOtpData): NotificationPayload {
+  const variables: Record<string, string> = {
+    code: data.code,
+  };
+  if (data.campaignSlug) {
+    variables.campaignSlug = data.campaignSlug;
+  }
+  return {
+    type: 'drink-reward-otp',
+    variables,
+  };
+}
+
+export function buildDrinkVoucherPayload(data: DrinkVoucherData): NotificationPayload {
+  return {
+    type: 'drink-reward-voucher',
+    variables: {
+      customerName: data.customerName,
+      voucherCode: data.voucherCode,
+      drinkName: data.drinkName,
+      campaignTitle: data.campaignTitle,
+      expiresAt: data.expiresAt,
+      branchName: data.branchName || '',
+    },
+  };
+}
+
+export function buildDrinkAdminAlertPayload(data: DrinkAdminAlertData): NotificationPayload {
+  return {
+    type: 'drink-reward-admin-alert',
+    variables: {
+      customerName: data.customerName,
+      customerPhone: data.customerPhone,
+      drinkName: data.drinkName,
+      voucherCode: data.voucherCode,
+      campaignTitle: data.campaignTitle,
+    },
+  };
+}
+
 
 

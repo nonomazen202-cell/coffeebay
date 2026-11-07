@@ -82,15 +82,15 @@ export function VerifyWidget() {
   return (
     <div
       style={{
-        background: '#1b1819',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
         borderRadius: '1rem',
         padding: '1.75rem',
-        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.25)',
-        color: '#ffffff',
+        boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)',
+        color: '#1E293B',
       }}
     >
-      <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#ffffff' }}>
+      <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem', color: '#150958' }}>
         Prize Verification & Delivery
       </h2>
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -102,41 +102,48 @@ export function VerifyWidget() {
           disabled={loading}
           style={{
             flex: 1,
-            padding: '0.625rem 0.875rem',
-            borderRadius: '0.375rem',
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#ffffff',
+            padding: '0.65rem 1.15rem',
+            borderRadius: '9999px',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #CBD5E1',
+            color: '#1E293B',
             fontSize: '0.875rem',
             outline: 'none',
-            transition: 'border-color 0.2s',
+            transition: 'border-color 0.2s, box-shadow 0.2s',
           }}
-          onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-          onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+          onFocus={(e) => {
+            e.target.style.borderColor = '#150958';
+            e.target.style.boxShadow = '0 0 0 3px rgba(21, 9, 88, 0.1)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = '#CBD5E1';
+            e.target.style.boxShadow = 'none';
+          }}
         />
         <button
           type="submit"
           disabled={loading}
           style={{
-            padding: '0.625rem 1.25rem',
-            borderRadius: '0.375rem',
-            backgroundColor: '#2BA8E0', // Primary Blue
-            color: '#231F20', // High contrast text color
+            padding: '0.65rem 1.5rem',
+            borderRadius: '9999px',
+            backgroundColor: '#150958',
+            color: '#FFFFFF',
             fontWeight: '700',
             fontSize: '0.875rem',
             border: 'none',
             cursor: loading ? 'not-allowed' : 'pointer',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.16)',
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
             if (!loading) {
-              e.currentTarget.style.backgroundColor = '#1d92ca';
+              e.currentTarget.style.backgroundColor = '#1E117A';
               e.currentTarget.style.transform = 'translateY(-1px)';
             }
           }}
           onMouseLeave={(e) => {
             if (!loading) {
-              e.currentTarget.style.backgroundColor = '#2BA8E0';
+              e.currentTarget.style.backgroundColor = '#150958';
               e.currentTarget.style.transform = 'translateY(0)';
             }
           }}
@@ -149,12 +156,12 @@ export function VerifyWidget() {
         <div
           style={{
             padding: '0.75rem 1rem',
-            backgroundColor: 'rgba(123, 59, 27, 0.25)',
-            color: '#ffffff',
-            borderRadius: '0.375rem',
+            backgroundColor: '#FEF2F2',
+            color: '#B91C1C',
+            borderRadius: '0.625rem',
             fontSize: '0.875rem',
             marginBottom: '1rem',
-            border: '1px solid #7B3B1B',
+            border: '1px solid #FECACA',
             whiteSpace: 'pre-line',
           }}
         >
@@ -169,12 +176,12 @@ export function VerifyWidget() {
         <div
           style={{
             padding: '0.75rem 1rem',
-            backgroundColor: 'rgba(43, 168, 224, 0.15)',
-            color: '#2BA8E0',
-            borderRadius: '0.375rem',
+            backgroundColor: '#EEF2FF',
+            color: '#150958',
+            borderRadius: '0.625rem',
             fontSize: '0.875rem',
             marginBottom: '1rem',
-            border: '1px solid rgba(43, 168, 224, 0.4)',
+            border: '1px solid #C7D2FE',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -188,13 +195,13 @@ export function VerifyWidget() {
         <div
           style={{
             padding: '1.25rem',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '0.375rem',
+            backgroundColor: '#F8FAFC',
+            border: '1px solid #E2E8F0',
+            borderRadius: '0.75rem',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '1rem', fontWeight: '700', color: '#ffffff' }}>
+            <span style={{ fontSize: '1rem', fontWeight: '700', color: '#150958' }}>
               Claim Information
             </span>
             <span
@@ -205,16 +212,16 @@ export function VerifyWidget() {
                 borderRadius: '9999px',
                 backgroundColor:
                   claim.status === 'DELIVERED'
-                    ? 'rgba(43, 168, 224, 0.2)'
+                    ? '#DCFCE7'
                     : claim.status === 'CANCELLED'
-                    ? 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(123, 59, 27, 0.4)',
+                    ? '#F1F5F9'
+                    : '#FEF3C7',
                 color:
                   claim.status === 'DELIVERED'
-                    ? '#2BA8E0'
+                    ? '#15803D'
                     : claim.status === 'CANCELLED'
-                    ? '#71717a'
-                    : '#ffffff',
+                    ? '#64748B'
+                    : '#92400E',
               }}
             >
               {claim.status}
@@ -223,30 +230,30 @@ export function VerifyWidget() {
 
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <tbody>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Verification Code</td>
-                <td style={{ padding: '0.5rem 0', fontWeight: '600', color: '#ffffff', textAlign: 'right' }}>{claim.verificationCode}</td>
+              <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Verification Code</td>
+                <td style={{ padding: '0.5rem 0', fontWeight: '700', color: '#150958', textAlign: 'right' }}>{claim.verificationCode}</td>
               </tr>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Prize Item</td>
-                <td style={{ padding: '0.5rem 0', fontWeight: '600', color: '#2BA8E0', textAlign: 'right' }}>{claim.prizeName}</td>
+              <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Prize Item</td>
+                <td style={{ padding: '0.5rem 0', fontWeight: '700', color: '#150958', textAlign: 'right' }}>{claim.prizeName}</td>
               </tr>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Winner Name</td>
-                <td style={{ padding: '0.5rem 0', fontWeight: '600', color: '#ffffff', textAlign: 'right' }}>{claim.participantName}</td>
+              <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Winner Name</td>
+                <td style={{ padding: '0.5rem 0', fontWeight: '600', color: '#1E293B', textAlign: 'right' }}>{claim.participantName}</td>
               </tr>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Phone Number</td>
-                <td style={{ padding: '0.5rem 0', color: '#ffffff', textAlign: 'right' }}>{claim.participantPhone}</td>
+              <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Phone Number</td>
+                <td style={{ padding: '0.5rem 0', color: '#1E293B', textAlign: 'right' }}>{claim.participantPhone}</td>
               </tr>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Claimed At</td>
-                <td style={{ padding: '0.5rem 0', color: '#ffffff', textAlign: 'right' }}>{new Date(claim.claimedAt).toLocaleString()}</td>
+              <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Claimed At</td>
+                <td style={{ padding: '0.5rem 0', color: '#1E293B', textAlign: 'right' }}>{new Date(claim.claimedAt).toLocaleString()}</td>
               </tr>
               {claim.status === 'DELIVERED' && claim.verifiedAt && (
-                <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                  <td style={{ padding: '0.5rem 0', color: '#a1a1aa' }}>Delivered At</td>
-                  <td style={{ padding: '0.5rem 0', fontWeight: '700', color: '#2BA8E0', textAlign: 'right' }}>
+                <tr style={{ borderBottom: '1px solid #E2E8F0' }}>
+                  <td style={{ padding: '0.5rem 0', color: '#64748B' }}>Delivered At</td>
+                  <td style={{ padding: '0.5rem 0', fontWeight: '700', color: '#15803D', textAlign: 'right' }}>
                     {new Date(claim.verifiedAt).toLocaleString()}
                   </td>
                 </tr>
@@ -262,24 +269,25 @@ export function VerifyWidget() {
                 width: '100%',
                 marginTop: '1.25rem',
                 padding: '0.75rem',
-                borderRadius: '0.375rem',
-                backgroundColor: '#7B3B1B', // Coffee Brown
-                color: '#ffffff', // Clean white text
+                borderRadius: '9999px',
+                backgroundColor: '#150958',
+                color: '#FFFFFF',
                 fontWeight: '700',
                 fontSize: '0.875rem',
                 border: 'none',
                 cursor: loading ? 'not-allowed' : 'pointer',
+                boxShadow: '0 4px 12px rgba(21, 9, 88, 0.18)',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 if (!loading) {
-                  e.currentTarget.style.backgroundColor = '#5E2C14';
+                  e.currentTarget.style.backgroundColor = '#1E117A';
                   e.currentTarget.style.transform = 'translateY(-1px)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!loading) {
-                  e.currentTarget.style.backgroundColor = '#7B3B1B';
+                  e.currentTarget.style.backgroundColor = '#150958';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }
               }}

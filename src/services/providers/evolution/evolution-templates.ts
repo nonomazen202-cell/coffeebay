@@ -92,6 +92,42 @@ export class EvolutionTemplateBuilder {
         return templates[templateIndex];
       }
 
+      case "drink-reward-otp": {
+        const code = payload.variables.code;
+        return [
+          "*CoffeeBay Rewards*",
+          "",
+          "Your verification code is:",
+          `*\`   ${code}   \`*`,
+          "",
+          "Valid for 5 minutes. Do not share this code.",
+        ].join("\n");
+      }
+
+      case "drink-reward-voucher":
+        return [
+          "*✦ COFFEEBAY DRINK REWARD ✦*",
+          "",
+          `Congratulations *${payload.variables.customerName}*!`,
+          "",
+          `Your complimentary drink: *${payload.variables.drinkName}*`,
+          `Voucher Code: *\`${payload.variables.voucherCode}\`*`,
+          `Valid Until: ${payload.variables.expiresAt}`,
+          "",
+          "Present this code at any participating CoffeeBay branch to redeem your drink.",
+        ].join("\n");
+
+      case "drink-reward-admin-alert":
+        return [
+          "*✦ COFFEEBAY OPERATIONS ✦*",
+          "",
+          "New Drink Reward Claim:",
+          `*◆ Customer:* ${payload.variables.customerName}`,
+          `*◆ Phone:* ${payload.variables.customerPhone}`,
+          `*◆ Drink:* ${payload.variables.drinkName}`,
+          `*◆ Code:* \`${payload.variables.voucherCode}\``,
+        ].join("\n");
+
       default: {
         const exhaustiveCheck: never = payload.type;
         throw new Error(`Unknown template type: ${exhaustiveCheck}`);

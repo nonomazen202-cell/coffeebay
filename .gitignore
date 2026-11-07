@@ -65,3 +65,10 @@ next-env.d.ts
 /winners-120-audit.csv
 /winners.csv
 /winners-report.txt
+/prod-db-to-local-tests/
+*.sql
+/rebrand-data
+/rebrand-data/*
+/scratch/
+restore_conversations.bat
+

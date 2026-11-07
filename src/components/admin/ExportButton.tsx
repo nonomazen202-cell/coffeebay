@@ -19,28 +19,29 @@ export function ExportButton({ collectionSlug }: ExportButtonProps) {
       onClick={handleExport}
       type="button"
       style={{
-        padding: '0.5rem 1rem',
+        padding: '0.625rem 1.25rem',
         fontSize: '0.875rem',
-        fontWeight: '600',
-        backgroundColor: '#1f2937', // zinc-800/gray-800 look
-        color: '#ffffff',
-        border: '1px solid #374151',
-        borderRadius: '0.375rem',
+        fontWeight: '700',
+        backgroundColor: '#FFFFFF',
+        color: '#150958',
+        border: '1px solid #CBD5E1',
+        borderRadius: '9999px',
         cursor: 'pointer',
         marginRight: '0.75rem',
         marginBottom: '1rem',
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '0.375rem',
+        gap: '0.45rem',
+        boxShadow: '0 2px 6px rgba(21, 9, 88, 0.05)',
         transition: 'all 0.15s ease-in-out',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = '#374151';
-        e.currentTarget.style.borderColor = '#4b5563';
+        e.currentTarget.style.backgroundColor = '#EEF2FF';
+        e.currentTarget.style.borderColor = '#150958';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = '#1f2937';
-        e.currentTarget.style.borderColor = '#374151';
+        e.currentTarget.style.backgroundColor = '#FFFFFF';
+        e.currentTarget.style.borderColor = '#CBD5E1';
       }}
     >
       <svg

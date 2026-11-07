@@ -163,7 +163,7 @@ export function ClaimsManager({
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', minHeight: '100vh', backgroundColor: '#231F20' }}>
+    <div style={{ padding: '2rem 1.75rem', minHeight: '100vh', backgroundColor: '#F4F6FB' }}>
       
       {/* Page Header */}
       <div 
@@ -175,42 +175,51 @@ export function ClaimsManager({
           gap: '1rem',
           marginBottom: '2rem',
           paddingBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          borderBottom: '1px solid #E2E8F0'
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#2BA8E0' }}>🎫</span> Claims Manager / إدارة استلام الجوائز
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#150958', margin: 0, display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <span style={{ color: '#150958', display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12" />
+                <rect width="20" height="5" x="2" y="7" rx="1" />
+                <line x1="12" x2="12" y1="22" y2="7" />
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+              </svg>
+            </span>
+            Claims Manager / إدارة استلام الجوائز
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.35rem 0 0 0' }}>
             Verify client coupons, deliver physical coffee gifts, and review participant information.
           </p>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           <Link 
             href="/admin/collections/prize-claims/create"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.7rem 1.5rem',
+              backgroundColor: '#150958',
+              color: '#FFFFFF',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               textDecoration: 'none',
-              border: '1px solid #7B3B1B',
+              border: '1px solid #150958',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(123, 59, 27, 0.3)',
+              boxShadow: '0 4px 14px rgba(21, 9, 88, 0.18)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#9c4c24';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#1E117A';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#7B3B1B';
+              e.currentTarget.style.backgroundColor = '#150958';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -221,26 +230,28 @@ export function ClaimsManager({
             onClick={handleExport}
             type="button"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#1b1819',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.7rem 1.5rem',
+              backgroundColor: '#FFFFFF',
+              color: '#150958',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              border: '1px solid #CBD5E1',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
+              boxShadow: '0 2px 8px rgba(21, 9, 88, 0.05)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#EEF2FF';
+              e.currentTarget.style.borderColor = '#150958';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#1b1819';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+              e.currentTarget.style.borderColor = '#CBD5E1';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -258,25 +269,25 @@ export function ClaimsManager({
       {alert && (
         <div
           style={{
-            padding: '1rem',
-            backgroundColor: alert.type === 'success' ? 'rgba(43, 168, 224, 0.15)' : 'rgba(123, 59, 27, 0.25)',
-            color: '#ffffff',
-            borderRadius: '0.5rem',
+            padding: '1rem 1.25rem',
+            backgroundColor: alert.type === 'success' ? '#EEF2FF' : '#FEF2F2',
+            color: alert.type === 'success' ? '#150958' : '#B91C1C',
+            borderRadius: '0.75rem',
             fontSize: '0.9rem',
             marginBottom: '1.5rem',
             border: '1px solid',
-            borderColor: alert.type === 'success' ? '#2BA8E0' : '#7B3B1B',
+            borderColor: alert.type === 'success' ? '#C7D2FE' : '#FECACA',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem'
           }}
         >
           {alert.type === 'success' ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2BA8E0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#150958" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B3B1B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
               <line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>
             </svg>
@@ -289,24 +300,56 @@ export function ClaimsManager({
       <div 
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
           gap: '1.25rem', 
           marginBottom: '2rem' 
         }}
       >
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Claim Submissions</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem' }}>{stats.total.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#EEF2FF', color: '#150958', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+              <path d="M3 6h18" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Claim Submissions</span>
+            <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.2rem', lineHeight: 1.1 }}>{stats.total.toLocaleString()}</span>
+          </div>
         </div>
         
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #7B3B1B', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pending Deliveries</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem', textShadow: '0 0 10px rgba(123, 59, 27, 0.25)' }}>{stats.pending.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#EEF2FF', color: '#150958', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+              <path d="M15 18H9" />
+              <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+              <circle cx="17" cy="18" r="2" />
+              <circle cx="7" cy="18" r="2" />
+            </svg>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Pending Deliveries</span>
+            <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.2rem', lineHeight: 1.1 }}>{stats.pending.toLocaleString()}</span>
+          </div>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #2BA8E0', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Delivered Prizes</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{stats.delivered.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#EEF2FF', color: '#150958', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+              <path d="M4 22h16" />
+              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+            </svg>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Delivered Prizes</span>
+            <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.2rem', lineHeight: 1.1 }}>{stats.delivered.toLocaleString()}</span>
+          </div>
         </div>
       </div>
 
@@ -319,11 +362,11 @@ export function ClaimsManager({
           flexWrap: 'wrap', 
           gap: '1rem', 
           marginBottom: '1.5rem',
-          background: '#1b1819',
-          padding: '1.25rem',
-          borderRadius: '0.75rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)'
+          background: '#FFFFFF',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 14px rgba(21, 9, 88, 0.04)'
         }}
       >
         {/* Search Input */}
@@ -335,19 +378,19 @@ export function ClaimsManager({
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: '100%',
-              backgroundColor: '#151314',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '0.5rem',
-              padding: '0.75rem 1rem 0.75rem 2.5rem',
-              color: '#ffffff',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #CBD5E1',
+              borderRadius: '9999px',
+              padding: '0.7rem 1.25rem 0.7rem 2.65rem',
+              color: '#1E293B',
               fontSize: '0.9rem',
               outline: 'none',
               transition: 'all 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-            onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onFocus={(e) => e.target.style.borderColor = '#150958'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
           />
-          <span style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B', display: 'flex', alignItems: 'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
@@ -355,7 +398,7 @@ export function ClaimsManager({
         </div>
 
         {/* Tab Filters */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {(['ALL', 'PENDING', 'DELIVERED', 'CANCELLED'] as const).map((tab) => {
             const isSelected = statusFilter === tab;
             return (
@@ -363,14 +406,14 @@ export function ClaimsManager({
                 key={tab}
                 onClick={() => handleStatusFilterChange(tab)}
                 style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.85rem',
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.825rem',
                   fontWeight: '700',
                   border: '1px solid',
-                  borderColor: isSelected ? '#2BA8E0' : 'rgba(255, 255, 255, 0.1)',
-                  backgroundColor: isSelected ? 'rgba(43, 168, 224, 0.15)' : 'rgba(0, 0, 0, 0.2)',
-                  color: isSelected ? '#2BA8E0' : '#d4d4d8',
+                  borderColor: isSelected ? '#150958' : '#CBD5E1',
+                  backgroundColor: isSelected ? '#150958' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#150958',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
@@ -389,16 +432,16 @@ export function ClaimsManager({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            background: 'rgba(123, 59, 27, 0.15)', 
-            border: '1px solid #7B3B1B', 
+            background: '#EEF2FF', 
+            border: '1px solid #C7D2FE', 
             padding: '0.85rem 1.25rem', 
-            borderRadius: '0.75rem',
+            borderRadius: '0.875rem',
             marginBottom: '1rem',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.06)',
             animation: 'fadeIn 0.2s ease'
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+          <span style={{ color: '#150958', fontSize: '0.875rem', fontWeight: '700' }}>
             Selected {selectedIds.length} claim/claims • تم تحديد {selectedIds.length} طلب استلام
           </span>
           <button
@@ -406,20 +449,20 @@ export function ClaimsManager({
             disabled={deleting}
             style={{
               padding: '0.5rem 1.25rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
+              backgroundColor: '#DC2626',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: '0.375rem',
-              fontWeight: '800',
+              borderRadius: '9999px',
+              fontWeight: '700',
               fontSize: '0.8rem',
               cursor: deleting ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#9c4c24';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#B91C1C';
             }}
             onMouseLeave={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#7B3B1B';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#DC2626';
             }}
           >
             {deleting ? 'Deleting...' : 'Delete Selected / حذف المحدد'}
@@ -433,11 +476,11 @@ export function ClaimsManager({
           style={{ 
             padding: '5rem 2rem', 
             textAlign: 'center', 
-            color: '#a1a1aa', 
+            color: '#64748B', 
             fontSize: '0.95rem',
-            border: '1px dashed rgba(255, 255, 255, 0.1)', 
-            borderRadius: '0.75rem',
-            background: '#1b1819'
+            border: '1px dashed #CBD5E1', 
+            borderRadius: '1rem',
+            background: '#FFFFFF'
           }}
         >
           No registered prize claims found matching the search/filters.
@@ -445,17 +488,17 @@ export function ClaimsManager({
       ) : (
         <div 
           style={{ 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '0.75rem',
-            backgroundColor: '#1b1819',
+            border: '1px solid #E2E8F0',
+            borderRadius: '1rem',
+            backgroundColor: '#FFFFFF',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)'
+            boxShadow: '0 6px 24px rgba(21, 9, 88, 0.06)'
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
-              <tr style={{ background: '#151314', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff' }}>
-                <th style={{ padding: '1.25rem 1rem', width: '48px', textAlign: 'center' }}>
+              <tr style={{ background: '#150958', color: '#FFFFFF' }}>
+                <th style={{ padding: '1.15rem 1rem', width: '48px', textAlign: 'center' }}>
                   <input
                     type="checkbox"
                     checked={claims.length > 0 && claims.every(c => selectedIds.includes(c.id))}
@@ -468,15 +511,15 @@ export function ClaimsManager({
                         setSelectedIds(prev => Array.from(new Set([...prev, ...newIds])));
                       }
                     }}
-                    style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                    style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                   />
                 </th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Winner Info</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Verification Code</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Prize Item</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600', textAlign: 'center' }}>Delivery Action</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600', textAlign: 'right' }}>Claimed Date</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Winner Info</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Verification Code</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Prize Item</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Status</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'center' }}>Delivery Action</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'right' }}>Claimed Date</th>
               </tr>
             </thead>
             <tbody>
@@ -488,11 +531,11 @@ export function ClaimsManager({
                   <tr 
                     key={claim.id}
                     style={{ 
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                      borderBottom: '1px solid #EEF2F6',
                       transition: 'all 0.15s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                      e.currentTarget.style.backgroundColor = '#F8FAFC';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = 'transparent';
@@ -510,7 +553,7 @@ export function ClaimsManager({
                               : [...prev, claim.id]
                           );
                         }}
-                        style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                        style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                       />
                     </td>
                     {/* Winner details column */}
@@ -519,18 +562,18 @@ export function ClaimsManager({
                         href={`/admin/collections/prize-claims/${claim.id}`}
                         style={{ 
                           fontWeight: '700', 
-                          color: '#ffffff', 
+                          color: '#1E293B', 
                           fontSize: '0.95rem',
                           textDecoration: 'none'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#2BA8E0'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#150958'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                       >
                         {claim.participantName}
                       </Link>
                       <div style={{ marginTop: '0.35rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         {claim.participantPhone && (
-                          <span style={{ fontSize: '0.8rem', color: '#a1a1aa', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                             </svg>
@@ -546,14 +589,14 @@ export function ClaimsManager({
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <code
                           style={{
-                            backgroundColor: '#151314',
-                            padding: '0.3rem 0.625rem',
-                            borderRadius: '0.25rem',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: '#e4e4e7',
+                            backgroundColor: '#EEF2FF',
+                            padding: '0.3rem 0.65rem',
+                            borderRadius: '0.375rem',
+                            border: '1px solid #C7D2FE',
+                            color: '#150958',
                             fontFamily: 'monospace',
                             fontSize: '0.85rem',
-                            fontWeight: '600'
+                            fontWeight: '700'
                           }}
                         >
                           {claim.verificationCode}
@@ -563,7 +606,7 @@ export function ClaimsManager({
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: copiedCode === claim.verificationCode ? '#2BA8E0' : '#a1a1aa',
+                            color: copiedCode === claim.verificationCode ? '#150958' : '#64748B',
                             cursor: 'pointer',
                             padding: '0.25rem',
                             display: 'flex',
@@ -587,7 +630,7 @@ export function ClaimsManager({
                     </td>
 
                     {/* Prize Item */}
-                    <td style={{ padding: '1.15rem 1rem', color: '#2BA8E0', fontWeight: '700', fontSize: '0.95rem' }}>
+                    <td style={{ padding: '1.15rem 1rem', color: '#1E293B', fontWeight: '700', fontSize: '0.95rem' }}>
                       {claim.prizeName}
                     </td>
 
@@ -595,29 +638,29 @@ export function ClaimsManager({
                     <td style={{ padding: '1.15rem 1rem' }}>
                       <span
                         style={{
-                          fontSize: '0.8rem',
+                          fontSize: '0.75rem',
                           fontWeight: '800',
-                          padding: '0.25rem 0.625rem',
+                          padding: '0.25rem 0.7rem',
                           borderRadius: '9999px',
                           backgroundColor:
                             claim.status === 'DELIVERED'
-                              ? 'rgba(43, 168, 224, 0.15)'
+                              ? '#DCFCE7'
                               : claim.status === 'CANCELLED'
-                              ? 'rgba(255, 255, 255, 0.05)'
-                              : 'rgba(123, 59, 27, 0.4)',
+                              ? '#F1F5F9'
+                              : '#FEF3C7',
                           color:
                             claim.status === 'DELIVERED'
-                              ? '#2BA8E0'
+                              ? '#15803D'
                               : claim.status === 'CANCELLED'
-                              ? '#71717a'
-                              : '#ffffff',
+                              ? '#64748B'
+                              : '#92400E',
                           border: '1px solid',
                           borderColor:
                             claim.status === 'DELIVERED'
-                              ? 'rgba(43, 168, 224, 0.35)'
+                              ? '#BBF7D0'
                               : claim.status === 'CANCELLED'
-                              ? 'rgba(255, 255, 255, 0.1)'
-                              : '#7B3B1B'
+                              ? '#E2E8F0'
+                              : '#FDE68A'
                         }}
                       >
                         {claim.status}
@@ -631,29 +674,29 @@ export function ClaimsManager({
                           onClick={() => handleDeliverClaim(claim.id, claim.verificationCode)}
                           disabled={isLoading}
                           style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: '#7B3B1B',
-                            color: '#ffffff',
+                            padding: '0.55rem 1.15rem',
+                            backgroundColor: '#150958',
+                            color: '#FFFFFF',
                             border: 'none',
-                            borderRadius: '0.375rem',
+                            borderRadius: '9999px',
                             fontSize: '0.8rem',
                             fontWeight: '700',
                             cursor: isLoading ? 'not-allowed' : 'pointer',
-                            boxShadow: '0 2px 8px rgba(123, 59, 27, 0.2)',
+                            boxShadow: '0 3px 10px rgba(21, 9, 88, 0.16)',
                             transition: 'all 0.15s ease'
                           }}
                           onMouseEnter={(e) => {
-                            if (!isLoading) e.currentTarget.style.backgroundColor = '#9c4c24';
+                            if (!isLoading) e.currentTarget.style.backgroundColor = '#1E117A';
                           }}
                           onMouseLeave={(e) => {
-                            if (!isLoading) e.currentTarget.style.backgroundColor = '#7B3B1B';
+                            if (!isLoading) e.currentTarget.style.backgroundColor = '#150958';
                           }}
                         >
                           {isLoading ? 'Processing...' : 'Verify & Hand Over / تسليم الجائزة'}
                         </button>
                       ) : (
-                        <span style={{ fontSize: '0.825rem', color: '#a1a1aa', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2BA8E0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <span style={{ fontSize: '0.825rem', color: '#15803D', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="20 6 9 17 4 12"/>
                           </svg>
                           Handed Over / تم التسليم
@@ -662,10 +705,10 @@ export function ClaimsManager({
                     </td>
 
                     {/* Claimed Date */}
-                    <td style={{ padding: '1.15rem 1rem', textAlign: 'right', color: '#a1a1aa', fontSize: '0.8rem' }}>
+                    <td style={{ padding: '1.15rem 1rem', textAlign: 'right', color: '#64748B', fontSize: '0.8rem' }}>
                       <div>{new Date(claim.createdAt).toLocaleString()}</div>
                       {claim.status === 'DELIVERED' && claim.verifiedAt && (
-                        <div style={{ color: '#2BA8E0', marginTop: '0.35rem', fontSize: '0.75rem', fontWeight: '600' }}>
+                        <div style={{ color: '#15803D', marginTop: '0.35rem', fontSize: '0.75rem', fontWeight: '700' }}>
                           Delivered: {new Date(claim.verifiedAt).toLocaleString()}
                         </div>
                       )}
@@ -686,7 +729,7 @@ export function ClaimsManager({
       )}
 
       {/* Total claims count banner */}
-      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#71717a' }}>
+      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#64748B' }}>
         Showing {claims.length} claims of {totalDocs.toLocaleString()} matches.
       </div>
     </div>

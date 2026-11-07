@@ -1,0 +1,485 @@
+/* ==========================================================================
+   Drinks Menu Manager - Scoped CSS Module
+   LTR Layout (English primary with Arabic friendly clarifying notes)
+   Coffee Bay Deep Blue (#150958), Silver (#C0C0C0), and Crisp White Palette
+   ========================================================================== */
+
+.container {
+  direction: ltr;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* ── Header Ribbon ───────────────────────────────────────────────────────── */
+.headerCard {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 50%, #2A1A8A 100%);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(21, 9, 88, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .headerCard {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.headerWave {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 45%;
+  min-width: 280px;
+  max-width: 440px;
+  background-image: url('/drink-rewards/paateern-bg-wave-divider-forCards-edg.png');
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+  backdrop-filter: blur(4px);
+}
+
+.headerTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.01em;
+}
+
+.headerSubtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+.headerActions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.createButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  background: #FFFFFF;
+  color: #150958;
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.createButton:hover {
+  background: #F8FAFC;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Filter Bar ──────────────────────────────────────────────────────────── */
+.filterCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filterTopRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .filterTopRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+  max-width: 480px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.55rem 0.85rem 0.55rem 2.5rem;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  color: #1E293B;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #150958;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(21, 9, 88, 0.12);
+}
+
+.statsPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+  background: #F1F5F9;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+}
+
+.categoriesRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.categoryTab {
+  white-space: nowrap;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.categoryTab:hover {
+  background: #F8FAFC;
+  color: #150958;
+  border-color: #CBD5E1;
+}
+
+.categoryTabActive {
+  background: #150958 !important;
+  color: #FFFFFF !important;
+  border-color: #150958 !important;
+  box-shadow: 0 2px 8px rgba(21, 9, 88, 0.25);
+}
+
+.statusFilterGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.statusFilterBtn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #64748B;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.statusFilterBtnActive {
+  background: #EEF2FF;
+  color: #150958;
+  border-color: #C7D2FE;
+  font-weight: 800;
+}
+
+/* ── Compact Horizontal Rectangular Cards Grid ───────────────────────────── */
+.drinksGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .drinksGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .drinksGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.drinkCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.drinkCard:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.07);
+  transform: translateY(-1px);
+}
+
+.drinkCardDisabled {
+  background: #F8FAFC;
+  opacity: 0.75;
+}
+
+/* Thumbnail */
+.thumbnailWrapper {
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.thumbnailImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.drinkCard:hover .thumbnailImg {
+  transform: scale(1.05);
+}
+
+.thumbnailFallback {
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Info Column */
+.drinkInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.drinkName {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #150958;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.categoryPill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: #EEF2FF;
+  color: #150958;
+  border: 1px solid #E0E7FF;
+  white-space: nowrap;
+}
+
+.drinkDescription {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* Actions Column */
+.drinkActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.toggleSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggleTrack {
+  width: 38px;
+  height: 20px;
+  background: #CBD5E1;
+  border-radius: 9999px;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.toggleTrackActive {
+  background: #10B981;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.toggleThumbActive {
+  transform: translateX(18px);
+}
+
+.statusText {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748B;
+}
+
+.statusTextActive {
+  color: #059669;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #150958;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.editButton:hover {
+  background: #150958;
+  color: #FFFFFF;
+  border-color: #150958;
+}
+
+/* Empty State */
+.emptyState {
+  background: #FFFFFF;
+  border: 2px dashed #E2E8F0;
+  border-radius: 14px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #64748B;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emptyTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #150958;
+  margin: 0;
+}
+
+.emptySubtitle {
+  font-size: 0.85rem;
+  margin: 0;
+}

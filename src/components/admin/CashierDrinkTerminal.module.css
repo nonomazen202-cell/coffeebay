@@ -1,0 +1,846 @@
+/* ==========================================================================
+   Cashier Drink Terminal & Live Operations Dashboard - Scoped CSS Module
+   LTR Layout (English primary with Arabic friendly clarifying notes)
+   Coffee Bay Deep Blue (#150958), Silver (#C0C0C0), and Crisp White Palette
+   ========================================================================== */
+
+.terminalWrapper {
+  direction: ltr;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* ── Header Card ────────────────────────────────────────────────────────── */
+.headerCard {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 50%, #2A1A8A 100%);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 12px 35px rgba(21, 9, 88, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: #FFFFFF;
+}
+
+.headerWave {
+  position: absolute;
+  bottom: -6px;
+  right: -35px;
+  height: 100%;
+  width: 42%;
+  min-width: 260px;
+  max-width: 390px;
+  background-image: url('/drink-rewards/paateern-bg-wave-divider-forCards-edg.png');
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: auto 85%;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+.headerTopRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .headerTopRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.headerTitleBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.terminalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  width: fit-content;
+  backdrop-filter: blur(4px);
+}
+
+.terminalTitle {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0 0 0.35rem 0;
+  line-height: 1.2;
+}
+
+.terminalSubtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+.cashierBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  width: fit-content;
+}
+
+.cashierAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #150958;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.cashierMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.cashierName {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.cashierBranch {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Mode Switcher Tabs ──────────────────────────────────────────────────── */
+.modeTabs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.35rem;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.modeTabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modeTabBtn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modeTabBtnActive {
+  background: #FFFFFF !important;
+  color: #150958 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Top KPI Metrics Strip ───────────────────────────────────────────────── */
+.kpiStrip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .kpiStrip {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kpiCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(21, 9, 88, 0.08);
+  border-color: #CBD5E1;
+}
+
+.kpiIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiIconToday {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.kpiIconActive {
+  background: #EEF2FF;
+  color: #150958;
+}
+
+.kpiIconTotal {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.kpiIconTop {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.kpiMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748B;
+  margin-bottom: 0.15rem;
+}
+
+.kpiValue {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #150958;
+  line-height: 1.1;
+}
+
+.kpiSubValue {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1E293B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* ── POS Lookup Form Card ────────────────────────────────────────────────── */
+.lookupCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.lookupTitle {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #150958;
+  margin: 0 0 0.35rem 0;
+}
+
+.lookupSubtitle {
+  font-size: 0.85rem;
+  color: #64748B;
+  margin: 0 0 1.5rem 0;
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .searchForm {
+    flex-direction: row;
+  }
+}
+
+.inputContainer {
+  position: relative;
+  flex: 1;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  background: #F8FAFC;
+  border: 2px solid #CBD5E1;
+  color: #150958;
+  font-family: monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  background: #FFFFFF;
+  border-color: #150958;
+  box-shadow: 0 0 0 4px rgba(21, 9, 88, 0.12);
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  border-radius: 12px;
+  background: #150958;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(21, 9, 88, 0.25);
+  white-space: nowrap;
+}
+
+.searchButton:hover:not(:disabled) {
+  background: #1E1270;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(21, 9, 88, 0.35);
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Error & Alert Boxes ─────────────────────────────────────────────────── */
+.errorAlert {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #B91C1C;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.branchWarning {
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #92400E;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Voucher Verification Card ───────────────────────────────────────────── */
+.voucherCard {
+  background: #FFFFFF;
+  border: 2px solid #C7D2FE;
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 30px rgba(21, 9, 88, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.voucherHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.voucherCodeLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748B;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.voucherCodeValue {
+  font-family: monospace;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #150958;
+  letter-spacing: 0.1em;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.statusIssued {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.statusRedeemed {
+  background: #EEF2FF;
+  color: #150958;
+  border: 1px solid #C7D2FE;
+}
+
+.statusExpired {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+}
+
+.statusCancelled {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.statusPulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Info Grid */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  background: #F8FAFC;
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .infoGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infoItemLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748B;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.infoItemValue {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+/* Beverage Choice Display */
+.selectedDrinkBox {
+  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  border: 2px solid #C7D2FE;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+}
+
+.selectedDrinkLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #4338CA;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.selectedDrinkName {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #150958;
+}
+
+/* Audit box if redeemed */
+.auditBox {
+  background: #F1F5F9;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.6;
+  border: 1px solid #E2E8F0;
+  text-align: left;
+}
+
+.auditTitle {
+  font-weight: 800;
+  color: #150958;
+  margin-bottom: 0.35rem;
+}
+
+/* Actions Row */
+.actionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .actionRow {
+    flex-direction: row;
+  }
+}
+
+.redeemPrimaryButton {
+  flex: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
+  background: #150958;
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.28);
+  transition: all 0.2s ease;
+}
+
+.redeemPrimaryButton:hover:not(:disabled) {
+  background: #1E1270;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(21, 9, 88, 0.38);
+}
+
+.redeemPrimaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.substituteButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: #FFFFFF;
+  color: #150958;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: 2px solid #CBD5E1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.substituteButton:hover:not(:disabled) {
+  background: #F8FAFC;
+  border-color: #150958;
+}
+
+/* Substitution Form */
+.substituteBox {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.substituteHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.substituteTitle {
+  font-weight: 800;
+  color: #92400E;
+  font-size: 0.95rem;
+}
+
+.substituteCancelLink {
+  background: none;
+  border: none;
+  color: #B45309;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.subFieldLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #78350F;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.subSelect,
+.subInput {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #FCD34D;
+  background: #FFFFFF;
+  color: #1E293B;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+}
+
+.subConfirmButton {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  background: #D97706;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.subConfirmButton:hover:not(:disabled) {
+  background: #B45309;
+}
+
+/* ── Success Redemption Receipt ─────────────────────────────────────────── */
+.receiptCard {
+  background: #FFFFFF;
+  border: 2px solid #10B981;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.receiptIconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #ECFDF5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.receiptTitle {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #065F46;
+  margin: 0 0 0.25rem 0;
+}
+
+.receiptSubtitle {
+  font-size: 0.85rem;
+  color: #047857;
+  margin: 0;
+}
+
+.receiptDetailsBox {
+  width: 100%;
+  max-width: 480px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.receiptRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.receiptRowLabel {
+  color: #64748B;
+  font-weight: 700;
+}
+
+.receiptRowValue {
+  color: #1E293B;
+  font-weight: 800;
+}
+
+.receiptDrinkValue {
+  color: #150958;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.receiptResetButton {
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  background: #150958;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(21, 9, 88, 0.2);
+  transition: all 0.2s ease;
+}
+
+.receiptResetButton:hover {
+  background: #1E1270;
+  transform: translateY(-1px);
+}
+
+/* ── Live Redemptions Queue Table ────────────────────────────────────────── */
+.queueCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.queueHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.queueTitle {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #150958;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.queueTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.queueTh {
+  background: #150958;
+  color: #FFFFFF;
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.queueRow {
+  border-bottom: 1px solid #E2E8F0;
+  transition: background 0.15s;
+}
+
+.queueRow:hover {
+  background: #F8FAFC;
+}
+
+.queueTd {
+  padding: 0.85rem 1rem;
+  color: #334155;
+  vertical-align: middle;
+}

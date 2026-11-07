@@ -106,7 +106,7 @@ export function ParticipantsManager({
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', minHeight: '100vh', backgroundColor: '#231F20' }}>
+    <div style={{ padding: '2rem 1.75rem', minHeight: '100vh', backgroundColor: '#F4F6FB' }}>
       
       {/* Header Section */}
       <div 
@@ -118,42 +118,50 @@ export function ParticipantsManager({
           gap: '1rem',
           marginBottom: '2rem',
           paddingBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          borderBottom: '1px solid #E2E8F0'
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#2BA8E0' }}>👥</span> Registered Customers / العملاء المسجلين
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#150958', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ color: '#150958', display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </span>
+            Registered Customers / العملاء المسجلين
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.35rem 0 0 0' }}>
             View and manage customer data collected during QR code scans and serial activations.
           </p>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           <Link
             href="/admin/collections/participants/create"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.7rem 1.5rem',
+              backgroundColor: '#150958',
+              color: '#FFFFFF',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               textDecoration: 'none',
-              border: '1px solid #7B3B1B',
+              border: '1px solid #150958',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(123, 59, 27, 0.3)',
+              boxShadow: '0 4px 14px rgba(21, 9, 88, 0.18)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#9c4c24';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#1E117A';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#7B3B1B';
+              e.currentTarget.style.backgroundColor = '#150958';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -164,26 +172,28 @@ export function ParticipantsManager({
             onClick={handleExport}
             type="button"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#1b1819',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.7rem 1.5rem',
+              backgroundColor: '#FFFFFF',
+              color: '#150958',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              border: '1px solid #CBD5E1',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
+              boxShadow: '0 2px 8px rgba(21, 9, 88, 0.05)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#EEF2FF';
+              e.currentTarget.style.borderColor = '#150958';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#1b1819';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+              e.currentTarget.style.borderColor = '#CBD5E1';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -206,9 +216,9 @@ export function ParticipantsManager({
           marginBottom: '2rem' 
         }}
       >
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #2BA8E0', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Registered Customers</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{totalCount.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #150958', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Registered Customers</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{totalCount.toLocaleString()}</span>
         </div>
       </div>
 
@@ -216,11 +226,11 @@ export function ParticipantsManager({
       <div 
         style={{ 
           marginBottom: '1.5rem',
-          background: '#1b1819',
-          padding: '1rem',
-          borderRadius: '0.75rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)'
+          background: '#FFFFFF',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 14px rgba(21, 9, 88, 0.04)'
         }}
       >
         <div style={{ position: 'relative', width: '100%' }}>
@@ -231,19 +241,19 @@ export function ParticipantsManager({
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: '100%',
-              backgroundColor: '#151314',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '0.5rem',
-              padding: '0.75rem 1rem 0.75rem 2.5rem',
-              color: '#ffffff',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #CBD5E1',
+              borderRadius: '9999px',
+              padding: '0.7rem 1.25rem 0.7rem 2.65rem',
+              color: '#1E293B',
               fontSize: '0.9rem',
               outline: 'none',
               transition: 'all 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-            onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onFocus={(e) => e.target.style.borderColor = '#150958'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
           />
-          <span style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B', display: 'flex', alignItems: 'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
@@ -256,19 +266,19 @@ export function ParticipantsManager({
       {errorMsg && (
         <div
           style={{
-            padding: '1rem',
-            backgroundColor: 'rgba(123, 59, 27, 0.25)',
-            color: '#ffffff',
-            borderRadius: '0.5rem',
+            padding: '1rem 1.25rem',
+            backgroundColor: '#FEF2F2',
+            color: '#B91C1C',
+            borderRadius: '0.75rem',
             fontSize: '0.9rem',
             marginBottom: '1.5rem',
-            border: '1px solid #7B3B1B',
+            border: '1px solid #FECACA',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem'
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B3B1B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
             <line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>
           </svg>
@@ -283,16 +293,16 @@ export function ParticipantsManager({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            background: 'rgba(123, 59, 27, 0.15)', 
-            border: '1px solid #7B3B1B', 
+            background: '#EEF2FF', 
+            border: '1px solid #C7D2FE', 
             padding: '0.85rem 1.25rem', 
-            borderRadius: '0.75rem',
+            borderRadius: '0.875rem',
             marginBottom: '1rem',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.06)',
             animation: 'fadeIn 0.2s ease'
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+          <span style={{ color: '#150958', fontSize: '0.875rem', fontWeight: '700' }}>
             Selected {selectedIds.length} customer/customers • تم تحديد {selectedIds.length} عميل
           </span>
           <button
@@ -300,20 +310,20 @@ export function ParticipantsManager({
             disabled={deleting}
             style={{
               padding: '0.5rem 1.25rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
+              backgroundColor: '#DC2626',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: '0.375rem',
-              fontWeight: '800',
+              borderRadius: '9999px',
+              fontWeight: '700',
               fontSize: '0.8rem',
               cursor: deleting ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#9c4c24';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#B91C1C';
             }}
             onMouseLeave={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#7B3B1B';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#DC2626';
             }}
           >
             {deleting ? 'Deleting...' : 'Delete Selected / حذف المحدد'}
@@ -326,11 +336,11 @@ export function ParticipantsManager({
           style={{ 
             padding: '5rem 2rem', 
             textAlign: 'center', 
-            color: '#a1a1aa', 
+            color: '#64748B', 
             fontSize: '0.95rem',
-            border: '1px dashed rgba(255, 255, 255, 0.1)', 
-            borderRadius: '0.75rem',
-            background: '#1b1819'
+            border: '1px dashed #CBD5E1', 
+            borderRadius: '1rem',
+            background: '#FFFFFF'
           }}
         >
           No registered customers found matching search filters.
@@ -338,19 +348,19 @@ export function ParticipantsManager({
       ) : (
         <div 
           style={{ 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '0.75rem',
-            backgroundColor: '#1b1819',
+            border: '1px solid #E2E8F0',
+            borderRadius: '1rem',
+            backgroundColor: '#FFFFFF',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
+            boxShadow: '0 6px 24px rgba(21, 9, 88, 0.06)',
             opacity: isPending ? 0.7 : 1,
             transition: 'opacity 0.2s ease',
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
-              <tr style={{ background: '#151314', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff' }}>
-                <th style={{ padding: '1.25rem 1.25rem', width: '48px', textAlign: 'center' }}>
+              <tr style={{ background: '#150958', color: '#FFFFFF' }}>
+                <th style={{ padding: '1.15rem 1.25rem', width: '48px', textAlign: 'center' }}>
                   <input
                     type="checkbox"
                     checked={initialParticipants.length > 0 && initialParticipants.every(p => selectedIds.includes(p.id))}
@@ -363,14 +373,14 @@ export function ParticipantsManager({
                         setSelectedIds(prev => Array.from(new Set([...prev, ...newIds])));
                       }
                     }}
-                    style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                    style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                   />
                 </th>
-                <th style={{ padding: '1.25rem 1.25rem', fontWeight: '600' }}>Customer Name</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600' }}>Phone Number</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600', textAlign: 'center' }}>Verified</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600', textAlign: 'center' }}>Status</th>
-                <th style={{ padding: '1.25rem 1rem', fontWeight: '600', textAlign: 'right' }}>Registered At</th>
+                <th style={{ padding: '1.15rem 1.25rem', fontWeight: '700' }}>Customer Name</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Phone Number</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'center' }}>Verified</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'center' }}>Status</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'right' }}>Registered At</th>
               </tr>
             </thead>
             <tbody>
@@ -381,18 +391,18 @@ export function ParticipantsManager({
                   <tr 
                     key={participant.id}
                     style={{ 
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                      borderBottom: '1px solid #EEF2F6',
                       transition: 'all 0.15s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                      e.currentTarget.style.backgroundColor = '#F8FAFC';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                   >
                     {/* Checkbox Column */}
-                    <td style={{ padding: '1.25rem', textAlign: 'center' }}>
+                    <td style={{ padding: '1.15rem 1.25rem', textAlign: 'center' }}>
                       <input
                         type="checkbox"
                         checked={selectedIds.includes(participant.id)}
@@ -403,36 +413,36 @@ export function ParticipantsManager({
                               : [...prev, participant.id]
                           );
                         }}
-                        style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                        style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                       />
                     </td>
                     {/* Customer Name linked to details */}
-                    <td style={{ padding: '1.25rem' }}>
+                    <td style={{ padding: '1.15rem 1.25rem' }}>
                       <Link 
                         href={`/admin/collections/participants/${participant.id}`}
                         style={{ 
                           fontWeight: '700', 
-                          color: '#ffffff',
+                          color: '#1E293B',
                           fontSize: '0.95rem',
                           textDecoration: 'none'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#2BA8E0'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#150958'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                       >
                         {participant.name}
                       </Link>
                     </td>
 
                     {/* Phone Number */}
-                    <td style={{ padding: '1.25rem 1rem' }}>
+                    <td style={{ padding: '1.15rem 1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ color: '#ffffff', fontWeight: '600' }}>{participant.phone}</span>
+                        <span style={{ color: '#1E293B', fontWeight: '600' }}>{participant.phone}</span>
                         <button
                            onClick={() => handleCopy(participant.id, participant.phone, 'phone')}
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: isPhoneCopied ? '#2BA8E0' : '#a1a1aa',
+                            color: isPhoneCopied ? '#150958' : '#64748B',
                             cursor: 'pointer',
                             padding: '0.25rem',
                             display: 'flex',
@@ -456,26 +466,28 @@ export function ParticipantsManager({
                     </td>
 
                     {/* Verified Status */}
-                    <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
+                    <td style={{ padding: '1.15rem 1rem', textAlign: 'center' }}>
                       {participant.verified ? (
                         <span style={{ 
-                          padding: '0.25rem 0.5rem', 
-                          borderRadius: '0.25rem', 
-                          backgroundColor: 'rgba(43, 168, 224, 0.15)', 
-                          color: '#2BA8E0',
+                          padding: '0.25rem 0.65rem', 
+                          borderRadius: '9999px', 
+                          backgroundColor: '#EEF2FF', 
+                          border: '1px solid #C7D2FE',
+                          color: '#150958',
                           fontSize: '0.75rem',
                           fontWeight: '800'
                         }}>
-                          ✅ Verified
+                          ✓ Verified
                         </span>
                       ) : (
                         <span style={{ 
-                          padding: '0.25rem 0.5rem', 
-                          borderRadius: '0.25rem', 
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)', 
-                          color: '#a1a1aa',
+                          padding: '0.25rem 0.65rem', 
+                          borderRadius: '9999px', 
+                          backgroundColor: '#F1F5F9', 
+                          border: '1px solid #E2E8F0',
+                          color: '#64748B',
                           fontSize: '0.75rem',
-                          fontWeight: '800'
+                          fontWeight: '700'
                         }}>
                           Unverified
                         </span>
@@ -483,25 +495,26 @@ export function ParticipantsManager({
                     </td>
 
                     {/* Blocked Status */}
-                    <td style={{ padding: '1.25rem 1rem', textAlign: 'center' }}>
+                    <td style={{ padding: '1.15rem 1rem', textAlign: 'center' }}>
                       {participant.blocked ? (
                         <span style={{ 
-                          padding: '0.25rem 0.5rem', 
-                          borderRadius: '0.25rem', 
-                          backgroundColor: 'rgba(123, 59, 27, 0.2)', 
-                          color: '#9c4c24',
+                          padding: '0.25rem 0.65rem', 
+                          borderRadius: '9999px', 
+                          backgroundColor: '#FEF2F2', 
+                          color: '#B91C1C',
                           fontSize: '0.75rem',
                           fontWeight: '800',
-                          border: '1px solid rgba(123, 59, 27, 0.3)'
+                          border: '1px solid #FECACA'
                         }}>
-                          🚫 Blocked
+                          Blocked
                         </span>
                       ) : (
                         <span style={{ 
-                          padding: '0.25rem 0.5rem', 
-                          borderRadius: '0.25rem', 
-                          backgroundColor: 'rgba(46, 117, 89, 0.15)', 
-                          color: '#2e7559',
+                          padding: '0.25rem 0.65rem', 
+                          borderRadius: '9999px', 
+                          backgroundColor: '#DCFCE7', 
+                          border: '1px solid #BBF7D0',
+                          color: '#15803D',
                           fontSize: '0.75rem',
                           fontWeight: '800'
                         }}>
@@ -511,7 +524,7 @@ export function ParticipantsManager({
                     </td>
 
                     {/* Registration Date */}
-                    <td style={{ padding: '1.25rem 1rem', textAlign: 'right', color: '#a1a1aa', fontSize: '0.8rem' }}>
+                    <td style={{ padding: '1.15rem 1rem', textAlign: 'right', color: '#64748B', fontSize: '0.8rem' }}>
                       {new Date(participant.createdAt).toLocaleString()}
                     </td>
                   </tr>
@@ -529,7 +542,7 @@ export function ParticipantsManager({
       )}
 
       {/* Total participants count banner */}
-      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#71717a' }}>
+      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#64748B' }}>
         Showing {initialParticipants.length} participants of {totalDocs.toLocaleString()} matches.
       </div>
     </div>

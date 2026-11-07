@@ -62,32 +62,33 @@ export function ImportButton() {
         disabled={loading}
         type="button"
         style={{
-          padding: '0.5rem 1rem',
+          padding: '0.625rem 1.25rem',
           fontSize: '0.875rem',
-          fontWeight: '600',
-          backgroundColor: '#059669', // Emerald green
-          color: '#ffffff',
-          border: '1px solid #047857',
-          borderRadius: '0.375rem',
+          fontWeight: '700',
+          backgroundColor: '#150958',
+          color: '#FFFFFF',
+          border: '1px solid #150958',
+          borderRadius: '9999px',
           cursor: loading ? 'not-allowed' : 'pointer',
           marginRight: '0.75rem',
           marginBottom: '1rem',
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '0.375rem',
+          gap: '0.45rem',
           opacity: loading ? 0.7 : 1,
+          boxShadow: '0 4px 12px rgba(21, 9, 88, 0.16)',
           transition: 'all 0.15s ease-in-out',
         }}
         onMouseEnter={(e) => {
           if (!loading) {
-            e.currentTarget.style.backgroundColor = '#047857';
-            e.currentTarget.style.borderColor = '#065f46';
+            e.currentTarget.style.backgroundColor = '#1E117A';
+            e.currentTarget.style.borderColor = '#1E117A';
           }
         }}
         onMouseLeave={(e) => {
           if (!loading) {
-            e.currentTarget.style.backgroundColor = '#059669';
-            e.currentTarget.style.borderColor = '#047857';
+            e.currentTarget.style.backgroundColor = '#150958';
+            e.currentTarget.style.borderColor = '#150958';
           }
         }}
       >

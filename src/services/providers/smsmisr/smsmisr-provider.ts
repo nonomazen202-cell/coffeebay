@@ -82,14 +82,14 @@ export class SmsMisrProvider implements NotificationProvider {
     const payloadType = notification.payload?.type;
 
     // 1. Bypass Admin Alerts Safely (No-Op)
-    if (payloadType === 'admin-alert' || !this.capabilities.supportsAdminAlerts) {
-      if (payloadType === 'admin-alert') {
-        console.log(`[SmsMisrProvider] Safely bypassing admin-alert notification ID:${notification.id} (No-Op on SMS Misr)`);
+    if (payloadType === 'admin-alert' || payloadType === 'drink-reward-admin-alert' || !this.capabilities.supportsAdminAlerts) {
+      if (payloadType === 'admin-alert' || payloadType === 'drink-reward-admin-alert') {
+        console.log(`[SmsMisrProvider] Safely bypassing ${payloadType} notification ID:${notification.id} (No-Op on SMS Misr)`);
         return {
           success: true,
-          messageId: `bypassed-admin-alert-${notification.id}`,
+          messageId: `bypassed-${payloadType}-${notification.id}`,
           status: 'delivered',
-          renderedMessage: 'Admin alert bypassed on SMS Misr',
+          renderedMessage: `${payloadType} bypassed on SMS Misr`,
         };
       }
     }
@@ -108,8 +108,9 @@ export class SmsMisrProvider implements NotificationProvider {
     const normalizedPhone = phoneResult.normalized;
 
     // 3. Determine Intent & Render Text Template
-    const intent = payloadType === 'verification' ? 'otp' : 'transactional';
-    const otpCode = payloadType === 'verification' ? notification.payload.variables.code : undefined;
+    const isOtp = payloadType === 'verification' || payloadType === 'drink-reward-otp';
+    const intent = isOtp ? 'otp' : 'transactional';
+    const otpCode = isOtp ? notification.payload.variables.code : undefined;
     const text = notification.message || SmsMisrTemplateBuilder.build(notification.payload);
 
     // 4. Dispatch via Isolated SmsMisrClient

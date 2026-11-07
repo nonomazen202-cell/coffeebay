@@ -160,7 +160,7 @@ export function BulkEditManager({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        backgroundColor: 'rgba(13, 5, 59, 0.55)',
         backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
@@ -173,10 +173,10 @@ export function BulkEditManager({
         style={{
           width: '100%',
           maxWidth: '520px',
-          backgroundColor: '#1b1819',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          borderRadius: '0.75rem',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          borderRadius: '1rem',
+          boxShadow: '0 24px 60px rgba(21, 9, 88, 0.22)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -187,14 +187,14 @@ export function BulkEditManager({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            borderBottom: '1px solid #E2E8F0',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#151314',
+            backgroundColor: '#150958',
           }}
         >
-          <h2 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#ffffff', margin: 0 }}>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#FFFFFF', margin: 0 }}>
             ✏️ Bulk Edit Selected / تعديل جماعي للبيانات
           </h2>
           <button
@@ -204,12 +204,12 @@ export function BulkEditManager({
             style={{
               background: 'none',
               border: 'none',
-              color: '#a1a1aa',
+              color: '#C0C0C0',
               fontSize: '1.25rem',
               cursor: 'pointer',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#a1a1aa')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#C0C0C0')}
           >
             ✕
           </button>
@@ -221,18 +221,18 @@ export function BulkEditManager({
             <div
               style={{
                 fontSize: '0.85rem',
-                color: '#d4d4d8',
-                backgroundColor: 'rgba(43, 168, 224, 0.08)',
-                border: '1px dashed rgba(43, 168, 224, 0.2)',
-                borderRadius: '0.5rem',
-                padding: '0.75rem 1rem',
+                color: '#1E293B',
+                backgroundColor: '#EEF2FF',
+                border: '1px dashed #C7D2FE',
+                borderRadius: '0.75rem',
+                padding: '0.85rem 1rem',
                 marginBottom: '1.5rem',
                 lineHeight: 1.5,
               }}
             >
-              You are updating <strong>{selectedIds.length} records</strong>. Only checked fields will be overwritten.
+              You are updating <strong style={{ color: '#150958' }}>{selectedIds.length} records</strong>. Only checked fields will be overwritten.
               <br />
-              <span style={{ fontSize: '0.75rem', color: '#a1a1aa' }}>
+              <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
                 سيتم تعديل الحقول التي تقوم بتحديد المربع بجانبها فقط، وباقي البيانات ستبقى دون تغيير.
               </span>
             </div>
@@ -242,12 +242,12 @@ export function BulkEditManager({
               <div
                 style={{
                   padding: '0.85rem 1rem',
-                  backgroundColor: 'rgba(123, 59, 27, 0.2)',
-                  color: '#ffffff',
-                  borderRadius: '0.375rem',
+                  backgroundColor: '#FEF2F2',
+                  color: '#B91C1C',
+                  borderRadius: '0.625rem',
                   fontSize: '0.85rem',
                   marginBottom: '1.25rem',
-                  border: '1px solid #7B3B1B',
+                  border: '1px solid #FECACA',
                   whiteSpace: 'pre-wrap',
                 }}
               >
@@ -255,8 +255,8 @@ export function BulkEditManager({
               </div>
             )}
 
-            {/* Fields Fields Editor list */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Fields Editor list */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {fields.map((field) => {
                 const isActive = activeFields[field.name];
                 const value = fieldValues[field.name];
@@ -269,11 +269,11 @@ export function BulkEditManager({
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '0.5rem',
-                      padding: '0.75rem 1rem',
-                      borderRadius: '0.5rem',
-                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: isActive ? '#F8FAFC' : 'transparent',
                       border: '1px solid',
-                      borderColor: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                      borderColor: isActive ? '#CBD5E1' : '#EEF2F6',
                       transition: 'all 0.15s ease',
                     }}
                   >
@@ -284,14 +284,14 @@ export function BulkEditManager({
                           type="checkbox"
                           checked={isActive}
                           onChange={() => handleToggleFieldActive(field.name)}
-                          style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                          style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                         />
                         <label
                           onClick={() => handleToggleFieldActive(field.name)}
                           style={{
                             fontSize: '0.875rem',
-                            fontWeight: isActive ? '700' : '500',
-                            color: isActive ? '#ffffff' : '#a1a1aa',
+                            fontWeight: isActive ? '700' : '600',
+                            color: isActive ? '#150958' : '#475569',
                             cursor: 'pointer',
                             userSelect: 'none',
                           }}
@@ -305,13 +305,13 @@ export function BulkEditManager({
                         <span
                           style={{
                             fontSize: '0.75rem',
-                            fontWeight: '600',
-                            color: state.isMixed ? '#7B3B1B' : '#2BA8E0',
-                            backgroundColor: state.isMixed ? 'rgba(123, 59, 27, 0.12)' : 'rgba(43, 168, 224, 0.08)',
-                            padding: '0.2rem 0.5rem',
-                            borderRadius: '4px',
+                            fontWeight: '700',
+                            color: state.isMixed ? '#92400E' : '#150958',
+                            backgroundColor: state.isMixed ? '#FEF3C7' : '#EEF2FF',
+                            padding: '0.2rem 0.55rem',
+                            borderRadius: '9999px',
                             border: '1px solid',
-                            borderColor: state.isMixed ? 'rgba(123, 59, 27, 0.25)' : 'rgba(43, 168, 224, 0.15)',
+                            borderColor: state.isMixed ? '#FDE68A' : '#C7D2FE',
                           }}
                         >
                           {state.statusLabel}
@@ -329,9 +329,9 @@ export function BulkEditManager({
                               type="checkbox"
                               checked={Boolean(value)}
                               onChange={(e) => handleValueChange(field.name, e.target.checked)}
-                              style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                              style={{ cursor: 'pointer', width: '18px', height: '18px', accentColor: '#150958' }}
                             />
-                            <span style={{ fontSize: '0.85rem', color: '#ffffff' }}>
+                            <span style={{ fontSize: '0.85rem', color: '#1E293B', fontWeight: '600' }}>
                               {Boolean(value) ? 'True / تفعيل' : 'False / تعطيل'}
                             </span>
                           </div>
@@ -344,11 +344,11 @@ export function BulkEditManager({
                             onChange={(e) => handleValueChange(field.name, e.target.value)}
                             style={{
                               width: '100%',
-                              backgroundColor: '#151314',
-                              border: '1px solid rgba(255, 255, 255, 0.15)',
-                              borderRadius: '0.375rem',
-                              padding: '0.5rem 0.75rem',
-                              color: '#ffffff',
+                              backgroundColor: '#FFFFFF',
+                              border: '1px solid #CBD5E1',
+                              borderRadius: '0.5rem',
+                              padding: '0.55rem 0.75rem',
+                              color: '#1E293B',
                               outline: 'none',
                             }}
                           >
@@ -380,11 +380,11 @@ export function BulkEditManager({
                             onChange={(e) => handleValueChange(field.name, e.target.value)}
                             style={{
                               width: '100%',
-                              backgroundColor: '#151314',
-                              border: '1px solid rgba(255, 255, 255, 0.15)',
-                              borderRadius: '0.375rem',
-                              padding: '0.5rem 0.75rem',
-                              color: '#ffffff',
+                              backgroundColor: '#FFFFFF',
+                              border: '1px solid #CBD5E1',
+                              borderRadius: '0.5rem',
+                              padding: '0.55rem 0.75rem',
+                              color: '#1E293B',
                               outline: 'none',
                             }}
                             placeholder="Type value..."
@@ -402,8 +402,8 @@ export function BulkEditManager({
           <div
             style={{
               padding: '1.25rem 1.5rem',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-              backgroundColor: '#151314',
+              borderTop: '1px solid #E2E8F0',
+              backgroundColor: '#F8FAFC',
               display: 'flex',
               justifyContent: 'flex-end',
               gap: '0.75rem',
@@ -415,16 +415,16 @@ export function BulkEditManager({
               type="button"
               style={{
                 padding: '0.625rem 1.25rem',
-                backgroundColor: 'transparent',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '0.375rem',
+                backgroundColor: '#FFFFFF',
+                color: '#150958',
+                border: '1px solid #CBD5E1',
+                borderRadius: '9999px',
                 fontSize: '0.85rem',
                 fontWeight: '700',
                 cursor: 'pointer',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#EEF2FF')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
             >
               Cancel / إلغاء
             </button>
@@ -434,21 +434,21 @@ export function BulkEditManager({
               type="submit"
               style={{
                 padding: '0.625rem 1.5rem',
-                backgroundColor: '#7B3B1B',
-                color: '#ffffff',
+                backgroundColor: '#150958',
+                color: '#FFFFFF',
                 border: 'none',
-                borderRadius: '0.375rem',
+                borderRadius: '9999px',
                 fontSize: '0.85rem',
-                fontWeight: '800',
+                fontWeight: '700',
                 cursor: saving ? 'wait' : 'pointer',
                 opacity: saving ? 0.7 : 1,
-                boxShadow: '0 2px 8px rgba(123, 59, 27, 0.3)',
+                boxShadow: '0 4px 12px rgba(21, 9, 88, 0.18)',
               }}
               onMouseEnter={(e) => {
-                if (!saving) e.currentTarget.style.backgroundColor = '#9c4c24';
+                if (!saving) e.currentTarget.style.backgroundColor = '#1E117A';
               }}
               onMouseLeave={(e) => {
-                if (!saving) e.currentTarget.style.backgroundColor = '#7B3B1B';
+                if (!saving) e.currentTarget.style.backgroundColor = '#150958';
               }}
             >
               {saving ? 'Saving changes...' : 'Update Selected / تحديث البيانات'}

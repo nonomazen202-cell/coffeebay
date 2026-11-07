@@ -1,0 +1,650 @@
+/* ==========================================================================
+   Drink Vouchers Manager - Scoped CSS Module
+   LTR Layout (English primary with Arabic friendly clarifying notes)
+   Coffee Bay Deep Blue (#150958), Silver (#C0C0C0), and Crisp White Palette
+   ========================================================================== */
+
+.container {
+  direction: ltr;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* ── Header Ribbon ───────────────────────────────────────────────────────── */
+.headerCard {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 50%, #2A1A8A 100%);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(21, 9, 88, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .headerCard {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.headerWave {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 45%;
+  min-width: 280px;
+  max-width: 440px;
+  background-image: url('/drink-rewards/paateern-bg-wave-divider-forCards-edg.png');
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+  backdrop-filter: blur(4px);
+}
+
+.headerTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.01em;
+}
+
+.headerSubtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+/* ── KPI Grid ────────────────────────────────────────────────────────────── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .kpiGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kpiCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.07);
+  border-color: #CBD5E1;
+}
+
+.kpiIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiIconTotal {
+  background: #EEF2FF;
+  color: #150958;
+}
+
+.kpiIconIssued {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.kpiIconRedeemed {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.kpiIconExpired {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.kpiInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748B;
+  margin-bottom: 0.15rem;
+}
+
+.kpiValue {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #150958;
+  line-height: 1.1;
+}
+
+/* ── Filter Card ─────────────────────────────────────────────────────────── */
+.filterCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .filterCard {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+  max-width: 450px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.55rem 0.85rem 0.55rem 2.5rem;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  color: #1E293B;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #150958;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(21, 9, 88, 0.12);
+}
+
+.statusTabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.statusTab {
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #64748B;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.statusTab:hover {
+  background: #F8FAFC;
+  color: #150958;
+  border-color: #CBD5E1;
+}
+
+.statusTabActive {
+  background: #150958 !important;
+  color: #FFFFFF !important;
+  border-color: #150958 !important;
+  box-shadow: 0 2px 8px rgba(21, 9, 88, 0.22);
+}
+
+/* ── Table Card ──────────────────────────────────────────────────────────── */
+.tableCard {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.tableContainer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.tableHead {
+  background: #150958;
+  color: #FFFFFF;
+}
+
+.tableTh {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.tableRow {
+  border-bottom: 1px solid #E2E8F0;
+  transition: background 0.15s ease;
+}
+
+.tableRow:hover {
+  background: #F8FAFC;
+}
+
+.tableTd {
+  padding: 0.85rem 1rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+/* Elements inside table */
+.voucherCodeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  background: #EEF2FF;
+  border: 1px solid #C7D2FE;
+  border-radius: 6px;
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #150958;
+  letter-spacing: 0.05em;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #6366F1;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.copyButton:hover {
+  color: #150958;
+}
+
+.customerName {
+  font-weight: 700;
+  color: #1E293B;
+  display: block;
+}
+
+.customerPhone {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #64748B;
+}
+
+.drinkBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  color: #150958;
+}
+
+.substitutedBadge {
+  display: inline-block;
+  margin-top: 0.2rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* Status Pills */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.statusIssued {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.statusRedeemed {
+  background: #EEF2FF;
+  color: #150958;
+  border: 1px solid #C7D2FE;
+}
+
+.statusExpired {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+}
+
+.statusCancelled {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.editActionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #150958;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.editActionLink:hover {
+  background: #150958;
+  color: #FFFFFF;
+  border-color: #150958;
+}
+
+.emptyState {
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  color: #64748B;
+}
+
+.emptyTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #150958;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.emptySubtitle {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ── Selection & Bulk Actions ────────────────────────────────────────────── */
+.selectionTh {
+  width: 44px;
+  text-align: center;
+  padding: 0.85rem 0.5rem;
+}
+
+.selectionTd {
+  width: 44px;
+  text-align: center;
+  padding: 0.85rem 0.5rem;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #150958;
+}
+
+.selectedRow {
+  background: #EEF2FF !important;
+  border-bottom: 1px solid #C7D2FE;
+}
+
+.selectedRow:hover {
+  background: #E0E7FF !important;
+}
+
+.bulkBar {
+  background: linear-gradient(135deg, #150958 0%, #1E1270 100%);
+  color: #FFFFFF;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(21, 9, 88, 0.16);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bulkBarInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.bulkBarBadge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.bulkBarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deselectBtn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deselectBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.bulkDeleteBtn {
+  background: #DC2626;
+  border: none;
+  color: #FFFFFF;
+  padding: 0.45rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  transition: all 0.15s ease;
+}
+
+.bulkDeleteBtn:hover:not(:disabled) {
+  background: #B91C1C;
+  transform: translateY(-1px);
+}
+
+.bulkDeleteBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.actionsCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.deleteActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deleteActionBtn:hover:not(:disabled) {
+  background: #DC2626;
+  color: #FFFFFF;
+  border-color: #DC2626;
+}
+
+.deleteActionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alertBox {
+  border-radius: 10px;
+  padding: 0.75rem 1.15rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.alertSuccess {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.alertError {
+  background: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.alertDismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.alertDismiss:hover {
+  opacity: 1;
+}

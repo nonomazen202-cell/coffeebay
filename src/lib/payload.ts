@@ -1,15 +1,28 @@
 import { getPayload as getPayloadCMS, type Payload } from 'payload';
 import config from '../payload.config';
 
-let cachedPromise: Promise<Payload> | null = null;
+let testingClient: Payload | null = null;
 
 export async function getPayloadClient(): Promise<Payload> {
-  if (!cachedPromise) {
-    cachedPromise = getPayloadCMS({ config });
+  if (testingClient) {
+    return testingClient;
   }
-  return cachedPromise;
+
+  const payload = await getPayloadCMS({ config });
+
+  // Guard against concurrent initialization / HMR reload race where payload.db.drizzle
+  // may still be initializing when another RSC or API route accesses payload.db.drizzle.execute
+  if (
+    payload.db &&
+    !payload.db.drizzle &&
+    typeof payload.db.connect === 'function'
+  ) {
+    await payload.db.connect();
+  }
+
+  return payload;
 }
 
 export function setPayloadClientForTesting(client: Payload | null): void {
-  cachedPromise = client ? Promise.resolve(client) : null;
+  testingClient = client;
 }

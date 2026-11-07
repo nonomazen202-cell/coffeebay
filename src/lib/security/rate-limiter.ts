@@ -6,6 +6,7 @@ export interface RateLimitResult {
 export class RateLimiter {
   private cache = new Map<string, number[]>();
   private cleanupTimer: ReturnType<typeof setInterval> | null = null;
+  private readonly maxCacheEntries = 10_000;
 
   constructor() {
     // Periodically purge stale entries to prevent unbounded memory growth
@@ -28,6 +29,21 @@ export class RateLimiter {
     const now = Date.now();
     const windowMs = (options?.windowSeconds || Number(process.env.RATE_LIMIT_WINDOW_SECONDS) || 60) * 1000;
     const maxRequests = options?.maxRequests || Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 5;
+
+    // Proactive memory bounding: if cache reaches capacity, run cleanup immediately
+    if (this.cache.size >= this.maxCacheEntries) {
+      this.cleanup();
+      // If still above threshold, evict oldest entries to prevent memory growth
+      if (this.cache.size >= this.maxCacheEntries) {
+        const excess = this.cache.size - this.maxCacheEntries + 1_000;
+        let pruned = 0;
+        for (const k of this.cache.keys()) {
+          this.cache.delete(k);
+          pruned++;
+          if (pruned >= excess) break;
+        }
+      }
+    }
 
     let timestamps = this.cache.get(key) || [];
 

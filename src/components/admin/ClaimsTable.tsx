@@ -64,13 +64,13 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
   return (
     <div
       style={{
-        background: "#1b1819",
-        border: "1px solid rgba(255, 255, 255, 0.08)",
+        background: "#FFFFFF",
+        border: "1px solid #E2E8F0",
         borderRadius: "1rem",
         padding: "1.75rem",
         marginTop: "1.5rem",
         marginBottom: "3.5rem",
-        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.25)",
+        boxShadow: "0 4px 16px rgba(21, 9, 88, 0.05)",
       }}
     >
       <div
@@ -87,8 +87,8 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
           <h2
             style={{
               fontSize: "1.25rem",
-              fontWeight: "600",
-              color: "#ffffff",
+              fontWeight: "700",
+              color: "#150958",
               margin: 0,
             }}
           >
@@ -97,7 +97,7 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
           <p
             style={{
               fontSize: "0.85rem",
-              color: "#a1a1aa",
+              color: "#64748B",
               margin: "0.25rem 0 0 0",
             }}
           >
@@ -122,10 +122,10 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
             <span
               style={{
                 position: "absolute",
-                left: "0.75rem",
+                left: "0.85rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#71717a",
+                color: "#64748B",
                 display: "flex",
                 alignItems: "center",
               }}
@@ -154,19 +154,17 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
               }}
               style={{
                 width: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "0.375rem",
-                padding: "0.5rem 2.25rem 0.5rem 2.25rem",
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #CBD5E1",
+                borderRadius: "9999px",
+                padding: "0.55rem 2.25rem 0.55rem 2.35rem",
                 fontSize: "0.875rem",
-                color: "#ffffff",
+                color: "#1E293B",
                 outline: "none",
                 transition: "all 0.2s",
               }}
-              onFocus={(e) => (e.target.style.borderColor = "#2BA8E0")}
-              onBlur={(e) =>
-                (e.target.style.borderColor = "rgba(255, 255, 255, 0.1)")
-              }
+              onFocus={(e) => (e.target.style.borderColor = "#150958")}
+              onBlur={(e) => (e.target.style.borderColor = "#CBD5E1")}
             />
             {search && (
               <button
@@ -181,7 +179,7 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                   transform: "translateY(-50%)",
                   background: "none",
                   border: "none",
-                  color: "#71717a",
+                  color: "#64748B",
                   cursor: "pointer",
                   padding: "0.125rem",
                   display: "flex",
@@ -189,8 +187,8 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                   justifyContent: "center",
                   borderRadius: "50%",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#71717a")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#150958")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#64748B")}
               >
                 <svg
                   width="14"
@@ -215,31 +213,30 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
               setCurrentPage(1);
             }}
             style={{
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "0.375rem",
-              padding: "0.5rem 2rem 0.5rem 0.75rem",
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #CBD5E1",
+              borderRadius: "9999px",
+              padding: "0.55rem 2rem 0.55rem 1rem",
               fontSize: "0.875rem",
-              color: "#ffffff",
+              color: "#150958",
+              fontWeight: "600",
               outline: "none",
               cursor: "pointer",
               transition: "all 0.2s",
             }}
-            onFocus={(e) => (e.target.style.borderColor = "#2BA8E0")}
-            onBlur={(e) =>
-              (e.target.style.borderColor = "rgba(255, 255, 255, 0.1)")
-            }
+            onFocus={(e) => (e.target.style.borderColor = "#150958")}
+            onBlur={(e) => (e.target.style.borderColor = "#CBD5E1")}
           >
-            <option value="ALL" style={{ backgroundColor: "#231F20" }}>
+            <option value="ALL" style={{ backgroundColor: "#FFFFFF", color: "#1E293B" }}>
               All Statuses
             </option>
-            <option value="PENDING" style={{ backgroundColor: "#231F20" }}>
+            <option value="PENDING" style={{ backgroundColor: "#FFFFFF", color: "#1E293B" }}>
               PENDING
             </option>
-            <option value="DELIVERED" style={{ backgroundColor: "#231F20" }}>
+            <option value="DELIVERED" style={{ backgroundColor: "#FFFFFF", color: "#1E293B" }}>
               DELIVERED
             </option>
-            <option value="CANCELLED" style={{ backgroundColor: "#231F20" }}>
+            <option value="CANCELLED" style={{ backgroundColor: "#FFFFFF", color: "#1E293B" }}>
               CANCELLED
             </option>
           </select>
@@ -251,10 +248,11 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
           style={{
             padding: "3rem 2rem",
             textAlign: "center",
-            color: "#71717a",
+            color: "#64748B",
             fontSize: "0.875rem",
-            border: "1px dashed rgba(255, 255, 255, 0.1)",
-            borderRadius: "0.375rem",
+            border: "1px dashed #CBD5E1",
+            borderRadius: "0.75rem",
+            backgroundColor: "#F8FAFC",
           }}
         >
           No matching prize claims found.
@@ -265,9 +263,9 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
           style={{
             maxHeight: "450px",
             overflowY: "auto",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "0.375rem",
-            backgroundColor: "rgba(0, 0, 0, 0.15)",
+            border: "1px solid #E2E8F0",
+            borderRadius: "0.75rem",
+            backgroundColor: "#FFFFFF",
           }}
         >
           <table
@@ -275,7 +273,7 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
               width: "100%",
               borderCollapse: "collapse",
               fontSize: "0.875rem",
-              color: "#e4e4e7",
+              color: "#1E293B",
               textAlign: "left",
             }}
           >
@@ -283,17 +281,16 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
               style={{
                 position: "sticky",
                 top: 0,
-                backgroundColor: "rgba(35, 31, 32, 0.95)",
+                backgroundColor: "#150958",
                 zIndex: 1,
-                boxShadow: "0 1px 0 0 rgba(255, 255, 255, 0.08)",
               }}
             >
-              <tr style={{ color: "#a1a1aa", fontWeight: "600" }}>
-                <th style={{ padding: "0.75rem 1rem" }}>Winner Details</th>
-                <th style={{ padding: "0.75rem 1rem" }}>Verification Code</th>
-                <th style={{ padding: "0.75rem 1rem" }}>Prize Item</th>
-                <th style={{ padding: "0.75rem 1rem" }}>Status</th>
-                <th style={{ padding: "0.75rem 1rem", textAlign: "right" }}>
+              <tr style={{ color: "#FFFFFF", fontWeight: "700" }}>
+                <th style={{ padding: "0.875rem 1rem" }}>Winner Details</th>
+                <th style={{ padding: "0.875rem 1rem" }}>Verification Code</th>
+                <th style={{ padding: "0.875rem 1rem" }}>Prize Item</th>
+                <th style={{ padding: "0.875rem 1rem" }}>Status</th>
+                <th style={{ padding: "0.875rem 1rem", textAlign: "right" }}>
                   Claimed Date
                 </th>
               </tr>
@@ -317,12 +314,12 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                   <tr
                     key={claim.id}
                     style={{
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+                      borderBottom: "1px solid #EEF2F6",
                       transition: "background-color 0.2s ease",
                     }}
                     onMouseEnter={(e) => {
                       (e.currentTarget as HTMLElement).style.backgroundColor =
-                        "rgba(255, 255, 255, 0.03)";
+                        "#F8FAFC";
                     }}
                     onMouseLeave={(e) => {
                       (e.currentTarget as HTMLElement).style.backgroundColor =
@@ -331,7 +328,7 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                   >
                     {/* Winner Info Column with details */}
                     <td style={{ padding: "0.875rem 1rem" }}>
-                      <div style={{ fontWeight: "600", color: "#ffffff" }}>
+                      <div style={{ fontWeight: "700", color: "#1E293B" }}>
                         {participantName}
                       </div>
                       <div
@@ -347,7 +344,7 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                           <span
                             style={{
                               fontSize: "0.8rem",
-                              color: "#a1a1aa",
+                              color: "#64748B",
                               display: "flex",
                               alignItems: "center",
                               gap: "0.35rem",
@@ -383,12 +380,13 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                       >
                         <code
                           style={{
-                            backgroundColor: "rgba(0, 0, 0, 0.3)",
-                            padding: "0.25rem 0.5rem",
-                            borderRadius: "0.25rem",
-                            border: "1px solid rgba(255, 255, 255, 0.1)",
-                            color: "#e4e4e7",
+                            backgroundColor: "#EEF2FF",
+                            padding: "0.25rem 0.6rem",
+                            borderRadius: "0.375rem",
+                            border: "1px solid #C7D2FE",
+                            color: "#150958",
                             fontFamily: "monospace",
+                            fontWeight: "700",
                             fontSize: "0.85rem",
                           }}
                         >
@@ -402,8 +400,8 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                             border: "none",
                             color:
                               copiedCode === claim.verification_code
-                                ? "#2BA8E0"
-                                : "#a1a1aa",
+                                ? "#150958"
+                                : "#64748B",
                             cursor: "pointer",
                             padding: "0.25rem",
                             display: "flex",
@@ -414,14 +412,14 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                           }}
                           onMouseEnter={(e) => {
                             if (copiedCode !== claim.verification_code) {
-                              e.currentTarget.style.color = "#ffffff";
+                              e.currentTarget.style.color = "#150958";
                               e.currentTarget.style.backgroundColor =
-                                "rgba(255, 255, 255, 0.1)";
+                                "#EEF2FF";
                             }
                           }}
                           onMouseLeave={(e) => {
                             if (copiedCode !== claim.verification_code) {
-                              e.currentTarget.style.color = "#a1a1aa";
+                              e.currentTarget.style.color = "#64748B";
                             }
                             e.currentTarget.style.backgroundColor =
                               "transparent";
@@ -466,12 +464,12 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                       </div>
                     </td>
 
-                    {/* Prize Item Name (Primary Blue Highlight) */}
+                    {/* Prize Item Name (Primary Deep Blue Highlight) */}
                     <td
                       style={{
                         padding: "0.875rem 1rem",
-                        color: "#2BA8E0",
-                        fontWeight: "500",
+                        color: "#150958",
+                        fontWeight: "700",
                       }}
                     >
                       {prizeName}
@@ -481,22 +479,22 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                     <td style={{ padding: "0.875rem 1rem" }}>
                       <span
                         style={{
-                          fontSize: "0.8rem",
+                          fontSize: "0.75rem",
                           fontWeight: "700",
-                          padding: "0.125rem 0.5rem",
+                          padding: "0.2rem 0.65rem",
                           borderRadius: "9999px",
                           backgroundColor:
                             claim.status === "DELIVERED"
-                              ? "rgba(43, 168, 224, 0.2)"
+                              ? "#DCFCE7"
                               : claim.status === "CANCELLED"
-                                ? "rgba(255, 255, 255, 0.05)"
-                                : "rgba(123, 59, 27, 0.4)",
+                                ? "#F1F5F9"
+                                : "#FEF3C7",
                           color:
                             claim.status === "DELIVERED"
-                              ? "#2BA8E0"
+                              ? "#15803D"
                               : claim.status === "CANCELLED"
-                                ? "#71717a"
-                                : "#ffffff",
+                                ? "#64748B"
+                                : "#92400E",
                         }}
                       >
                         {claim.status}
@@ -508,13 +506,13 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
                       style={{
                         padding: "0.875rem 1rem",
                         textAlign: "right",
-                        color: "#71717a",
+                        color: "#64748B",
                         fontSize: "0.8rem",
                       }}
                     >
                       <div>{new Date(claim.createdAt).toLocaleString()}</div>
                       {claim.status === "DELIVERED" && claim.verified_at && (
-                        <div style={{ color: "#2BA8E0", marginTop: "0.25rem", fontSize: "0.75rem", fontWeight: "600" }}>
+                        <div style={{ color: "#15803D", marginTop: "0.25rem", fontSize: "0.75rem", fontWeight: "700" }}>
                           Delivered: {new Date(claim.verified_at).toLocaleString()}
                         </div>
                       )}
@@ -536,24 +534,24 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
             alignItems: "center",
             marginTop: "1.25rem",
             paddingTop: "1rem",
-            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            borderTop: "1px solid #E2E8F0",
           }}
         >
-          <span style={{ fontSize: "0.85rem", color: "#a1a1aa" }}>
-            Page {currentPage} of {totalPages}
+          <span style={{ fontSize: "0.85rem", color: "#64748B", fontWeight: "500" }}>
+            Page <strong style={{ color: "#150958" }}>{currentPage}</strong> of <strong style={{ color: "#150958" }}>{totalPages}</strong>
           </span>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               style={{
-                padding: "0.4rem 0.85rem",
-                borderRadius: "0.375rem",
+                padding: "0.45rem 0.95rem",
+                borderRadius: "9999px",
                 fontSize: "0.8rem",
                 fontWeight: "700",
-                backgroundColor: currentPage === 1 ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.08)",
-                color: currentPage === 1 ? "#71717a" : "#ffffff",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: currentPage === 1 ? "#F8FAFC" : "#FFFFFF",
+                color: currentPage === 1 ? "#94A3B8" : "#150958",
+                border: `1px solid ${currentPage === 1 ? "#E2E8F0" : "#CBD5E1"}`,
                 cursor: currentPage === 1 ? "not-allowed" : "pointer",
                 transition: "all 0.15s ease",
               }}
@@ -564,13 +562,13 @@ export function ClaimsTable({ initialClaims }: ClaimsTableProps) {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               style={{
-                padding: "0.4rem 0.85rem",
-                borderRadius: "0.375rem",
+                padding: "0.45rem 0.95rem",
+                borderRadius: "9999px",
                 fontSize: "0.8rem",
                 fontWeight: "700",
-                backgroundColor: currentPage === totalPages ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.08)",
-                color: currentPage === totalPages ? "#71717a" : "#ffffff",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: currentPage === totalPages ? "#F8FAFC" : "#FFFFFF",
+                color: currentPage === totalPages ? "#94A3B8" : "#150958",
+                border: `1px solid ${currentPage === totalPages ? "#E2E8F0" : "#CBD5E1"}`,
                 cursor: currentPage === totalPages ? "not-allowed" : "pointer",
                 transition: "all 0.15s ease",
               }}

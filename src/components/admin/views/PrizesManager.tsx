@@ -78,7 +78,7 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
   const lowStockCount = initialPrizes.filter(p => p.quantity <= 5).length;
 
   return (
-    <div style={{ padding: '2rem 1.5rem', minHeight: '100vh', backgroundColor: '#231F20' }}>
+    <div style={{ padding: '2rem 1.75rem', minHeight: '100vh', backgroundColor: '#F4F6FB' }}>
       {/* Title Header Section */}
       <div 
         style={{ 
@@ -89,14 +89,23 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
           gap: '1rem',
           marginBottom: '2rem',
           paddingBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          borderBottom: '1px solid #E2E8F0'
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#2BA8E0' }}>🎁</span> Prizes Catalog / كتالوج الجوائز
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#150958', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ color: '#150958', display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12" />
+                <rect width="20" height="5" x="2" y="7" rx="1" />
+                <line x1="12" x2="12" y1="22" y2="7" />
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+              </svg>
+            </span>
+            Prizes Catalog / كتالوج الجوائز
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.35rem 0 0 0' }}>
             Manage promo items, active status, and live quantities for the lucky cup campaign.
           </p>
         </div>
@@ -104,23 +113,23 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
         <Link 
           href="/admin/collections/prizes/create"
           style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#7B3B1B',
-            color: '#ffffff',
-            fontWeight: '800',
+            padding: '0.7rem 1.5rem',
+            backgroundColor: '#150958',
+            color: '#FFFFFF',
+            fontWeight: '700',
             fontSize: '0.875rem',
-            borderRadius: '0.5rem',
+            borderRadius: '9999px',
             textDecoration: 'none',
-            boxShadow: '0 4px 15px rgba(123, 59, 27, 0.3)',
+            boxShadow: '0 4px 14px rgba(21, 9, 88, 0.18)',
             transition: 'all 0.2s ease',
-            border: '1px solid #7B3B1B'
+            border: '1px solid #150958'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#9c4c24';
-            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.backgroundColor = '#1E117A';
+            e.currentTarget.style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#7B3B1B';
+            e.currentTarget.style.backgroundColor = '#150958';
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
@@ -132,29 +141,29 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
       <div 
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', 
           gap: '1.25rem', 
           marginBottom: '2rem' 
         }}
       >
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Prize Types</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem' }}>{totalItems}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Prize Types</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{totalItems}</span>
         </div>
         
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #2BA8E0', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Initial Prizes / إجمالي الجوائز التي كانت موجودة</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{totalInitial}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #150958', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Initial Prizes / إجمالي الجوائز التي كانت موجودة</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{totalInitial}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #10B981', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Remaining Prizes / إجمالي الجوائز المتبقية</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#10B981', marginTop: '0.5rem', textShadow: '0 0 10px rgba(16, 185, 129, 0.2)' }}>{totalRemaining}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #15803D', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Remaining Prizes / إجمالي الجوائز المتبقية</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{totalRemaining}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #7B3B1B', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Low Stock Alert (&le; 5)</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem', textShadow: '0 0 10px rgba(123, 59, 27, 0.2)' }}>{lowStockCount}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #94A3B8', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Low Stock Alert (&le; 5)</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{lowStockCount}</span>
         </div>
       </div>
 
@@ -167,10 +176,11 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
           flexWrap: 'wrap', 
           gap: '1rem', 
           marginBottom: '2rem',
-          background: '#1b1819',
-          padding: '1rem',
-          borderRadius: '0.75rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
+          background: '#FFFFFF',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 14px rgba(21, 9, 88, 0.04)'
         }}
       >
         {/* Select All Checkbox */}
@@ -187,9 +197,9 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                 setSelectedIds(prev => Array.from(new Set([...prev, ...newIds])));
               }
             }}
-            style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+            style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
           />
-          <span style={{ fontSize: '0.85rem', color: '#d4d4d8', fontWeight: '700', whiteSpace: 'nowrap' }}>Select All / تحديد الكل</span>
+          <span style={{ fontSize: '0.85rem', color: '#150958', fontWeight: '700', whiteSpace: 'nowrap' }}>Select All / تحديد الكل</span>
         </div>
 
         {/* Search */}
@@ -201,19 +211,19 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: '100%',
-              backgroundColor: '#151314',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '0.5rem',
-              padding: '0.625rem 1rem 0.625rem 2.5rem',
-              color: '#ffffff',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #CBD5E1',
+              borderRadius: '9999px',
+              padding: '0.7rem 1.25rem 0.7rem 2.65rem',
+              color: '#1E293B',
               fontSize: '0.9rem',
               outline: 'none',
               transition: 'all 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-            onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onFocus={(e) => e.target.style.borderColor = '#150958'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
           />
-          <span style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B', display: 'flex', alignItems: 'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
@@ -221,7 +231,7 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
         </div>
 
         {/* Filter Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {(['ALL', 'ACTIVE', 'INACTIVE', 'LOW_STOCK'] as const).map((tab) => {
             const label = tab === 'ALL' ? 'All' : tab === 'ACTIVE' ? 'Active' : tab === 'INACTIVE' ? 'Inactive' : 'Low Stock';
             const isSelected = filter === tab;
@@ -230,22 +240,16 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                 key={tab}
                 onClick={() => setFilter(tab)}
                 style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.85rem',
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.825rem',
                   fontWeight: '700',
                   border: '1px solid',
-                  borderColor: isSelected ? '#2BA8E0' : 'rgba(255, 255, 255, 0.1)',
-                  backgroundColor: isSelected ? 'rgba(43, 168, 224, 0.15)' : 'rgba(0,0,0,0.15)',
-                  color: isSelected ? '#2BA8E0' : '#d4d4d8',
+                  borderColor: isSelected ? '#150958' : '#CBD5E1',
+                  backgroundColor: isSelected ? '#150958' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#150958',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSelected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSelected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
                 }}
               >
                 {label}
@@ -259,19 +263,19 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
       {errorMsg && (
         <div
           style={{
-            padding: '1rem',
-            backgroundColor: 'rgba(123, 59, 27, 0.25)',
-            color: '#ffffff',
-            borderRadius: '0.5rem',
+            padding: '1rem 1.25rem',
+            backgroundColor: '#FEF2F2',
+            color: '#B91C1C',
+            borderRadius: '0.75rem',
             fontSize: '0.9rem',
             marginBottom: '1.5rem',
-            border: '1px solid #7B3B1B',
+            border: '1px solid #FECACA',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem'
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B3B1B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
             <line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>
           </svg>
@@ -286,16 +290,16 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            background: 'rgba(123, 59, 27, 0.15)', 
-            border: '1px solid #7B3B1B', 
+            background: '#EEF2FF', 
+            border: '1px solid #C7D2FE', 
             padding: '0.85rem 1.25rem', 
-            borderRadius: '0.75rem',
+            borderRadius: '0.875rem',
             marginBottom: '1.5rem',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.06)',
             animation: 'fadeIn 0.2s ease'
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+          <span style={{ color: '#150958', fontSize: '0.875rem', fontWeight: '700' }}>
             Selected {selectedIds.length} prize/prizes • تم تحديد {selectedIds.length} جائزة
           </span>
           <button
@@ -303,20 +307,20 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
             disabled={deleting}
             style={{
               padding: '0.5rem 1.25rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
+              backgroundColor: '#DC2626',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: '0.375rem',
-              fontWeight: '800',
+              borderRadius: '9999px',
+              fontWeight: '700',
               fontSize: '0.8rem',
               cursor: deleting ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#9c4c24';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#B91C1C';
             }}
             onMouseLeave={(e) => {
-              if (!deleting) e.currentTarget.style.backgroundColor = '#7B3B1B';
+              if (!deleting) e.currentTarget.style.backgroundColor = '#DC2626';
             }}
           >
             {deleting ? 'Deleting...' : 'Delete Selected / حذف المحدد'}
@@ -330,11 +334,11 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
           style={{ 
             padding: '4rem 2rem', 
             textAlign: 'center', 
-            color: '#a1a1aa', 
+            color: '#64748B', 
             fontSize: '0.95rem',
-            border: '1px dashed rgba(255, 255, 255, 0.1)', 
-            borderRadius: '0.75rem',
-            background: '#1b1819'
+            border: '1px dashed #CBD5E1', 
+            borderRadius: '1rem',
+            background: '#FFFFFF'
           }}
         >
           No prizes found matching the current search/filters.
@@ -360,26 +364,24 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
               <div
                 key={prize.id}
                 style={{
-                  background: '#1b1819',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '0.75rem',
+                  background: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '1rem',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.25)'
+                  boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.borderColor = prize.active ? '#2BA8E0' : 'rgba(255, 255, 255, 0.2)';
-                  e.currentTarget.style.boxShadow = prize.active 
-                    ? '0 10px 25px rgba(43, 168, 224, 0.2)' 
-                    : '0 10px 25px rgba(0, 0, 0, 0.4)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.borderColor = '#150958';
+                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(21, 9, 88, 0.1)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.25)';
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(21, 9, 88, 0.05)';
                 }}
               >
                 {/* Product Image Section */}
@@ -387,13 +389,13 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                   style={{ 
                     height: '160px', 
                     width: '100%', 
-                    backgroundColor: '#151314', 
+                    backgroundColor: '#F8FAFC', 
                     position: 'relative',
                     overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+                    borderBottom: '1px solid #EEF2F6'
                   }}
                 >
                   {/* Select Checkbox on Card */}
@@ -415,6 +417,7 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       height: '18px',
                       cursor: 'pointer',
                       zIndex: 10,
+                      accentColor: '#150958'
                     }}
                   />
 
@@ -426,7 +429,7 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', color: '#a1a1aa' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', color: '#94A3B8' }}>
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                       </svg>
@@ -440,12 +443,12 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       style={{
                         fontSize: '0.65rem',
                         fontWeight: '800',
-                        padding: '0.2rem 0.45rem',
+                        padding: '0.2rem 0.5rem',
                         borderRadius: '9999px',
-                        backgroundColor: prize.winner_notification_enabled !== false ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        backgroundColor: prize.winner_notification_enabled !== false ? '#DCFCE7' : '#FEF2F2',
                         border: '1px solid',
-                        borderColor: prize.winner_notification_enabled !== false ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)',
-                        color: prize.winner_notification_enabled !== false ? '#4ade80' : '#f87171',
+                        borderColor: prize.winner_notification_enabled !== false ? '#BBF7D0' : '#FECACA',
+                        color: prize.winner_notification_enabled !== false ? '#15803D' : '#B91C1C',
                         letterSpacing: '0.04em'
                       }}
                       title={prize.winner_notification_enabled !== false ? 'Winner SMS notifications enabled' : 'Winner SMS notifications disabled'}
@@ -456,12 +459,12 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       style={{
                         fontSize: '0.7rem',
                         fontWeight: '800',
-                        padding: '0.25rem 0.5rem',
+                        padding: '0.2rem 0.55rem',
                         borderRadius: '9999px',
-                        backgroundColor: prize.active ? 'rgba(43, 168, 224, 0.2)' : 'rgba(0,0,0,0.6)',
+                        backgroundColor: prize.active ? '#150958' : '#F1F5F9',
                         border: '1px solid',
-                        borderColor: prize.active ? '#2BA8E0' : 'rgba(255, 255, 255, 0.2)',
-                        color: prize.active ? '#2BA8E0' : '#a1a1aa',
+                        borderColor: prize.active ? '#150958' : '#CBD5E1',
+                        color: prize.active ? '#FFFFFF' : '#64748B',
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                       }}
@@ -473,14 +476,14 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
 
                 {/* Content info section */}
                 <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#ffffff', margin: 0, lineHeight: '1.3' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#150958', margin: 0, lineHeight: '1.3' }}>
                     {prize.name}
                   </h3>
                   
                   {prize.description && (
                     <p 
                       style={{ 
-                        color: '#a1a1aa', 
+                        color: '#64748B', 
                         fontSize: '0.8rem', 
                         marginTop: '0.5rem', 
                         marginBottom: '1rem',
@@ -504,27 +507,27 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      background: '#151314',
-                      padding: '0.5rem 0.75rem',
-                      borderRadius: '0.375rem',
-                      border: '1px solid rgba(255,255,255,0.04)'
+                      background: '#F8FAFC',
+                      padding: '0.55rem 0.85rem',
+                      borderRadius: '0.5rem',
+                      border: '1px solid #E2E8F0'
                     }}
                   >
-                    <span style={{ fontSize: '0.75rem', color: '#d4d4d8', fontWeight: '600' }}>Stock Quantity:</span>
+                    <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: '700' }}>Stock Quantity:</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       <span 
                         style={{ 
-                          fontSize: '0.9rem', 
+                          fontSize: '0.95rem', 
                           fontWeight: '900', 
-                          color: isOutOfStock ? '#7B3B1B' : isLowStock ? '#7B3B1B' : '#2BA8E0' 
+                          color: isOutOfStock ? '#B91C1C' : isLowStock ? '#92400E' : '#150958' 
                         }}
                       >
                         {prize.quantity}
                       </span>
                       {isOutOfStock ? (
-                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.35rem', borderRadius: '4px', backgroundColor: 'rgba(123, 59, 27, 0.2)', border: '1px solid #7B3B1B', color: '#7B3B1B', fontWeight: '800' }}>OUT</span>
+                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: '9999px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', fontWeight: '800' }}>OUT</span>
                       ) : isLowStock ? (
-                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.35rem', borderRadius: '4px', backgroundColor: 'rgba(123, 59, 27, 0.15)', border: '1px solid #7B3B1B', color: '#7B3B1B', fontWeight: '800' }}>LOW</span>
+                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: '9999px', backgroundColor: '#FEF3C7', border: '1px solid #FDE68A', color: '#92400E', fontWeight: '800' }}>LOW</span>
                       ) : null}
                     </div>
                   </div>
@@ -535,24 +538,22 @@ export function PrizesManager({ initialPrizes, totalClaims }: PrizesManagerProps
                       href={`/admin/collections/prizes/${prize.id}`}
                       style={{
                         flex: 1,
-                        padding: '0.5rem 0.75rem',
-                        backgroundColor: 'rgba(43, 168, 224, 0.1)',
-                        border: '1px solid rgba(43, 168, 224, 0.3)',
-                        borderRadius: '0.375rem',
-                        color: '#2BA8E0',
-                        fontSize: '0.8rem',
+                        padding: '0.6rem 0.85rem',
+                        backgroundColor: '#150958',
+                        border: '1px solid #150958',
+                        borderRadius: '9999px',
+                        color: '#FFFFFF',
+                        fontSize: '0.825rem',
                         fontWeight: '700',
                         textDecoration: 'none',
                         textAlign: 'center',
                         transition: 'all 0.15s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#2BA8E0';
-                        e.currentTarget.style.color = '#231F20';
+                        e.currentTarget.style.backgroundColor = '#1E117A';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(43, 168, 224, 0.1)';
-                        e.currentTarget.style.color = '#2BA8E0';
+                        e.currentTarget.style.backgroundColor = '#150958';
                       }}
                     >
                       Edit Details / تعديل

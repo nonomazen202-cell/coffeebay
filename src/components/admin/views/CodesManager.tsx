@@ -206,7 +206,7 @@ export function CodesManager({
   const winnersCount = winningCodesCount;
 
   return (
-    <div style={{ padding: '2rem 1.5rem', minHeight: '100vh', backgroundColor: '#231F20' }}>
+    <div style={{ padding: '2rem 1.75rem', minHeight: '100vh', backgroundColor: '#F4F6FB' }}>
       <style>{`
         @keyframes codes-manager-spin {
           0% { transform: rotate(0deg); }
@@ -224,14 +224,21 @@ export function CodesManager({
           gap: '1rem',
           marginBottom: '2rem',
           paddingBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          borderBottom: '1px solid #E2E8F0'
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#2BA8E0' }}>📊</span> Campaign Serial Codes / أكواد الحملة
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#150958', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ color: '#150958', display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                <path d="m3.3 7 8.7 5 8.7-5" />
+                <path d="M12 22V12" />
+              </svg>
+            </span>
+            Campaign Serial Codes / أكواد الحملة
           </h1>
-          <p style={{ color: '#d4d4d8', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.35rem 0 0 0' }}>
             View and manage campaign serial codes, track scan claims, and import new serial data sets.
           </p>
         </div>
@@ -241,26 +248,28 @@ export function CodesManager({
           <Link
             href="/admin/collections/codes/create"
             style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#7B3B1B',
-              color: '#ffffff',
-              fontWeight: '800',
+              padding: '0.65rem 1.4rem',
+              backgroundColor: '#150958',
+              color: '#FFFFFF',
+              fontWeight: '700',
               fontSize: '0.875rem',
-              borderRadius: '0.5rem',
+              borderRadius: '9999px',
               textDecoration: 'none',
-              border: '1px solid #7B3B1B',
+              border: '1px solid #150958',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 15px rgba(123, 59, 27, 0.3)',
+              marginBottom: '1rem',
+              marginRight: '0.25rem',
+              boxShadow: '0 4px 12px rgba(21, 9, 88, 0.16)',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#9c4c24';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.backgroundColor = '#1E117A';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#7B3B1B';
+              e.currentTarget.style.backgroundColor = '#150958';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -275,29 +284,29 @@ export function CodesManager({
       <div 
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', 
           gap: '1.25rem', 
           marginBottom: '2rem' 
         }}
       >
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Seeded Codes</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem' }}>{totalCodes.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Seeded Codes</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{totalCodes.toLocaleString()}</span>
         </div>
         
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #2BA8E0', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Claimed (Scanned)</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{claimedCount.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #150958', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Claimed (Scanned)</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{claimedCount.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderLeft: '4px solid #7B3B1B', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Losing Cups / الأكواب الخاسرة</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#ffffff', marginTop: '0.5rem', textShadow: '0 0 10px rgba(123, 59, 27, 0.25)' }}>{losingCount.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #94A3B8', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Losing Cups / الأكواب الخاسرة</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{losingCount.toLocaleString()}</span>
         </div>
 
-        <div style={{ background: '#1b1819', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '0.75rem', padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4d4d8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Winning Tickets</span>
-          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#2BA8E0', marginTop: '0.5rem', textShadow: '0 0 10px rgba(43, 168, 224, 0.2)' }}>{winnersCount.toLocaleString()}</span>
+        <div className="cb-wave-card" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '4px solid #150958', borderRadius: '1rem', padding: '1.35rem 1.5rem', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '0 4px 16px rgba(21, 9, 88, 0.05)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#150958', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Winning Tickets</span>
+          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#150958', marginTop: '0.35rem' }}>{winnersCount.toLocaleString()}</span>
         </div>
       </div>
 
@@ -310,10 +319,11 @@ export function CodesManager({
           flexWrap: 'wrap', 
           gap: '1rem', 
           marginBottom: '1.5rem',
-          background: '#1b1819',
-          padding: '1rem',
-          borderRadius: '0.75rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
+          background: '#FFFFFF',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 14px rgba(21, 9, 88, 0.04)'
         }}
       >
         {/* Search */}
@@ -326,21 +336,21 @@ export function CodesManager({
             disabled={isPending}
             style={{
               width: '100%',
-              backgroundColor: '#151314',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '0.5rem',
-              padding: '0.625rem 1rem 0.625rem 2.5rem',
-              color: '#ffffff',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #CBD5E1',
+              borderRadius: '9999px',
+              padding: '0.7rem 1.25rem 0.7rem 2.65rem',
+              color: '#1E293B',
               fontSize: '0.9rem',
               outline: 'none',
               transition: 'all 0.2s',
               opacity: isPending ? 0.7 : 1,
               cursor: isPending ? 'not-allowed' : 'text'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#2BA8E0'}
-            onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onFocus={(e) => e.target.style.borderColor = '#150958'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
           />
-          <span style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B', display: 'flex', alignItems: 'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
@@ -348,7 +358,7 @@ export function CodesManager({
         </div>
 
         {/* Filters */}
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
           {(['ALL', 'CLAIMED', 'REMAINING', 'WINNERS'] as const).map((tab) => {
             const isSelected = filter === tab;
             const isLoading = isPending && pendingFilter === tab;
@@ -361,21 +371,20 @@ export function CodesManager({
                 onClick={() => handleFilterChange(tab)}
                 disabled={isDisabled}
                 style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.85rem',
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.825rem',
                   fontWeight: '700',
                   border: '1px solid',
-                  borderColor: isSelected ? '#2BA8E0' : 'rgba(255, 255, 255, 0.1)',
-                  backgroundColor: isSelected ? 'rgba(43, 168, 224, 0.15)' : 'rgba(0, 0, 0, 0.2)',
-                  color: isSelected ? '#2BA8E0' : '#d4d4d8',
+                  borderColor: isSelected ? '#150958' : '#CBD5E1',
+                  backgroundColor: isSelected ? '#150958' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#150958',
                   cursor: isLoading ? 'wait' : isDisabled ? 'not-allowed' : 'pointer',
                   opacity: isDisabled && !isSelected ? 0.5 : 1,
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
                   transition: 'all 0.2s',
-                  boxShadow: isSelected ? '0 0 10px rgba(43, 168, 224, 0.2)' : 'none',
                 }}
               >
                 {isLoading && (
@@ -384,7 +393,7 @@ export function CodesManager({
                       width: '12px', 
                       height: '12px', 
                       animation: 'codes-manager-spin 1s linear infinite',
-                      color: '#2BA8E0'
+                      color: isSelected ? '#FFFFFF' : '#150958'
                     }} 
                     viewBox="0 0 24 24" 
                     fill="none"
@@ -404,19 +413,19 @@ export function CodesManager({
       {errorMsg && (
         <div
           style={{
-            padding: '1rem',
-            backgroundColor: 'rgba(123, 59, 27, 0.25)',
-            color: '#ffffff',
-            borderRadius: '0.5rem',
+            padding: '1rem 1.25rem',
+            backgroundColor: '#FEF2F2',
+            color: '#B91C1C',
+            borderRadius: '0.75rem',
             fontSize: '0.9rem',
             marginBottom: '1.5rem',
-            border: '1px solid #7B3B1B',
+            border: '1px solid #FECACA',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem'
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7B3B1B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
             <line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>
           </svg>
@@ -431,16 +440,16 @@ export function CodesManager({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            background: 'rgba(123, 59, 27, 0.15)', 
-            border: '1px solid #7B3B1B', 
+            background: '#EEF2FF', 
+            border: '1px solid #C7D2FE', 
             padding: '0.85rem 1.25rem', 
-            borderRadius: '0.75rem',
+            borderRadius: '0.875rem',
             marginBottom: '1rem',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(21, 9, 88, 0.06)',
             animation: 'fadeIn 0.2s ease'
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+          <span style={{ color: '#150958', fontSize: '0.875rem', fontWeight: '700' }}>
             Selected {selectedIds.length} code/codes • تم تحديد {selectedIds.length} كود
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -449,17 +458,17 @@ export function CodesManager({
               type="button"
               style={{
                 padding: '0.5rem 1.25rem',
-                backgroundColor: '#1b1819',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '0.375rem',
-                fontWeight: '800',
+                backgroundColor: '#FFFFFF',
+                color: '#150958',
+                border: '1px solid #CBD5E1',
+                borderRadius: '9999px',
+                fontWeight: '700',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1b1819'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F8FAFC'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
             >
               Edit Selected / تعديل المحدد
             </button>
@@ -468,20 +477,20 @@ export function CodesManager({
               disabled={deleting}
               style={{
                 padding: '0.5rem 1.25rem',
-                backgroundColor: '#7B3B1B',
-                color: '#ffffff',
+                backgroundColor: '#DC2626',
+                color: '#FFFFFF',
                 border: 'none',
-                borderRadius: '0.375rem',
-                fontWeight: '800',
+                borderRadius: '9999px',
+                fontWeight: '700',
                 fontSize: '0.8rem',
                 cursor: deleting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.15s ease'
               }}
               onMouseEnter={(e) => {
-                if (!deleting) e.currentTarget.style.backgroundColor = '#9c4c24';
+                if (!deleting) e.currentTarget.style.backgroundColor = '#B91C1C';
               }}
               onMouseLeave={(e) => {
-                if (!deleting) e.currentTarget.style.backgroundColor = '#7B3B1B';
+                if (!deleting) e.currentTarget.style.backgroundColor = '#DC2626';
               }}
             >
               {deleting ? 'Deleting...' : 'Delete Selected / حذف المحدد'}
@@ -496,11 +505,11 @@ export function CodesManager({
           style={{ 
             padding: '5rem 2rem', 
             textAlign: 'center', 
-            color: '#a1a1aa', 
+            color: '#64748B', 
             fontSize: '0.95rem',
-            border: '1px dashed rgba(255, 255, 255, 0.1)', 
-            borderRadius: '0.75rem',
-            background: '#1b1819'
+            border: '1px dashed #CBD5E1', 
+            borderRadius: '1rem',
+            background: '#FFFFFF'
           }}
         >
           No serial codes found matching search query/filters.
@@ -508,18 +517,18 @@ export function CodesManager({
       ) : (
         <div 
           style={{ 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '0.75rem',
-            backgroundColor: '#1b1819',
+            border: '1px solid #E2E8F0',
+            borderRadius: '1rem',
+            backgroundColor: '#FFFFFF',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
+            boxShadow: '0 6px 24px rgba(21, 9, 88, 0.06)',
             opacity: isPending ? 0.7 : 1,
             transition: 'opacity 0.2s ease'
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
-              <tr style={{ background: '#151314', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff' }}>
+              <tr style={{ background: '#150958', color: '#FFFFFF' }}>
                 <th style={{ padding: '1.15rem 1.25rem', width: '48px', textAlign: 'center' }}>
                   <input
                     type="checkbox"
@@ -533,14 +542,14 @@ export function CodesManager({
                         setSelectedIds(prev => Array.from(new Set([...prev, ...newIds])));
                       }
                     }}
-                    style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                    style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                   />
                 </th>
-                <th style={{ padding: '1.15rem 1.25rem', fontWeight: '600' }}>Serial Code</th>
-                <th style={{ padding: '1.15rem 1rem', fontWeight: '600' }}>Type / Winning Status</th>
-                <th style={{ padding: '1.15rem 1rem', fontWeight: '600' }}>Associated Prize</th>
-                <th style={{ padding: '1.15rem 1rem', fontWeight: '600' }}>Usage Status</th>
-                <th style={{ padding: '1.15rem 1rem', fontWeight: '600', textAlign: 'right' }}>Scanned At</th>
+                <th style={{ padding: '1.15rem 1.25rem', fontWeight: '700' }}>Serial Code</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Type / Winning Status</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Associated Prize</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700' }}>Usage Status</th>
+                <th style={{ padding: '1.15rem 1rem', fontWeight: '700', textAlign: 'right' }}>Scanned At</th>
               </tr>
             </thead>
             <tbody>
@@ -553,11 +562,11 @@ export function CodesManager({
                   <tr 
                     key={code.id}
                     style={{ 
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                      borderBottom: '1px solid #EEF2F6',
                       transition: 'all 0.15s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                      e.currentTarget.style.backgroundColor = '#F8FAFC';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = 'transparent';
@@ -575,7 +584,7 @@ export function CodesManager({
                               : [...prev, code.id]
                           );
                         }}
-                        style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                        style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#150958' }}
                       />
                     </td>
                     {/* Serial Code */}
@@ -585,12 +594,16 @@ export function CodesManager({
                         style={{ 
                           fontFamily: 'monospace', 
                           fontWeight: '700', 
-                          color: '#ffffff',
-                          fontSize: '0.95rem',
+                          color: '#150958',
+                          backgroundColor: '#EEF2FF',
+                          padding: '0.25rem 0.6rem',
+                          borderRadius: '0.375rem',
+                          border: '1px solid #C7D2FE',
+                          fontSize: '0.9rem',
                           textDecoration: 'none'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#2BA8E0'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E0E7FF'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#EEF2FF'}
                       >
                         {code.serialCode}
                       </Link>
@@ -603,22 +616,22 @@ export function CodesManager({
                           style={{ 
                             fontSize: '0.75rem', 
                             fontWeight: '800', 
-                            padding: '0.25rem 0.5rem', 
-                            borderRadius: '4px',
-                            backgroundColor: 'rgba(43, 168, 224, 0.15)',
-                            border: '1px solid rgba(43, 168, 224, 0.35)',
-                            color: '#2BA8E0'
+                            padding: '0.25rem 0.65rem', 
+                            borderRadius: '9999px',
+                            backgroundColor: '#EEF2FF',
+                            border: '1px solid #C7D2FE',
+                            color: '#150958'
                           }}
                         >
                           ★ WINNER TICKET
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.8rem', color: '#a1a1aa' }}>Standard Cup</span>
+                        <span style={{ fontSize: '0.825rem', color: '#64748B', fontWeight: '500' }}>Standard Cup</span>
                       )}
                     </td>
 
                     {/* Associated Prize */}
-                    <td style={{ padding: '1rem 1rem', fontWeight: '600', color: code.isWinner ? '#2BA8E0' : '#ffffff' }}>
+                    <td style={{ padding: '1rem 1rem', fontWeight: '700', color: code.isWinner ? '#150958' : '#64748B' }}>
                       {prizeName}
                     </td>
 
@@ -628,12 +641,12 @@ export function CodesManager({
                         style={{
                           fontSize: '0.75rem',
                           fontWeight: '800',
-                          padding: '0.2rem 0.5rem',
+                          padding: '0.25rem 0.65rem',
                           borderRadius: '9999px',
-                          backgroundColor: code.claimed ? 'rgba(123, 59, 27, 0.35)' : 'rgba(43, 168, 224, 0.1)',
-                          color: code.claimed ? '#7B3B1B' : '#2BA8E0',
+                          backgroundColor: code.claimed ? '#FEF3C7' : '#DCFCE7',
+                          color: code.claimed ? '#92400E' : '#15803D',
                           border: '1px solid',
-                          borderColor: code.claimed ? '#7B3B1B' : 'rgba(43, 168, 224, 0.3)'
+                          borderColor: code.claimed ? '#FDE68A' : '#BBF7D0'
                         }}
                       >
                         {code.claimed ? 'Claimed' : 'Available'}
@@ -641,7 +654,7 @@ export function CodesManager({
                     </td>
 
                     {/* Scanned At */}
-                    <td style={{ padding: '1rem 1rem', textAlign: 'right', color: '#a1a1aa', fontSize: '0.8rem' }}>
+                    <td style={{ padding: '1rem 1rem', textAlign: 'right', color: '#64748B', fontSize: '0.8rem' }}>
                       {code.claimedAt ? new Date(code.claimedAt).toLocaleString() : '-'}
                     </td>
                   </tr>
@@ -660,7 +673,7 @@ export function CodesManager({
       )}
       
       {/* Total codes count banner */}
-      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#71717a' }}>
+      <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.825rem', color: '#64748B' }}>
         Showing {initialCodes.length} codes of {totalDocs.toLocaleString()} matches.
       </div>
 

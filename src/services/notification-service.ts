@@ -22,14 +22,20 @@ import { validateAndNormalizePhone } from '../lib/validators/phone-validator';
 import { duplicateDetector } from './duplicate-detector';
 import { notificationMetrics } from '../lib/notification-metrics';
 import { getCachedAdminPhone } from './settings-cache';
+import type { NotificationPayload } from './notification-provider';
 import {
   buildWinnerPayload,
   buildAdminAlertPayload,
   buildVerificationPayload,
+  buildDrinkOtpPayload,
+  buildDrinkVoucherPayload,
+  buildDrinkAdminAlertPayload,
   TEMPLATE_PRIORITY,
   TEMPLATE_TTL_MS,
   type WinnerNotificationData,
   type AdminAlertData,
+  type DrinkVoucherData,
+  type DrinkAdminAlertData,
 } from './notification-templates';
 
 export class NotificationService {
@@ -90,11 +96,68 @@ export class NotificationService {
     );
   }
 
+  /**
+   * Queue a drink reward OTP notification inside a DB transaction.
+   */
+  async queueDrinkOtp(
+    phone: string,
+    code: string,
+    transactionID: string,
+    campaignSlug?: string,
+  ): Promise<void> {
+    const notificationPayload = buildDrinkOtpPayload({ code, campaignSlug });
+    await this.insertNotification(
+      phone,
+      notificationPayload,
+      transactionID,
+    );
+  }
+
+  /**
+   * Queue a drink reward voucher notification inside a DB transaction.
+   */
+  async queueDrinkVoucher(
+    data: DrinkVoucherData & { phone: string },
+    transactionID: string,
+  ): Promise<void> {
+    const notificationPayload = buildDrinkVoucherPayload(data);
+    await this.insertNotification(
+      data.phone,
+      notificationPayload,
+      transactionID,
+    );
+  }
+
+  /**
+   * Queue a drink reward admin alert inside a DB transaction.
+   */
+  async queueDrinkAdminAlert(
+    data: DrinkAdminAlertData,
+    transactionID: string,
+  ): Promise<void> {
+    let adminPhone = await getCachedAdminPhone();
+    if (!adminPhone) {
+      adminPhone = process.env.WHATSAPP_ADMIN_PHONE || null;
+    }
+
+    if (!adminPhone) {
+      console.warn('[NotificationService] WhatsApp admin phone number is not configured. Skipping drink admin alert.');
+      return;
+    }
+
+    const notificationPayload = buildDrinkAdminAlertPayload(data);
+    await this.insertNotification(
+      adminPhone,
+      notificationPayload,
+      transactionID,
+    );
+  }
+
   // ── Internal: Insert Notification ──────────────────────────────────
 
   private async insertNotification(
     rawPhone: string,
-    notificationPayload: ReturnType<typeof buildWinnerPayload>,
+    notificationPayload: NotificationPayload,
     transactionID: string,
   ): Promise<void> {
     const payload = await getPayloadClient();
@@ -140,7 +203,9 @@ export class NotificationService {
         expiresAt,
         idempotencyKey,
       },
-      req: { transactionID } as unknown as PayloadRequest,
+      ...(transactionID
+        ? { req: { transactionID } as unknown as PayloadRequest }
+        : {}),
     });
 
     // 7. Record metric

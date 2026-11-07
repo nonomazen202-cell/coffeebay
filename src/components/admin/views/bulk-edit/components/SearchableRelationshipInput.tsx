@@ -144,17 +144,17 @@ export function SearchableRelationshipInput({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          backgroundColor: '#151314',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          borderRadius: '0.375rem',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #CBD5E1',
+          borderRadius: '0.5rem',
           padding: '0.625rem 1rem',
-          color: '#ffffff',
+          color: '#1E293B',
           cursor: 'pointer',
           fontSize: '0.9rem',
           minHeight: '38px',
         }}
       >
-        <span style={{ color: displayValue ? '#ffffff' : '#a1a1aa' }}>
+        <span style={{ color: displayValue ? '#1E293B' : '#94A3B8', fontWeight: displayValue ? '600' : '400' }}>
           {displayValue || placeholder}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -165,19 +165,19 @@ export function SearchableRelationshipInput({
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#a1a1aa',
+                color: '#64748B',
                 cursor: 'pointer',
                 padding: '2px',
                 fontSize: '12px',
                 lineHeight: 1,
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#ffffff')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#a1a1aa')}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#150958')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#64748B')}
             >
               ✕
             </button>
           )}
-          <span style={{ color: '#a1a1aa', fontSize: '10px' }}>▼</span>
+          <span style={{ color: '#64748B', fontSize: '10px' }}>▼</span>
         </div>
       </div>
 
@@ -189,17 +189,17 @@ export function SearchableRelationshipInput({
             top: 'calc(100% + 4px)',
             left: 0,
             right: 0,
-            backgroundColor: '#1b1819',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '0.375rem',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #CBD5E1',
+            borderRadius: '0.5rem',
             zIndex: 1000,
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)',
+            boxShadow: '0 10px 25px rgba(21, 9, 88, 0.14)',
             maxHeight: '220px',
             overflowY: 'auto',
           }}
         >
           {/* Inner Search Field */}
-          <div style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div style={{ padding: '0.5rem', borderBottom: '1px solid #EEF2F6' }}>
             <input
               type="text"
               placeholder="Type to filter..."
@@ -208,11 +208,11 @@ export function SearchableRelationshipInput({
               onClick={(e) => e.stopPropagation()}
               style={{
                 width: '100%',
-                backgroundColor: '#151314',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '0.25rem',
-                padding: '0.4rem 0.6rem',
-                color: '#ffffff',
+                backgroundColor: '#F8FAFC',
+                border: '1px solid #CBD5E1',
+                borderRadius: '0.375rem',
+                padding: '0.45rem 0.65rem',
+                color: '#1E293B',
                 fontSize: '0.85rem',
                 outline: 'none',
               }}
@@ -223,17 +223,17 @@ export function SearchableRelationshipInput({
           {/* List Options */}
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {loading && (
-              <li style={{ padding: '0.75rem 1rem', color: '#a1a1aa', fontSize: '0.85rem', textAlign: 'center' }}>
+              <li style={{ padding: '0.75rem 1rem', color: '#64748B', fontSize: '0.85rem', textAlign: 'center' }}>
                 Loading options...
               </li>
             )}
             {error && (
-              <li style={{ padding: '0.75rem 1rem', color: '#7B3B1B', fontSize: '0.85rem', textAlign: 'center' }}>
+              <li style={{ padding: '0.75rem 1rem', color: '#B91C1C', fontSize: '0.85rem', textAlign: 'center' }}>
                 {error}
               </li>
             )}
             {!loading && !error && options.length === 0 && (
-              <li style={{ padding: '0.75rem 1rem', color: '#a1a1aa', fontSize: '0.85rem', textAlign: 'center' }}>
+              <li style={{ padding: '0.75rem 1rem', color: '#64748B', fontSize: '0.85rem', textAlign: 'center' }}>
                 No results found.
               </li>
             )}
@@ -245,19 +245,20 @@ export function SearchableRelationshipInput({
                   onClick={() => handleSelect(opt)}
                   style={{
                     padding: '0.625rem 1rem',
-                    color: '#ffffff',
+                    color: value === opt.value ? '#150958' : '#1E293B',
+                    fontWeight: value === opt.value ? '700' : '500',
                     cursor: 'pointer',
                     fontSize: '0.85rem',
-                    backgroundColor: value === opt.value ? 'rgba(43, 168, 224, 0.15)' : 'transparent',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.02)',
+                    backgroundColor: value === opt.value ? '#EEF2FF' : 'transparent',
+                    borderBottom: '1px solid #F1F5F9',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor =
-                      value === opt.value ? 'rgba(43, 168, 224, 0.2)' : 'rgba(255, 255, 255, 0.05)';
+                      value === opt.value ? '#E0E7FF' : '#F8FAFC';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor =
-                      value === opt.value ? 'rgba(43, 168, 224, 0.15)' : 'transparent';
+                      value === opt.value ? '#EEF2FF' : 'transparent';
                   }}
                 >
                   {opt.label}

@@ -44,8 +44,8 @@ export function AdminPagination({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '1.25rem 1.5rem',
-        backgroundColor: '#1b1819',
-        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        backgroundColor: '#FFFFFF',
+        borderTop: '1px solid #E2E8F0',
         opacity: isPending ? 0.6 : 1,
         pointerEvents: isPending ? 'none' : 'auto',
         transition: 'opacity 0.2s ease',
@@ -54,9 +54,9 @@ export function AdminPagination({
       }}
     >
       {/* Pagination Status Text */}
-      <span style={{ fontSize: '0.85rem', color: '#a1a1aa', fontWeight: '500' }}>
-        Page <strong style={{ color: '#ffffff' }}>{currentPage}</strong> of{' '}
-        <strong style={{ color: '#ffffff' }}>{totalPages}</strong>
+      <span style={{ fontSize: '0.85rem', color: '#64748B', fontWeight: '500' }}>
+        Page <strong style={{ color: '#150958' }}>{currentPage}</strong> of{' '}
+        <strong style={{ color: '#150958' }}>{totalPages}</strong>
       </span>
 
       {/* Pagination Buttons Controls */}
@@ -66,13 +66,13 @@ export function AdminPagination({
           onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
           disabled={currentPage === 1 || isPending}
           style={{
-            padding: '0.5rem 0.75rem',
-            borderRadius: '0.375rem',
+            padding: '0.5rem 0.85rem',
+            borderRadius: '9999px',
             fontSize: '0.85rem',
             fontWeight: '700',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            color: currentPage === 1 ? '#71717a' : '#d4d4d8',
+            backgroundColor: currentPage === 1 ? '#F8FAFC' : '#FFFFFF',
+            border: `1px solid ${currentPage === 1 ? '#E2E8F0' : '#CBD5E1'}`,
+            color: currentPage === 1 ? '#94A3B8' : '#150958',
             cursor: isPrevLoading ? 'wait' : currentPage === 1 ? 'not-allowed' : 'pointer',
             transition: 'all 0.15s ease',
             display: 'inline-flex',
@@ -81,14 +81,16 @@ export function AdminPagination({
           }}
           onMouseEnter={(e) => {
             if (currentPage !== 1 && !isPending) {
-              e.currentTarget.style.borderColor = '#2BA8E0';
-              e.currentTarget.style.color = '#ffffff';
+              e.currentTarget.style.borderColor = '#150958';
+              e.currentTarget.style.backgroundColor = '#EEF2FF';
+              e.currentTarget.style.color = '#150958';
             }
           }}
           onMouseLeave={(e) => {
             if (currentPage !== 1 && !isPending) {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.color = '#d4d4d8';
+              e.currentTarget.style.borderColor = '#CBD5E1';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+              e.currentTarget.style.color = '#150958';
             }
           }}
         >
@@ -98,7 +100,7 @@ export function AdminPagination({
                 width: '12px', 
                 height: '12px', 
                 animation: 'codes-manager-spin 1s linear infinite',
-                color: '#2BA8E0'
+                color: '#150958'
               }} 
               viewBox="0 0 24 24" 
               fill="none"
@@ -132,7 +134,7 @@ export function AdminPagination({
                 style={{
                   padding: '0.5rem 0.75rem',
                   fontSize: '0.85rem',
-                  color: '#71717a',
+                  color: '#94A3B8',
                   fontWeight: '700',
                   userSelect: 'none',
                 }}
@@ -152,14 +154,14 @@ export function AdminPagination({
               disabled={isPending || isCurrent}
               style={{
                 minWidth: '2.25rem',
-                padding: '0.5rem',
-                borderRadius: '0.375rem',
+                padding: '0.5rem 0.65rem',
+                borderRadius: '9999px',
                 fontSize: '0.85rem',
                 fontWeight: '700',
                 border: '1px solid',
-                borderColor: isCurrent ? '#2BA8E0' : 'rgba(255, 255, 255, 0.08)',
-                backgroundColor: isCurrent ? 'rgba(43, 168, 224, 0.15)' : 'rgba(0, 0, 0, 0.2)',
-                color: isCurrent ? '#2BA8E0' : '#d4d4d8',
+                borderColor: isCurrent ? '#150958' : '#CBD5E1',
+                backgroundColor: isCurrent ? '#150958' : '#FFFFFF',
+                color: isCurrent ? '#FFFFFF' : '#150958',
                 cursor: isPageLoading ? 'wait' : isPending ? 'not-allowed' : isCurrent ? 'default' : 'pointer',
                 transition: 'all 0.15s ease',
                 display: 'inline-flex',
@@ -169,14 +171,16 @@ export function AdminPagination({
               }}
               onMouseEnter={(e) => {
                 if (!isCurrent && !isPending) {
-                  e.currentTarget.style.borderColor = '#2BA8E0';
-                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.borderColor = '#150958';
+                  e.currentTarget.style.backgroundColor = '#EEF2FF';
+                  e.currentTarget.style.color = '#150958';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isCurrent && !isPending) {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.color = '#d4d4d8';
+                  e.currentTarget.style.borderColor = '#CBD5E1';
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.color = '#150958';
                 }
               }}
             >
@@ -186,7 +190,7 @@ export function AdminPagination({
                     width: '10px', 
                     height: '10px', 
                     animation: 'codes-manager-spin 1s linear infinite',
-                    color: '#2BA8E0'
+                    color: '#150958'
                   }} 
                   viewBox="0 0 24 24" 
                   fill="none"
@@ -205,13 +209,13 @@ export function AdminPagination({
           onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || isPending}
           style={{
-            padding: '0.5rem 0.75rem',
-            borderRadius: '0.375rem',
+            padding: '0.5rem 0.85rem',
+            borderRadius: '9999px',
             fontSize: '0.85rem',
             fontWeight: '700',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            color: currentPage === totalPages ? '#71717a' : '#d4d4d8',
+            backgroundColor: currentPage === totalPages ? '#F8FAFC' : '#FFFFFF',
+            border: `1px solid ${currentPage === totalPages ? '#E2E8F0' : '#CBD5E1'}`,
+            color: currentPage === totalPages ? '#94A3B8' : '#150958',
             cursor: isNextLoading ? 'wait' : currentPage === totalPages ? 'not-allowed' : 'pointer',
             transition: 'all 0.15s ease',
             display: 'inline-flex',
@@ -220,14 +224,16 @@ export function AdminPagination({
           }}
           onMouseEnter={(e) => {
             if (currentPage !== totalPages && !isPending) {
-              e.currentTarget.style.borderColor = '#2BA8E0';
-              e.currentTarget.style.color = '#ffffff';
+              e.currentTarget.style.borderColor = '#150958';
+              e.currentTarget.style.backgroundColor = '#EEF2FF';
+              e.currentTarget.style.color = '#150958';
             }
           }}
           onMouseLeave={(e) => {
             if (currentPage !== totalPages && !isPending) {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.color = '#d4d4d8';
+              e.currentTarget.style.borderColor = '#CBD5E1';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+              e.currentTarget.style.color = '#150958';
             }
           }}
         >
@@ -238,7 +244,7 @@ export function AdminPagination({
                 width: '12px', 
                 height: '12px', 
                 animation: 'codes-manager-spin 1s linear infinite',
-                color: '#2BA8E0'
+                color: '#150958'
               }} 
               viewBox="0 0 24 24" 
               fill="none"

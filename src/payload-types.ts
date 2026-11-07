@@ -77,6 +77,13 @@ export interface Config {
     notifications: Notification;
     'notification-audit': NotificationAudit;
     'otp-verifications': OtpVerification;
+    'drink-categories': DrinkCategory;
+    drinks: Drink;
+    branches: Branch;
+    'drink-campaigns': DrinkCampaign;
+    'drink-entitlements': DrinkEntitlement;
+    'drink-cashier-assignments': DrinkCashierAssignment;
+    'drink-otp-challenges': DrinkOtpChallenge;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +101,13 @@ export interface Config {
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     'notification-audit': NotificationAuditSelect<false> | NotificationAuditSelect<true>;
     'otp-verifications': OtpVerificationsSelect<false> | OtpVerificationsSelect<true>;
+    'drink-categories': DrinkCategoriesSelect<false> | DrinkCategoriesSelect<true>;
+    drinks: DrinksSelect<false> | DrinksSelect<true>;
+    branches: BranchesSelect<false> | BranchesSelect<true>;
+    'drink-campaigns': DrinkCampaignsSelect<false> | DrinkCampaignsSelect<true>;
+    'drink-entitlements': DrinkEntitlementsSelect<false> | DrinkEntitlementsSelect<true>;
+    'drink-cashier-assignments': DrinkCashierAssignmentsSelect<false> | DrinkCashierAssignmentsSelect<true>;
+    'drink-otp-challenges': DrinkOtpChallengesSelect<false> | DrinkOtpChallengesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -175,7 +189,10 @@ export interface Prize {
   description?: string | null;
   image?: (number | null) | Media;
   active: boolean;
-  winner_notification_enabled?: boolean | null;
+  /**
+   * Toggle whether to send winner SMS/WhatsApp notification when this prize is won. Default is true.
+   */
+  winner_notification_enabled: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -278,7 +295,13 @@ export interface PrizeClaim {
 export interface Notification {
   id: number;
   phone: string;
-  template: 'verification' | 'winner-notification' | 'admin-alert';
+  template:
+    | 'verification'
+    | 'winner-notification'
+    | 'admin-alert'
+    | 'drink-reward-otp'
+    | 'drink-reward-voucher'
+    | 'drink-reward-admin-alert';
   payload:
     | {
         [k: string]: unknown;
@@ -381,6 +404,225 @@ export interface OtpVerification {
   createdAt: string;
 }
 /**
+ * Categories of beverages eligible for promotional rewards (e.g. Hot Drinks, Cold Drinks, Frappes).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-categories".
+ */
+export interface DrinkCategory {
+  id: number;
+  name: string;
+  /**
+   * URL-safe identifier used for system references.
+   */
+  slug: string;
+  description?: string | null;
+  /**
+   * When disabled, drinks in this category are excluded from active campaigns.
+   */
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Beverages that can be offered in promotional reward campaigns.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drinks".
+ */
+export interface Drink {
+  id: number;
+  name: string;
+  category: number | DrinkCategory;
+  /**
+   * High quality photo displayed in the customer reward slider.
+   */
+  image: number | Media;
+  description?: string | null;
+  /**
+   * Toggle off if temporarily out of stock or seasonal.
+   */
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Physical Coffee Bay branch locations where complimentary drinks can be redeemed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branches".
+ */
+export interface Branch {
+  id: number;
+  name: string;
+  /**
+   * Unique internal code representing this branch.
+   */
+  code: string;
+  address?: string | null;
+  /**
+   * When disabled, staff cannot redeem vouchers at this branch.
+   */
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Promotional campaigns offering free drinks with multiple allowed beverage categories.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-campaigns".
+ */
+export interface DrinkCampaign {
+  id: number;
+  title: string;
+  /**
+   * Used in the customer promotional URL: /drink-rewards/[slug]
+   */
+  slug: string;
+  /**
+   * Select one or multiple categories (e.g. Hot Drinks + Frappes). All active drinks in these categories will appear in the customer selection carousel.
+   */
+  allowed_categories: (number | DrinkCategory)[];
+  start_date: string;
+  /**
+   * Vouchers issued under this campaign expire automatically at this exact time.
+   */
+  end_date: string;
+  /**
+   * Leave empty to allow all active Coffee Bay branches.
+   */
+  allowed_branches?: (number | Branch)[] | null;
+  /**
+   * Optional budget ceiling. If set, no new vouchers will be issued once total claimed reaches this number.
+   */
+  max_claims?: number | null;
+  /**
+   * Automatically managed atomic counter of all vouchers claimed by customers.
+   */
+  total_claimed: number;
+  /**
+   * When disabled, customers attempting to register will see an inactive campaign notice.
+   */
+  active: boolean;
+  /**
+   * Optional visual banner displayed at the top of the campaign landing page.
+   */
+  banner_image?: (number | null) | Media;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Vouchers and redemption records for complimentary drinks claimed by customers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-entitlements".
+ */
+export interface DrinkEntitlement {
+  id: number;
+  /**
+   * Unique cryptographically secure redemption code (e.g. CB-XXXXXX).
+   */
+  voucher_code: string;
+  campaign: number | DrinkCampaign;
+  phone: string;
+  customer_name: string;
+  /**
+   * The beverage selected by the customer on the website at time of claiming.
+   */
+  selected_drink: number | Drink;
+  /**
+   * The beverage actually prepared and handed over by the barista at the branch.
+   */
+  redeemed_drink?: (number | null) | Drink;
+  status: 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
+  /**
+   * Physical branch where this voucher was processed and served.
+   */
+  branch?: (number | null) | Branch;
+  /**
+   * Staff member who authenticated and processed the redemption.
+   */
+  cashier?: (number | null) | User;
+  /**
+   * Mandatory explanation if the actually served drink differs from customer preferred choice.
+   */
+  change_reason?: string | null;
+  /**
+   * Historical snapshot of drink IDs eligible at the exact time this voucher was issued, protecting customer rights against subsequent campaign edits.
+   */
+  allowed_drinks_snapshot?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  issued_at: string;
+  redeemed_at?: string | null;
+  expires_at: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Binds staff members to specific Coffee Bay physical branches for server-verified redemptions.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-cashier-assignments".
+ */
+export interface DrinkCashierAssignment {
+  id: number;
+  /**
+   * The authenticated user (typically with STAFF or ADMIN role).
+   */
+  user: number | User;
+  /**
+   * The branch where this staff member is authorized to process drink redemptions.
+   */
+  branch: number | Branch;
+  /**
+   * Only active assignments permit redemptions at this branch.
+   */
+  active: boolean;
+  assigned_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Phone verification challenges and OTP codes for promotional drink reward claiming.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-otp-challenges".
+ */
+export interface DrinkOtpChallenge {
+  id: number;
+  phone: string;
+  campaign: number | DrinkCampaign;
+  /**
+   * 6-digit OTP code sent to the customer.
+   */
+  code: string;
+  expires_at: string;
+  last_sent_at: string;
+  /**
+   * Auto-incremented on incorrect OTP entry. Challenge invalidates upon reaching 3 attempts.
+   */
+  attempts: number;
+  /**
+   * Set when the customer successfully inputs the correct code.
+   */
+  verified_at?: string | null;
+  /**
+   * Set when the verified challenge is consumed during entitlement voucher issuance (one-time use).
+   */
+  used_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -443,6 +685,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'otp-verifications';
         value: number | OtpVerification;
+      } | null)
+    | ({
+        relationTo: 'drink-categories';
+        value: number | DrinkCategory;
+      } | null)
+    | ({
+        relationTo: 'drinks';
+        value: number | Drink;
+      } | null)
+    | ({
+        relationTo: 'branches';
+        value: number | Branch;
+      } | null)
+    | ({
+        relationTo: 'drink-campaigns';
+        value: number | DrinkCampaign;
+      } | null)
+    | ({
+        relationTo: 'drink-entitlements';
+        value: number | DrinkEntitlement;
+      } | null)
+    | ({
+        relationTo: 'drink-cashier-assignments';
+        value: number | DrinkCashierAssignment;
+      } | null)
+    | ({
+        relationTo: 'drink-otp-challenges';
+        value: number | DrinkOtpChallenge;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -520,6 +790,7 @@ export interface PrizesSelect<T extends boolean = true> {
   description?: T;
   image?: T;
   active?: T;
+  winner_notification_enabled?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -674,6 +945,112 @@ export interface OtpVerificationsSelect<T extends boolean = true> {
   lastSentAt?: T;
   attempts?: T;
   ip?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-categories_select".
+ */
+export interface DrinkCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drinks_select".
+ */
+export interface DrinksSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  image?: T;
+  description?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branches_select".
+ */
+export interface BranchesSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  address?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-campaigns_select".
+ */
+export interface DrinkCampaignsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  allowed_categories?: T;
+  start_date?: T;
+  end_date?: T;
+  allowed_branches?: T;
+  max_claims?: T;
+  total_claimed?: T;
+  active?: T;
+  banner_image?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-entitlements_select".
+ */
+export interface DrinkEntitlementsSelect<T extends boolean = true> {
+  voucher_code?: T;
+  campaign?: T;
+  phone?: T;
+  customer_name?: T;
+  selected_drink?: T;
+  redeemed_drink?: T;
+  status?: T;
+  branch?: T;
+  cashier?: T;
+  change_reason?: T;
+  allowed_drinks_snapshot?: T;
+  issued_at?: T;
+  redeemed_at?: T;
+  expires_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-cashier-assignments_select".
+ */
+export interface DrinkCashierAssignmentsSelect<T extends boolean = true> {
+  user?: T;
+  branch?: T;
+  active?: T;
+  assigned_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-otp-challenges_select".
+ */
+export interface DrinkOtpChallengesSelect<T extends boolean = true> {
+  phone?: T;
+  campaign?: T;
+  code?: T;
+  expires_at?: T;
+  last_sent_at?: T;
+  attempts?: T;
+  verified_at?: T;
+  used_at?: T;
   updatedAt?: T;
   createdAt?: T;
 }

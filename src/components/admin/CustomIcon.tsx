@@ -2,13 +2,17 @@ import React from 'react';
 
 export function CustomIcon() {
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/Coffee-bay-logo.svg"
-      alt="CoffeeBay Icon"
+      src="/drink-rewards/coffeebay-icon-dark.png"
+      alt="Coffee Bay"
       style={{
-        width: '32px',
-        height: '32px',
-        objectFit: 'contain'
+        height: '24px',
+        width: 'auto',
+        maxHeight: '26px',
+        objectFit: 'contain',
+        display: 'inline-block',
+        verticalAlign: 'middle',
       }}
     />
   );

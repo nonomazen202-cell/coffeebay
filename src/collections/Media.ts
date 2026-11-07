@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { isAdmin } from './access';
+import { revalidateDrinkItemCache } from '../lib/cache/drink-rewards-cache';
 import { put, del } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
@@ -117,7 +118,10 @@ export const Media: CollectionConfig = {
       },
     ],
     afterChange: [
-      async ({ doc, operation }) => {
+      async ({ doc, operation, req }) => {
+        if (doc?.id) {
+          revalidateDrinkItemCache(`media-${doc.id}`, undefined, req?.transactionID);
+        }
         if (operation === 'create' || operation === 'update') {
           const token = process.env.BLOB_READ_WRITE_TOKEN;
 
@@ -137,7 +141,10 @@ export const Media: CollectionConfig = {
       },
     ],
     afterDelete: [
-      async ({ doc }) => {
+      async ({ doc, req }) => {
+        if (doc?.id) {
+          revalidateDrinkItemCache(`media-${doc.id}`, undefined, req?.transactionID);
+        }
         const token = process.env.BLOB_READ_WRITE_TOKEN;
         if (token) {
           const urlsToDelete: string[] = [];
