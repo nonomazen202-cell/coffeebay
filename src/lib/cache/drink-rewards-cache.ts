@@ -162,6 +162,7 @@ export async function getOrLoadCachedCampaign<T>(
   }
 
   const versionAtStart = getDrinkRewardsCacheVersion();
+  let inFlightTarget: Promise<T> | null = null;
   const loadPromise: Promise<T> = (async () => {
     try {
       const freshData = await loader();
@@ -180,11 +181,12 @@ export async function getOrLoadCachedCampaign<T>(
 
       return freshData;
     } finally {
-      if (state.inFlightCampaignLoads.get(normalizedSlug) === loadPromise) {
+      if (state.inFlightCampaignLoads.get(normalizedSlug) === inFlightTarget) {
         state.inFlightCampaignLoads.delete(normalizedSlug);
       }
     }
   })();
+  inFlightTarget = loadPromise;
 
   if (!options?.bypassCache) {
     state.inFlightCampaignLoads.set(normalizedSlug, loadPromise);
