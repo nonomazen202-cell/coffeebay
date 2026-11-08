@@ -87,6 +87,7 @@ export interface RequestOtpResult {
     | 'CAMPAIGN_EXPIRED'
     | 'CAMPAIGN_EXHAUSTED'
     | 'ALREADY_CLAIMED'
+    | 'ACTIVE_VOUCHER_EXISTS'
     | 'COOLDOWN_ACTIVE'
     | 'INTERNAL_ERROR';
   resumed?: boolean;
@@ -851,6 +852,7 @@ export class DrinkOtpService {
             nowMs: number;
           }
         | { kind: 'ALREADY_CLAIMED' }
+        | { kind: 'ACTIVE_VOUCHER_EXISTS' }
         | { kind: 'CAMPAIGN_EXHAUSTED' }
         | {
             kind: 'COOLDOWN_ACTIVE';
@@ -913,9 +915,9 @@ export class DrinkOtpService {
             const rows = entitlementRes.rows as unknown as (EntitlementDbRow & { reclaim_allowed?: boolean })[];
             const latestEnt = rows[0];
 
-            // 1. If customer holds an active unredeemed voucher (and no admin override), always resume to it
+            // 1. Only resume to CLAIMED if the current browser session actually owns and verified this phone
             const activeIssued = rows.find((r) => r.status === 'ISSUED' && !r.reclaim_allowed);
-            if (activeIssued || (intent === 'start' && ownsPhoneInCampaign && existingSession?.verifiedAt)) {
+            if (intent === 'start' && ownsPhoneInCampaign && existingSession?.verifiedAt) {
               const targetEnt = activeIssued || latestEnt;
               const rawStatus: VoucherLifecycleStatus = targetEnt.status || 'ISSUED';
               const effectiveStatus: VoucherLifecycleStatus =
@@ -965,6 +967,9 @@ export class DrinkOtpService {
             }
 
             if (!isEligible) {
+              if (activeIssued) {
+                return { kind: 'ACTIVE_VOUCHER_EXISTS' };
+              }
               return { kind: 'ALREADY_CLAIMED' };
             }
           }
@@ -1141,6 +1146,15 @@ export class DrinkOtpService {
           };
         },
       );
+
+      if (txOutcome.kind === 'ACTIVE_VOUCHER_EXISTS') {
+        return {
+          success: false,
+          reason: 'ACTIVE_VOUCHER_EXISTS',
+          message:
+            'هذا الرقم مسجل بالفعل ولديه قسيمة مشروب سارية جاهزة للصرف في الفرع.',
+        };
+      }
 
       if (txOutcome.kind === 'ALREADY_CLAIMED') {
         return {

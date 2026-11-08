@@ -33,7 +33,6 @@ export const DrinkEntitlements: CollectionConfig = {
       label: 'Voucher Code',
       admin: {
         description: 'Unique cryptographically secure redemption code (e.g. CB-XXXXXX).',
-        readOnly: true,
       },
     },
     {
@@ -43,9 +42,6 @@ export const DrinkEntitlements: CollectionConfig = {
       required: true,
       index: true,
       label: 'Campaign',
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'phone',
@@ -53,18 +49,12 @@ export const DrinkEntitlements: CollectionConfig = {
       required: true,
       index: true,
       label: 'Customer Phone (E.164)',
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'customer_name',
       type: 'text',
-      required: true,
+      required: false,
       label: 'Customer Full Name',
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'selected_drink',
@@ -75,7 +65,6 @@ export const DrinkEntitlements: CollectionConfig = {
       label: 'Customer Selected Beverage',
       admin: {
         description: 'The beverage selected by the customer on the website at time of claiming.',
-        readOnly: true,
       },
     },
     {
@@ -145,7 +134,6 @@ export const DrinkEntitlements: CollectionConfig = {
       type: 'json',
       label: 'Allowed Drinks Snapshot at Issuance',
       admin: {
-        readOnly: true,
         description: 'Historical snapshot of drink IDs eligible at the exact time this voucher was issued, protecting customer rights against subsequent campaign edits.',
       },
     },
@@ -154,17 +142,11 @@ export const DrinkEntitlements: CollectionConfig = {
       type: 'date',
       required: true,
       label: 'Issued At',
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'redeemed_at',
       type: 'date',
       label: 'Redeemed At',
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'expires_at',
@@ -172,9 +154,6 @@ export const DrinkEntitlements: CollectionConfig = {
       required: true,
       index: true,
       label: 'Expires At',
-      admin: {
-        readOnly: true,
-      },
     },
   ],
 };

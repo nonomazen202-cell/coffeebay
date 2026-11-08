@@ -222,6 +222,7 @@ export async function POST(req: NextRequest) {
           : result.reason === 'CAMPAIGN_NOT_FOUND'
             ? 404
             : result.reason === 'ALREADY_CLAIMED' ||
+                result.reason === 'ACTIVE_VOUCHER_EXISTS' ||
                 result.reason === 'CAMPAIGN_EXHAUSTED' ||
                 result.reason === 'CAMPAIGN_EXPIRED'
               ? 403
