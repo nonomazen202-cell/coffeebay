@@ -170,18 +170,62 @@ export function VerifyStepClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const normalizeDigits = (str: string): string => {
+    let result = str;
+    const arabicIndic = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    arabicIndic.forEach((d, i) => {
+      result = result.replaceAll(d, String(i));
+    });
+    return result.replace(/\D/g, "");
+  };
+
+  const fillOtpFromText = (startIndex: number, text: string) => {
+    const clean = normalizeDigits(text);
+    if (!clean) return;
+
+    const nextDigits = [...otpDigits];
+    // If 4-6 digits, always start from 0; otherwise from startIndex
+    const startAt = clean.length >= 4 ? 0 : startIndex;
+
+    for (let i = 0; i < clean.length && startAt + i < 6; i++) {
+      nextDigits[startAt + i] = clean[i];
+    }
+    setOtpDigits(nextDigits);
+
+    // Focus the box after the last filled digit (or 5 if filled completely)
+    const lastFilled = Math.min(startAt + clean.length - 1, 5);
+    const nextToFocus = Math.min(lastFilled + 1, 5);
+    otpInputRefs.current[nextToFocus]?.focus();
+  };
+
+  const handleOtpPaste = (
+    startIndex: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text");
+    if (pasted) {
+      fillOtpFromText(startIndex, pasted);
+    }
+  };
+
   const handleOtpBoxChange = (index: number, value: string) => {
-    const cleanVal = value.replace(/\D/g, "");
+    const cleanVal = normalizeDigits(value);
     const nextDigits = [...otpDigits];
 
+    // Mobile autofill / multi-char paste fallback
+    if (cleanVal.length >= 4) {
+      fillOtpFromText(0, cleanVal);
+      return;
+    }
+
     if (cleanVal.length > 1) {
-      const pastedChars = cleanVal.slice(0, 6).split("");
-      pastedChars.forEach((ch, i) => {
-        if (i < 6) nextDigits[i] = ch;
-      });
+      const charToUse = cleanVal.slice(-1);
+      nextDigits[index] = charToUse;
       setOtpDigits(nextDigits);
-      const nextIdx = Math.min(pastedChars.length, 5);
-      otpInputRefs.current[nextIdx]?.focus();
+      if (index < 5) {
+        otpInputRefs.current[index + 1]?.focus();
+      }
       return;
     }
 
@@ -362,6 +406,7 @@ export function VerifyStepClient({
       otpInputRefs={otpInputRefs}
       onOtpBoxChange={handleOtpBoxChange}
       onOtpKeyDown={handleOtpKeyDown}
+      onOtpPaste={handleOtpPaste}
       otpExpirySeconds={otpExpirySeconds}
       cooldownSeconds={cooldownSeconds}
       onResendOtp={handleResendOtp}

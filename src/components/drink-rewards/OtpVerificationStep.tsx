@@ -15,6 +15,10 @@ interface OtpVerificationStepProps {
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => void;
+  onOtpPaste?: (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => void;
   otpExpirySeconds: number;
   cooldownSeconds: number;
   onResendOtp: () => void;
@@ -29,6 +33,7 @@ export function OtpVerificationStep({
   otpInputRefs,
   onOtpBoxChange,
   onOtpKeyDown,
+  onOtpPaste,
   otpExpirySeconds,
   cooldownSeconds,
   onResendOtp,
@@ -194,10 +199,10 @@ export function OtpVerificationStep({
                   inputMode="numeric"
                   autoComplete={idx === 0 ? "one-time-code" : "off"}
                   aria-label={`Digit ${idx + 1}`}
-                  maxLength={1}
                   value={digit}
                   onChange={(e) => onOtpBoxChange(idx, e.target.value)}
                   onKeyDown={(e) => onOtpKeyDown(idx, e)}
+                  onPaste={(e) => onOtpPaste?.(idx, e)}
                   style={{ outline: "none", boxShadow: "none" }}
                   className={`w-full h-full bg-transparent text-center text-white text-[24px] xs:text-[26px] sm:text-[30px] font-bold pb-1.5 caret-sky-300 border-0 ring-0 focus:ring-0 focus:outline-none select-text ${averta.className}`}
                 />

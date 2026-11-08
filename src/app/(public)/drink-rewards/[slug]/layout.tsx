@@ -1,5 +1,5 @@
 import React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +8,14 @@ import { loadCampaignJourneyForRequest } from "./journey-loader";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#020B2A",
+};
 
 interface LayoutProps {
   children: React.ReactNode;

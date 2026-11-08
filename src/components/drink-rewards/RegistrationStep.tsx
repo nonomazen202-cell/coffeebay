@@ -92,13 +92,13 @@ export function RegistrationStep({
 
   // Kinetic shape + size morph on focus (pill -> sculpted squircle + slight expansion, ZERO annoying glow!)
   const inputWrapperClassName =
-    "relative group transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:-translate-y-[1px] focus-within:scale-[1.02]";
+    "relative group transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:focus-within:-translate-y-[1px] lg:focus-within:scale-[1.02]";
 
   const inputCapsuleClassName =
-    "relative overflow-hidden flex items-center h-[47px] xs:h-[49px] lg:h-[58px] " +
-    "focus-within:h-[52px] xs:focus-within:h-[54px] lg:focus-within:h-[63px] " +
+    "relative overflow-hidden flex items-center h-[48px] xs:h-[50px] lg:h-[58px] " +
+    "lg:focus-within:h-[63px] " +
     "px-3.5 lg:px-4.5 focus-within:px-4 lg:focus-within:px-5 " +
-    "rounded-[25px] lg:rounded-[29px] focus-within:rounded-[13px] lg:focus-within:rounded-[15px] " +
+    "rounded-[25px] lg:rounded-[29px] focus-within:rounded-[14px] lg:focus-within:rounded-[15px] " +
     "bg-[#011B58]/80 focus-within:bg-[#021344]/92 " +
     "border-[1.25px] border-[#ACD0FF]/70 hover:border-sky-200/90 focus-within:border-white/95 " +
     "shadow-[0_4px_12px_rgba(0,6,32,0.42),inset_0_1px_1.5px_rgba(225,240,255,0.24)] " +
@@ -363,7 +363,7 @@ export function RegistrationStep({
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Your Full Name"
                       style={{ outline: "none", boxShadow: "none" }}
-                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/90 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[12.5px] xs:text-[13.5px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
+                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/90 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[16px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
                     />
                   </label>
                 </div>
@@ -396,7 +396,7 @@ export function RegistrationStep({
                       placeholder="Your Mobile Number"
                       dir="ltr"
                       style={{ outline: "none", boxShadow: "none" }}
-                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/90 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[12.5px] xs:text-[13.5px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
+                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/90 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[16px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
                     />
                   </label>
                 </div>

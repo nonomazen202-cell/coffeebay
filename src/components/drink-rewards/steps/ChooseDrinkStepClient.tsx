@@ -83,11 +83,6 @@ export function ChooseDrinkStepClient({
   const selectedDrinkIdRef = useRef<number | string | null>(selectedDrinkId);
   const claimInFlightRef = useRef<boolean>(false);
 
-  // Prefetch /success route on mount so transition after claiming is instantaneous
-  useEffect(() => {
-    router.prefetch(`${basePath}/success`);
-  }, [basePath, router]);
-
   useEffect(() => {
     selectedDrinkIdRef.current = selectedDrinkId;
   }, [selectedDrinkId]);
@@ -148,9 +143,9 @@ export function ChooseDrinkStepClient({
   // Guard against history Back after already claiming
   useEffect(() => {
     if (activeJourney.stage === "CLAIMED" && activeJourney.voucher) {
-      router.replace(`${basePath}/success`);
+      window.location.replace(`${basePath}/success`);
     }
-  }, [activeJourney.stage, activeJourney.voucher, basePath, router]);
+  }, [activeJourney.stage, activeJourney.voucher, basePath]);
 
   useEffect(() => {
     return () => {
@@ -231,7 +226,8 @@ export function ChooseDrinkStepClient({
         serverNow: new Date().toISOString(),
       });
 
-      router.replace(`${basePath}/success`);
+      // Navigate to /success via clean document replace to bypass stale App Router in-memory redirect cache
+      window.location.replace(`${basePath}/success`);
     } catch {
       clearTimeout(timeoutId);
       claimInFlightRef.current = false;
