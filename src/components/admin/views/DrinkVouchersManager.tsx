@@ -377,7 +377,7 @@ export function DrinkVouchersManager({
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search code (CB- / DRK-), phone, or customer name... / ابحث بالكود أو برقم الموبايل أو اسم الزبون"
+            placeholder="Search code (CB- / DRK-), phone, or customer name... / ابحث بالكود أو برقم الهاتف أو اسم العميل"
             className={styles.searchInput}
           />
         </form>
@@ -499,7 +499,7 @@ export function DrinkVouchersManager({
                   </th>
                 )}
                 <th className={styles.tableTh}>Voucher Code / كود الكوبون</th>
-                <th className={styles.tableTh}>Customer / الزبون</th>
+                <th className={styles.tableTh}>Customer / العميل</th>
                 <th className={styles.tableTh}>Beverage / المشروب المطلوب</th>
                 <th className={styles.tableTh}>Status / حالة الكوبون</th>
                 <th className={styles.tableTh}>Branch & Cashier / الفرع والكاشير</th>

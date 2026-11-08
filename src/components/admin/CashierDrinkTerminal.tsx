@@ -175,7 +175,7 @@ export function CashierDrinkTerminal() {
 
     const isSub = !!substituteId;
     if (isSub && (!changeReason || changeReason.trim().length < 3)) {
-      setErrorMessage('اكتب سبب تغيير المشروب للزبون (على الأقل 3 حروف عشان الحسابات)');
+      setErrorMessage('يرجى توضيح سبب استبدال المشروب (3 أحرف على الأقل لأغراض الجرد والمحاسبة)');
       return;
     }
 
@@ -226,7 +226,7 @@ export function CashierDrinkTerminal() {
               Cashier Drink Redemption Terminal <span style={{ fontSize: '1.15rem', fontWeight: 600, opacity: 0.85 }}>/ شاشة الكاشير وتسليم المشروبات</span>
             </h1>
             <p className={styles.terminalSubtitle}>
-              فحص الكوبون في ثواني، صرف المشروب للزبون بالهنا والشفا، ومتابعة حركة الصرف لحظة بلحظة
+              فحص الكوبونات وتسجيل عمليات تسليم المشروبات ومتابعة حركة الصرف بالفرع لحظة بلحظة
             </p>
           </div>
 
@@ -339,7 +339,7 @@ export function CashierDrinkTerminal() {
               Verify Voucher & Dispense Drink <span style={{ fontSize: '1rem', fontWeight: 600, color: '#64748B' }}>/ دوّر على الكوبون وسلّم المشروب</span>
             </h2>
             <p className={styles.lookupSubtitle}>
-              اكتب كود الكوبون (زي CB-XXXXXX) أو رقم موبايل الزبون (01XXXXXXXXX) أو اضرب الباركود بتاع الزبون
+              اكتب كود الكوبون (مثل CB-XXXXXX) أو رقم هاتف العميل (01XXXXXXXXX) للتحقق الفوري
             </p>
 
             <form onSubmit={handleLookup} className={styles.searchForm}>
@@ -398,10 +398,10 @@ export function CashierDrinkTerminal() {
               </div>
               <div>
                 <h2 className={styles.receiptTitle}>
-                  Drink Dispensed Successfully! <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>/ ألف هنا! المشروب اتسلم بنجاح 🎉</span>
+                  Drink Dispensed Successfully! <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>/ تم تأكيد تسليم المشروب بنجاح</span>
                 </h2>
                 <p className={styles.receiptSubtitle}>
-                  العملية اتسجلت خلاص في السيستم واتربطت بالفرع والشيفت بتاعك
+                  تم توثيق عملية الصرف في النظام وربطها بالفرع وحساب الكاشير
                 </p>
               </div>
 
@@ -411,11 +411,11 @@ export function CashierDrinkTerminal() {
                   <span className={styles.receiptRowValue} style={{ fontFamily: 'monospace' }}>{receipt.voucherCode}</span>
                 </div>
                 <div className={styles.receiptRow}>
-                  <span className={styles.receiptRowLabel}>Customer / اسم الزبون:</span>
+                  <span className={styles.receiptRowLabel}>Customer / اسم العميل:</span>
                   <span className={styles.receiptRowValue}>{receipt.customerName}</span>
                 </div>
                 <div className={styles.receiptRow}>
-                  <span className={styles.receiptRowLabel}>Served Drink / المشروب اللي اتسلّم:</span>
+                  <span className={styles.receiptRowLabel}>Served Drink / المشروب المُسلَّم:</span>
                   <span className={styles.receiptDrinkValue}>{receipt.servedDrinkName}</span>
                 </div>
                 {receipt.wasSubstituted && (
@@ -442,7 +442,7 @@ export function CashierDrinkTerminal() {
                 }}
                 className={styles.receiptResetButton}
               >
-                Next Voucher / صرف كوبون لزبون تاني
+                Next Voucher / التحقق من كوبون جديد
               </button>
             </div>
           )}
@@ -495,11 +495,11 @@ export function CashierDrinkTerminal() {
               {/* Customer & Campaign Grid */}
               <div className={styles.infoGrid}>
                 <div>
-                  <span className={styles.infoItemLabel}>Customer Name / اسم الزبون:</span>
+                  <span className={styles.infoItemLabel}>Customer Name / اسم العميل:</span>
                   <span className={styles.infoItemValue}>{voucher.customerName}</span>
                 </div>
                 <div>
-                  <span className={styles.infoItemLabel}>Phone Number / رقم الموبايل:</span>
+                  <span className={styles.infoItemLabel}>Phone Number / رقم الهاتف:</span>
                   <span className={styles.infoItemValue} style={{ fontFamily: 'monospace' }}>{voucher.phone || voucher.maskedPhone}</span>
                 </div>
                 <div>
@@ -507,7 +507,7 @@ export function CashierDrinkTerminal() {
                   <span className={styles.infoItemValue} style={{ color: '#150958' }}>{voucher.campaignTitle}</span>
                 </div>
                 <div>
-                  <span className={styles.infoItemLabel}>Expires At / آخره يوم:</span>
+                  <span className={styles.infoItemLabel}>Expires At / تاريخ الانتهاء:</span>
                   <span className={styles.infoItemValue}>
                     {new Date(voucher.expiresAt).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -523,7 +523,7 @@ export function CashierDrinkTerminal() {
               {/* Beverage Choice Box */}
               <div className={styles.selectedDrinkBox}>
                 <div>
-                  <span className={styles.selectedDrinkLabel}>Customer Choice / المشروب اللي الزبون اختاره:</span>
+                  <span className={styles.selectedDrinkLabel}>Customer Choice / المشروب المختار في الكوبون:</span>
                   <div className={styles.selectedDrinkName}>{voucher.selectedDrink.name}</div>
                 </div>
                 {voucher.selectedDrink.categoryName && (
@@ -563,7 +563,7 @@ export function CashierDrinkTerminal() {
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
-                            Hand Over Drink ({voucher.selectedDrink.name}) / سلّم المشروب ده
+                            Dispense Beverage ({voucher.selectedDrink.name}) / تأكيد تسليم المشروب
                           </>
                         )}
                       </button>
@@ -612,13 +612,13 @@ export function CashierDrinkTerminal() {
                       </div>
 
                       <div>
-                        <label className={styles.subFieldLabel}>Substitution Reason / ليه بدلت المشروب للزبون؟ (ضروري عشان الحسابات):</label>
+                        <label className={styles.subFieldLabel}>Substitution Reason / سبب الاستبدال (مطلوب لأغراض الجرد والمحاسبة):</label>
                         <input
                           type="text"
                           required
                           value={changeReason}
                           onChange={(e) => setChangeReason(e.target.value)}
-                          placeholder="مثال: اللبن خالي الدسم خلص / الزبون طلب يغير لصنف بارد"
+                          placeholder="مثال: الصنف غير متوفر حالياً / رغبة العميل في صنف بديل"
                           className={styles.subInput}
                         />
                       </div>
@@ -680,11 +680,11 @@ export function CashierDrinkTerminal() {
               <thead>
                 <tr>
                   <th className={styles.queueTh}>Voucher Code / الكود</th>
-                  <th className={styles.queueTh}>Customer / الزبون</th>
+                  <th className={styles.queueTh}>Customer / العميل</th>
                   <th className={styles.queueTh}>Served Drink / المشروب</th>
                   <th className={styles.queueTh}>Branch / الفرع</th>
                   <th className={styles.queueTh}>Cashier / الكاشير</th>
-                  <th className={styles.queueTh}>Redeemed At / اتسلم الساعة كام</th>
+                  <th className={styles.queueTh}>Redeemed At / وقت الصرف</th>
                   <th className={styles.queueTh}>Status / الحالة</th>
                 </tr>
               </thead>
@@ -692,7 +692,7 @@ export function CashierDrinkTerminal() {
                 {recentRedemptions.length === 0 ? (
                   <tr>
                     <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#64748B' }}>
-                      No redemptions logged yet today / لسه مفيش ولا مشروب اتسلم النهاردة
+                      No redemptions logged yet today / لم تُسجَّل عمليات صرف اليوم حتى الآن
                     </td>
                   </tr>
                 ) : (

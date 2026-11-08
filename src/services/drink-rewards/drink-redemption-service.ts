@@ -226,7 +226,7 @@ export class DrinkRedemptionService {
     if (!queryRaw) {
       return {
         found: false,
-        message: 'من فضلك اكتب كود الكوبون أو رقم تليفون الزبون / Please enter a voucher code or phone number.',
+        message: 'من فضلك اكتب كود الكوبون أو رقم هاتف العميل / Please enter a voucher code or phone number.',
       };
     }
 

@@ -628,12 +628,12 @@ export function DrinkRewardsReports() {
               <thead>
                 <tr>
                   <th className={styles.th}>Voucher Code / كود الكوبون</th>
-                  <th className={styles.th}>Customer / الزبون</th>
-                  <th className={styles.th}>Original Choice / كان طالب إيه</th>
-                  <th className={styles.th}>Served Beverage / أخد إيه بداله</th>
-                  <th className={styles.th}>Substitution Reason / السبب إيه</th>
+                  <th className={styles.th}>Customer / العميل</th>
+                  <th className={styles.th}>Original Choice / المشروب المطلوب</th>
+                  <th className={styles.th}>Served Beverage / المشروب البديل المصروف</th>
+                  <th className={styles.th}>Substitution Reason / سبب الاستبدال</th>
                   <th className={styles.th}>Branch & Cashier / الفرع والكاشير</th>
-                  <th className={styles.th}>Timestamp / اتسلمت إمتى</th>
+                  <th className={styles.th}>Timestamp / تاريخ ووقت الصرف</th>
                 </tr>
               </thead>
               <tbody>
