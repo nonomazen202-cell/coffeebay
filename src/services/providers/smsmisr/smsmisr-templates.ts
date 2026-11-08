@@ -9,6 +9,74 @@
 
 import type { NotificationPayload } from "../../notification-provider";
 
+const ARABIC_COMMON_NAMES: Record<string, string> = {
+  حمزة: "Hamza",
+  حمزه: "Hamza",
+  محمد: "Mohamed",
+  محمود: "Mahmoud",
+  أحمد: "Ahmed",
+  احمد: "Ahmed",
+  علي: "Ali",
+  حسن: "Hassan",
+  حسين: "Hussein",
+  إبراهيم: "Ibrahim",
+  ابراهيم: "Ibrahim",
+  خالد: "Khaled",
+  عمر: "Omar",
+  عمرو: "Amr",
+  كريم: "Karim",
+  طارق: "Tarek",
+  يوسف: "Youssef",
+  مصطفى: "Mostafa",
+  مصطفي: "Mostafa",
+  سارة: "Sara",
+  ساره: "Sara",
+  مريم: "Mariam",
+  نور: "Nour",
+  آية: "Aya",
+  ايه: "Aya",
+  فاطمة: "Fatma",
+  منى: "Mona",
+  عبدالله: "Abdallah",
+  "عبد الله": "Abdallah",
+  عبدالرحمن: "Abdelrahman",
+  "عبد الرحمن": "Abdelrahman",
+  عادل: "Adel",
+  وائل: "Wael",
+  سامح: "Sameh",
+  هاني: "Hany",
+  ماجد: "Maged",
+  مي: "Mai",
+  هبة: "Heba",
+  رانيا: "Rania",
+  دينا: "Dina",
+  ياسمين: "Yasmin",
+  شريف: "Sherif",
+  حسام: "Hossam",
+  إسلام: "Islam",
+  اسلام: "Islam",
+  وليد: "Walid",
+  ياسر: "Yasser",
+  بلال: "Belal",
+  زياد: "Ziad",
+  سيف: "Seif",
+  مروان: "Marwan",
+  يحيى: "Yehia",
+  يحيي: "Yehia",
+  نادين: "Nadine",
+  ليلى: "Laila",
+  ليلي: "Laila",
+  سلمى: "Salma",
+  سلمي: "Salma",
+  فريدة: "Farida",
+  هنا: "Hana",
+  ملك: "Malak",
+  جنى: "Jana",
+  جني: "Jana",
+  ندى: "Nada",
+  ندي: "Nada",
+};
+
 /**
  * Transliterates or maps common Arabic first names into clean Latin names
  * so that SMS Misr sends the message in English GSM-7 encoding (160 chars/segment)
@@ -24,57 +92,9 @@ function toLatinFirstName(rawName?: string): string {
     return trimmed.split(/\s+/)[0];
   }
 
-  const commonNames: Record<string, string> = {
-    محمد: "Mohamed",
-    محمود: "Mahmoud",
-    أحمد: "Ahmed",
-    احمد: "Ahmed",
-    علي: "Ali",
-    حسن: "Hassan",
-    حسين: "Hussein",
-    إبراهيم: "Ibrahim",
-    ابراهيم: "Ibrahim",
-    خالد: "Khaled",
-    عمر: "Omar",
-    عمرو: "Amr",
-    كريم: "Karim",
-    طارق: "Tarek",
-    يوسف: "Youssef",
-    مصطفى: "Mostafa",
-    مصطفي: "Mostafa",
-    سارة: "Sara",
-    ساره: "Sara",
-    مريم: "Mariam",
-    نور: "Nour",
-    آية: "Aya",
-    ايه: "Aya",
-    فاطمة: "Fatma",
-    منى: "Mona",
-    عبدالله: "Abdallah",
-    "عبد الله": "Abdallah",
-    عبدالرحمن: "Abdelrahman",
-    "عبد الرحمن": "Abdelrahman",
-    عادل: "Adel",
-    وائل: "Wael",
-    سامح: "Sameh",
-    هاني: "Hany",
-    ماجد: "Maged",
-    مي: "Mai",
-    هبة: "Heba",
-    رانيا: "Rania",
-    دينا: "Dina",
-    ياسمين: "Yasmin",
-    شريف: "Sherif",
-    حسام: "Hossam",
-    إسلام: "Islam",
-    اسلام: "Islam",
-    وليد: "Walid",
-    ياسر: "Yasser",
-  };
-
   const firstWord = trimmed.split(/\s+/)[0];
-  if (commonNames[firstWord]) {
-    return commonNames[firstWord];
+  if (ARABIC_COMMON_NAMES[firstWord]) {
+    return ARABIC_COMMON_NAMES[firstWord];
   }
 
   const arMap: Record<string, string> = {
@@ -121,6 +141,33 @@ function toLatinFirstName(rawName?: string): string {
     result += arMap[ch] || "";
   }
   return result || "Guest";
+}
+
+/**
+ * Safely extracts a clean GSM-7 compatible first name in UPPERCASE.
+ * Returns null if the name cannot be cleanly mapped or contains non-GSM characters,
+ * ensuring the message falls back safely rather than producing garbled transliterations.
+ */
+function getGsm7CompatibleFirstName(rawName?: string): string | null {
+  if (!rawName) return null;
+  const trimmed = rawName.trim();
+  if (!trimmed) return null;
+
+  // 1. If basic Latin letters, take first name
+  if (/^[a-zA-Z\s.'-]+$/.test(trimmed)) {
+    const firstWord = trimmed.split(/\s+/)[0].replace(/[^a-zA-Z]/g, "");
+    if (firstWord.length >= 2 && firstWord.length <= 15) {
+      return firstWord.toUpperCase();
+    }
+  }
+
+  // 2. Check dictionary of common Arabic names
+  const firstWord = trimmed.split(/\s+/)[0];
+  if (ARABIC_COMMON_NAMES[firstWord]) {
+    return ARABIC_COMMON_NAMES[firstWord].toUpperCase();
+  }
+
+  return null;
 }
 
 /**
@@ -218,14 +265,22 @@ export class SmsMisrTemplateBuilder {
       }
 
       case "drink-reward-voucher": {
-        const firstName = toLatinFirstName(payload.variables.customerName);
-        const drink = cleanGsmString(payload.variables.drinkName) || "Complimentary Drink";
         const voucher = cleanGsmString(payload.variables.voucherCode) || "";
         const rawBranch = payload.variables.branchName?.trim();
         const branch = cleanBranchName(rawBranch);
-        const branchClause = branch ? ` at our ${branch} branch` : " at any branch";
+        const branchClause = branch ? `Redeem at ${branch} branch.` : "Redeem at any branch.";
 
-        return `CoffeeBay: Congratulations ${firstName}! Your free drink voucher is ${voucher} for ${drink}. Show this code to the barista${branchClause}. Enjoy!`;
+        const candidateName = getGsm7CompatibleFirstName(payload.variables.customerName);
+        const baseMessage = `CoffeeBay: FREE DRINK READY - CODE: ${voucher} - ${branchClause} Enjoy!`;
+
+        if (candidateName) {
+          const personalizedMessage = `CoffeeBay: ${candidateName} - FREE DRINK READY - CODE: ${voucher} - ${branchClause} Enjoy!`;
+          if (personalizedMessage.length <= 160) {
+            return personalizedMessage;
+          }
+        }
+
+        return baseMessage;
       }
 
       case "admin-alert":
