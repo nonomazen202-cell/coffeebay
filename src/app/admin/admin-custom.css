@@ -463,7 +463,7 @@ aside.nav button,
   color: #150958 !important;
 }
 
-/* Reusable Wave Accent Card (Matches KPI Cards in Coffee Bay -- Dashboard.png) */
+/* Reusable Clean Accent Card (Matches KPI Cards in Coffee Bay -- Dashboard.png) */
 .cb-wave-card {
   background-color: #FFFFFF !important;
   border: 1px solid #E2E8F0 !important;
@@ -471,24 +471,6 @@ aside.nav button,
   box-shadow: 0 4px 20px rgba(21, 9, 88, 0.05) !important;
   position: relative !important;
   overflow: hidden !important;
-}
-
-.cb-wave-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  height: 100%;
-  width: 260px;
-  max-width: 50%;
-  background-image: url('/drink-rewards/paateern-bg-wave-divider-forCards-edg.png');
-  background-size: auto 100%;
-  background-position: right bottom;
-  background-repeat: no-repeat;
-  opacity: 0.95;
-  pointer-events: none;
-  z-index: 0;
 }
 
 .cb-wave-card > * {

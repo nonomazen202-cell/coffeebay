@@ -197,23 +197,6 @@ export async function CustomDashboard(props: { user?: User | null }) {
           border-top-left-radius: 0.875rem;
           border-bottom-left-radius: 0.875rem;
         }
-        .glassy-card::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          right: 0;
-          height: 100%;
-          width: 260px;
-          max-width: 50%;
-          background-image: url('/drink-rewards/paateern-bg-wave-divider-forCards-edg.png');
-          background-repeat: no-repeat;
-          background-position: right bottom;
-          background-size: auto 100%;
-          opacity: 0.95;
-          pointer-events: none;
-          z-index: 0;
-        }
         .glassy-card:hover {
           background: #FFFFFF;
           border-color: #CBD5E1;
