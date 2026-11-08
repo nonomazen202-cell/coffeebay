@@ -144,8 +144,7 @@ export const DrinkCampaigns: CollectionConfig = {
       min: 0,
       label: 'Total Vouchers Issued',
       admin: {
-        readOnly: true,
-        description: 'Automatically managed atomic counter of all vouchers claimed by customers.',
+        description: 'Atomic counter of all vouchers claimed by customers. Can be adjusted by Admin.',
       },
     },
     {
