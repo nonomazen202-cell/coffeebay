@@ -474,7 +474,7 @@ export class DrinkOtpService {
       const entitlementRes = await payload.db.drizzle.execute(sql`
         SELECT e.id, e.voucher_code, e.customer_name, e.phone, e.selected_drink_id,
                e.branch_id, b.name AS branch_name,
-               e.status, e.redeemed_at,
+               e.status, e.redeemed_at, e.reclaim_allowed,
                e.issued_at, e.expires_at,
                COALESCE(d.name, 'Coffee Bay Beverage') AS drink_name,
                m.url AS drink_image_url
@@ -484,51 +484,61 @@ export class DrinkOtpService {
         LEFT JOIN branches b ON b.id = e.branch_id
         WHERE e.campaign_id = ${campaignIdNum}
           AND e.phone = ${session.phone}
-        LIMIT 1
+        ORDER BY e.issued_at DESC
       `);
 
       if (entitlementRes.rows && entitlementRes.rows.length > 0) {
-        const ent = entitlementRes.rows[0] as unknown as EntitlementDbRow;
-        const issuedMs = new Date(ent.issued_at).getTime();
-        const isBoundToBrowserVerification =
-          session.status === 'CLAIMED' || issuedMs >= session.verifiedAt - 15_000;
+        const rows = entitlementRes.rows as unknown as (EntitlementDbRow & { reclaim_allowed?: boolean })[];
+        // Prioritize an active ISSUED voucher, otherwise use the latest
+        const activeEnt = rows.find((r) => r.status === 'ISSUED');
+        const ent = activeEnt || rows[0];
 
-        if (isBoundToBrowserVerification) {
-          const rawStatus: VoucherLifecycleStatus = ent.status || 'ISSUED';
-          const effectiveStatus: VoucherLifecycleStatus =
-            rawStatus === 'ISSUED' && new Date(ent.expires_at).getTime() <= nowMs
-              ? 'EXPIRED'
-              : rawStatus;
+        // If the latest voucher is already completed and reclaim_allowed is explicitly granted,
+        // do not trap them in CLAIMED stage so they can choose their next drink!
+        const hasActiveReclaimGrant = !activeEnt && rows.some((r) => r.reclaim_allowed === true);
 
-          return {
-            stage: 'CLAIMED',
-            campaignSlug: campaignInfo.slug,
-            customerName: ent.customer_name,
-            phone: ent.phone,
-            selectedBranchId: ent.branch_id ?? session.selectedBranchId,
-            selectedDrinkId: ent.selected_drink_id,
-            challengeId: session.challengeId,
-            expiresAt: null,
-            resendAvailableAt: null,
-            verifiedExpiresAt: null,
-            attemptsRemaining: null,
-            voucher: {
-              entitlementId: ent.id,
-              voucherCode: ent.voucher_code,
+        if (!hasActiveReclaimGrant) {
+          const issuedMs = new Date(ent.issued_at).getTime();
+          const isBoundToBrowserVerification =
+            session.status === 'CLAIMED' || issuedMs >= session.verifiedAt - 15_000;
+
+          if (isBoundToBrowserVerification) {
+            const rawStatus: VoucherLifecycleStatus = ent.status || 'ISSUED';
+            const effectiveStatus: VoucherLifecycleStatus =
+              rawStatus === 'ISSUED' && new Date(ent.expires_at).getTime() <= nowMs
+                ? 'EXPIRED'
+                : rawStatus;
+
+            return {
+              stage: 'CLAIMED',
+              campaignSlug: campaignInfo.slug,
               customerName: ent.customer_name,
               phone: ent.phone,
-              drinkName: ent.drink_name,
-              drinkImageUrl: ent.drink_image_url ?? null,
-              branchId: ent.branch_id ?? session.selectedBranchId ?? null,
-              branchName: ent.branch_name ?? null,
-              campaignTitle: campaignInfo.title,
-              status: effectiveStatus,
-              redeemedAt: ent.redeemed_at ? new Date(ent.redeemed_at).toISOString() : null,
-              expiresAt: new Date(ent.expires_at).toISOString(),
-              issuedAt: new Date(ent.issued_at).toISOString(),
-            },
-            serverNow,
-          };
+              selectedBranchId: ent.branch_id ?? session.selectedBranchId,
+              selectedDrinkId: ent.selected_drink_id,
+              challengeId: session.challengeId,
+              expiresAt: null,
+              resendAvailableAt: null,
+              verifiedExpiresAt: null,
+              attemptsRemaining: null,
+              voucher: {
+                entitlementId: ent.id,
+                voucherCode: ent.voucher_code,
+                customerName: ent.customer_name,
+                phone: ent.phone,
+                drinkName: ent.drink_name,
+                drinkImageUrl: ent.drink_image_url ?? null,
+                branchId: ent.branch_id ?? session.selectedBranchId ?? null,
+                branchName: ent.branch_name ?? null,
+                campaignTitle: campaignInfo.title,
+                status: effectiveStatus,
+                redeemedAt: ent.redeemed_at ? new Date(ent.redeemed_at).toISOString() : null,
+                expiresAt: new Date(ent.expires_at).toISOString(),
+                issuedAt: new Date(ent.issued_at).toISOString(),
+              },
+              serverNow,
+            };
+          }
         }
       }
     }
@@ -868,11 +878,25 @@ export class DrinkOtpService {
 
           const txNowMs = Date.now();
 
-          // A. Check existing entitlement for (campaign, phone)
+          // A. Fetch campaign settings including repeat eligibility
+          const campQuotaRes = await tx.execute(sql`
+            SELECT max_claims, total_claimed, max_claims_per_phone, allow_repeat_mode
+            FROM drink_campaigns
+            WHERE id = ${campaignIdNum}
+            LIMIT 1
+          `);
+          const quota = (campQuotaRes.rows?.[0] || {}) as {
+            max_claims: number | null;
+            total_claimed: number;
+            max_claims_per_phone?: number | null;
+            allow_repeat_mode?: 'NEVER' | 'AFTER_REDEMPTION' | 'ANYTIME' | null;
+          };
+
+          // B. Check existing entitlement(s) for (campaign, phone) ordered by latest
           const entitlementRes = await tx.execute(sql`
             SELECT e.id, e.voucher_code, e.customer_name, e.phone, e.selected_drink_id,
                    e.branch_id, b.name AS branch_name,
-                   e.status, e.redeemed_at,
+                   e.status, e.redeemed_at, e.reclaim_allowed,
                    e.issued_at, e.expires_at,
                    COALESCE(d.name, 'Coffee Bay Beverage') AS drink_name,
                    m.url AS drink_image_url
@@ -882,65 +906,71 @@ export class DrinkOtpService {
             LEFT JOIN branches b ON b.id = e.branch_id
             WHERE e.campaign_id = ${campaignIdNum}
               AND e.phone = ${normalizedPhone}
-            LIMIT 1
+            ORDER BY e.issued_at DESC
           `);
 
           if (entitlementRes.rows && entitlementRes.rows.length > 0) {
-            if (
-              intent === 'start' &&
-              ownsPhoneInCampaign &&
-              existingSession?.verifiedAt !== null &&
-              existingSession?.verifiedAt !== undefined
-            ) {
-              const ent = entitlementRes.rows[0] as unknown as EntitlementDbRow;
-              const issuedMs = new Date(ent.issued_at).getTime();
-              if (
-                existingSession.status === 'CLAIMED' ||
-                issuedMs >= existingSession.verifiedAt - 15_000
-              ) {
-                const rawStatus: VoucherLifecycleStatus = ent.status || 'ISSUED';
-                const effectiveStatus: VoucherLifecycleStatus =
-                  rawStatus === 'ISSUED' && new Date(ent.expires_at).getTime() <= txNowMs
-                    ? 'EXPIRED'
-                    : rawStatus;
+            const rows = entitlementRes.rows as unknown as (EntitlementDbRow & { reclaim_allowed?: boolean })[];
+            const latestEnt = rows[0];
 
+            // 1. If customer holds an active unredeemed voucher (and no admin override), always resume to it
+            const activeIssued = rows.find((r) => r.status === 'ISSUED' && !r.reclaim_allowed);
+            if (activeIssued || (intent === 'start' && ownsPhoneInCampaign && existingSession?.verifiedAt)) {
+              const targetEnt = activeIssued || latestEnt;
+              const rawStatus: VoucherLifecycleStatus = targetEnt.status || 'ISSUED';
+              const effectiveStatus: VoucherLifecycleStatus =
+                rawStatus === 'ISSUED' && new Date(targetEnt.expires_at).getTime() <= txNowMs
+                  ? 'EXPIRED'
+                  : rawStatus;
+
+              if (targetEnt.status === 'ISSUED' && !targetEnt.reclaim_allowed) {
                 return {
                   kind: 'RESUMED_CLAIMED',
                   nowMs: txNowMs,
                   voucher: {
-                    entitlementId: ent.id,
-                    voucherCode: ent.voucher_code,
-                    customerName: ent.customer_name,
-                    phone: ent.phone,
-                    drinkName: ent.drink_name,
-                    drinkImageUrl: ent.drink_image_url ?? null,
-                    branchId: ent.branch_id ?? existingSession.selectedBranchId ?? null,
-                    branchName: ent.branch_name ?? null,
+                    entitlementId: targetEnt.id,
+                    voucherCode: targetEnt.voucher_code,
+                    customerName: targetEnt.customer_name,
+                    phone: targetEnt.phone,
+                    drinkName: targetEnt.drink_name,
+                    drinkImageUrl: targetEnt.drink_image_url ?? null,
+                    branchId: targetEnt.branch_id ?? existingSession?.selectedBranchId ?? null,
+                    branchName: targetEnt.branch_name ?? null,
                     campaignTitle: campaign.title,
                     status: effectiveStatus,
-                    redeemedAt: ent.redeemed_at ? new Date(ent.redeemed_at).toISOString() : null,
-                    expiresAt: new Date(ent.expires_at).toISOString(),
-                    issuedAt: new Date(ent.issued_at).toISOString(),
+                    redeemedAt: targetEnt.redeemed_at ? new Date(targetEnt.redeemed_at).toISOString() : null,
+                    expiresAt: new Date(targetEnt.expires_at).toISOString(),
+                    issuedAt: new Date(targetEnt.issued_at).toISOString(),
                   },
                 };
               }
             }
 
-            return { kind: 'ALREADY_CLAIMED' };
+            // 2. Check eligibility for a new claim
+            const hasAdminOverride = rows.some((r) => r.reclaim_allowed === true);
+            const maxAllowed = quota.max_claims_per_phone ?? 1;
+            const repeatMode = quota.allow_repeat_mode ?? 'NEVER';
+            const totalCount = rows.length;
+
+            let isEligible = hasAdminOverride;
+            if (!isEligible && totalCount < maxAllowed) {
+              if (repeatMode === 'ANYTIME') {
+                isEligible = true;
+              } else if (repeatMode === 'AFTER_REDEMPTION') {
+                const allDone = rows.every((r) => r.status === 'REDEEMED' || r.status === 'EXPIRED');
+                if (allDone) {
+                  isEligible = true;
+                }
+              }
+            }
+
+            if (!isEligible) {
+              return { kind: 'ALREADY_CLAIMED' };
+            }
           }
 
-          // B. Check campaign ceiling (for non-claimed customers)
-          const campQuotaRes = await tx.execute(sql`
-            SELECT max_claims, total_claimed
-            FROM drink_campaigns
-            WHERE id = ${campaignIdNum}
-            LIMIT 1
-          `);
+          // C. Check campaign ceiling (for non-claimed customers)
           if (campQuotaRes.rows && campQuotaRes.rows.length > 0) {
-            const quota = campQuotaRes.rows[0] as {
-              max_claims: number | null;
-              total_claimed: number;
-            };
             if (
               typeof quota.max_claims === 'number' &&
               quota.max_claims > 0 &&

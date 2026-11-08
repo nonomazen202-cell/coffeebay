@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { getAuthUser } from "@/lib/security/auth-helper";
@@ -306,7 +307,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
                 marginBottom: "0.2rem",
               }}
             >
-              CoffeeBay Lucky Cup System
+              {isAdmin ? "CoffeeBay Operations & Campaign System" : "CoffeeBay Branch Portal / بوابة موظفي الفرع"}
             </h1>
             <p style={{ color: "#C0C0C0", fontSize: "0.875rem", margin: 0 }}>
               Welcome back,{" "}
@@ -396,246 +397,296 @@ export async function CustomDashboard(props: { user?: User | null }) {
         </div>
       )}
 
-      {/* Section 2: Winning Cups Info */}
-      <div className="dashboard-section">
-        <h2 className="dashboard-section-title">
-          <span className="dashboard-section-title-left">
-            <span
-              style={{
-                color: "#150958",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                <path d="M4 22h16" />
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
-                <path d="M12 2a6 6 0 0 1 6 6v3.58a6 6 0 0 1-1.92 4.41L12 19l-4.08-3a6 6 0 0 1-1.92-4.41V8a6 6 0 0 1 6-6Z" />
-              </svg>
-            </span>
-            Winning Serials
-          </span>
-          <span className="dashboard-section-title-right">
-            أكواب الفوز اللي اتوزعت في الحملة
-          </span>
-        </h2>
-        <div className="grid-container">
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Total Winning Serials</span>
-              <span className="kpi-subtitle">
-                إجمالي الأكواب الكسبانة بالمنظومة
+      {/* Section 2: Winning Cups Info (Admin Only) */}
+      {isAdmin ? (
+        <>
+          <div className="dashboard-section">
+            <h2 className="dashboard-section-title">
+              <span className="dashboard-section-title-left">
+                <span
+                  style={{
+                    color: "#150958",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                    <path d="M12 2a6 6 0 0 1 6 6v3.58a6 6 0 0 1-1.92 4.41L12 19l-4.08-3a6 6 0 0 1-1.92-4.41V8a6 6 0 0 1 6-6Z" />
+                  </svg>
+                </span>
+                Winning Serials
               </span>
+              <span className="dashboard-section-title-right">
+                أكواب الفوز اللي اتوزعت في الحملة
+              </span>
+            </h2>
+            <div className="grid-container">
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Total Winning Serials</span>
+                  <span className="kpi-subtitle">
+                    إجمالي الأكواب الكسبانة بالمنظومة
+                  </span>
+                </div>
+                <div className="kpi-value">{totalWinners.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Scanned Winners</span>
+                  <span className="kpi-subtitle">الكسبانين المسجلين بالسيستم</span>
+                </div>
+                <div className="kpi-value">{claimedWinners.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-brown">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Unclaimed Winning Cups</span>
+                  <span className="kpi-subtitle">أكواب الفوز المتبقية بالسوق</span>
+                </div>
+                <div className="kpi-value">{unclaimedWinners.toLocaleString()}</div>
+              </div>
             </div>
-            <div className="kpi-value">{totalWinners.toLocaleString()}</div>
           </div>
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Scanned Winners</span>
-              <span className="kpi-subtitle">الكسبانين المسجلين بالسيستم</span>
-            </div>
-            <div className="kpi-value">{claimedWinners.toLocaleString()}</div>
-          </div>
-          <div className="glassy-card card-brown">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Unclaimed Winning Cups</span>
-              <span className="kpi-subtitle">أكواب الفوز المتبقية بالسوق</span>
-            </div>
-            <div className="kpi-value">{unclaimedWinners.toLocaleString()}</div>
-          </div>
-        </div>
-      </div>
 
-      {/* Section 3: Staff Delivery Pipeline */}
-      <div className="dashboard-section">
-        <h2 className="dashboard-section-title">
-          <span className="dashboard-section-title-left">
-            <span
-              style={{
-                color: "#150958",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                <path d="M9 12h6" />
-                <path d="M9 16h6" />
-              </svg>
-            </span>
-            Prize Delivery Pipeline
-          </span>
-          <span className="dashboard-section-title-right">
-            مراحل تسليم الجوائز للزبائن
-          </span>
-        </h2>
-        <div className="grid-container">
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Total Registered Claims</span>
-              <span className="kpi-subtitle">إجمالي طلبات الجوائز المسجلة</span>
+          {/* Section 3: Staff Delivery Pipeline */}
+          <div className="dashboard-section">
+            <h2 className="dashboard-section-title">
+              <span className="dashboard-section-title-left">
+                <span
+                  style={{
+                    color: "#150958",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M9 12h6" />
+                    <path d="M9 16h6" />
+                  </svg>
+                </span>
+                Prize Delivery Pipeline
+              </span>
+              <span className="dashboard-section-title-right">
+                مراحل تسليم الجوائز للزبائن
+              </span>
+            </h2>
+            <div className="grid-container">
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Total Registered Claims</span>
+                  <span className="kpi-subtitle">إجمالي طلبات الجوائز المسجلة</span>
+                </div>
+                <div className="kpi-value">{totalClaims.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-brown">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Pending Delivery</span>
+                  <span className="kpi-subtitle">الجوائز قيد التسليم للزبائن</span>
+                </div>
+                <div className="kpi-value">{pendingClaims.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Delivered Prizes</span>
+                  <span className="kpi-subtitle">الجوائز المسلّمة بالكامل</span>
+                </div>
+                <div className="kpi-value">{deliveredClaims.toLocaleString()}</div>
+              </div>
             </div>
-            <div className="kpi-value">{totalClaims.toLocaleString()}</div>
           </div>
-          <div className="glassy-card card-brown">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Pending Delivery</span>
-              <span className="kpi-subtitle">الجوائز قيد التسليم للزبائن</span>
-            </div>
-            <div className="kpi-value">{pendingClaims.toLocaleString()}</div>
-          </div>
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Delivered Prizes</span>
-              <span className="kpi-subtitle">الجوائز المسلّمة بالكامل</span>
-            </div>
-            <div className="kpi-value">{deliveredClaims.toLocaleString()}</div>
-          </div>
-        </div>
-      </div>
 
-      {/* Section 4: Participation & Engagement */}
-      <div className="dashboard-section">
-        <h2 className="dashboard-section-title">
-          <span className="dashboard-section-title-left">
-            <span
-              style={{
-                color: "#150958",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-            </span>
-            User Engagement
-          </span>
-          <span className="dashboard-section-title-right">
-            نشاط وحركة الزبائن على السيستم
-          </span>
-        </h2>
-        <div className="grid-container">
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Total Scan Entries</span>
-              <span className="kpi-subtitle">إجمالي محاولات إدخال الرموز</span>
+          {/* Section 4: Participation & Engagement */}
+          <div className="dashboard-section">
+            <h2 className="dashboard-section-title">
+              <span className="dashboard-section-title-left">
+                <span
+                  style={{
+                    color: "#150958",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </span>
+                User Engagement
+              </span>
+              <span className="dashboard-section-title-right">
+                نشاط وحركة الزبائن على السيستم
+              </span>
+            </h2>
+            <div className="grid-container">
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Total Scan Entries</span>
+                  <span className="kpi-subtitle">إجمالي محاولات إدخال الرموز</span>
+                </div>
+                <div className="kpi-value">{totalEntries.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Registered Participants</span>
+                  <span className="kpi-subtitle">الزبائن المسجلين والمشاركين</span>
+                </div>
+                <div className="kpi-value">
+                  {totalParticipants.toLocaleString()}
+                </div>
+              </div>
             </div>
-            <div className="kpi-value">{totalEntries.toLocaleString()}</div>
           </div>
-          <div className="glassy-card card-blue">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span className="kpi-title">Registered Participants</span>
-              <span className="kpi-subtitle">الزبائن المسجلين والمشاركين</span>
-            </div>
-            <div className="kpi-value">
-              {totalParticipants.toLocaleString()}
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Campaign Progress Bar for Admin */}
-      {isAdmin && totalCodes > 0 && (
-        <div
-          className="glassy-card"
-          style={{
-            marginBottom: "2.5rem",
-            padding: "1.5rem",
-            minHeight: "auto",
-          }}
-        >
+          {/* Verification and Cashier Widget */}
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "0.875rem",
-              fontWeight: "700",
-              color: "#150958",
-              marginBottom: "0.75rem",
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "2rem",
+              alignItems: "start",
             }}
           >
-            <span>
-              Campaign Redemption Progress (نسبة الأكواد اللي اتسحبت واتفعلت في
-              الحملة)
-            </span>
-            <span style={{ color: "#150958" }}>
-              {progressPercent}% ({claimedCodes} / {totalCodes})
-            </span>
+            <VerifyWidget />
+            <ClaimsTable initialClaims={recentClaims} />
           </div>
+        </>
+      ) : (
+        /* ── Staff Operations Portal ─────────────────────────────────────── */
+        <div className="dashboard-section">
+          <h2 className="dashboard-section-title">
+            <span className="dashboard-section-title-left">
+              <span
+                style={{
+                  color: "#150958",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </span>
+              Branch Operations & Drink Rewards
+            </span>
+            <span className="dashboard-section-title-right">
+              بوابة عمليات الفرع والكاشير
+            </span>
+          </h2>
+
           <div
+            className="grid-container"
             style={{
-              width: "100%",
-              height: "10px",
-              backgroundColor: "#E2E8F0",
-              borderRadius: "9999px",
-              overflow: "hidden",
-              position: "relative",
-              zIndex: 1,
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1.5rem",
             }}
           >
-            <div
-              style={{
-                width: `${progressPercent}%`,
-                height: "100%",
-                backgroundColor: "#150958",
-                backgroundImage:
-                  "linear-gradient(90deg, #150958 0%, #2B2499 100%)",
-                transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-              }}
-            />
+            {/* Terminal Card */}
+            <Link
+              href="/admin/drink-redemption"
+              className="glassy-card card-blue"
+              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+            >
+              <div>
+                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  ☕ Drink Redemption Terminal
+                </span>
+                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
+                  شاشة الكاشير اليومية: ابحث برقم هاتف العميل أو كود الكوبون لصرف المشروب فورياً وتسجيل العملية باسمك والفرع.
+                </span>
+              </div>
+              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#150958", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <span>فتح شاشة الصرف</span>
+                <span>←</span>
+              </div>
+            </Link>
+
+            {/* Drinks Menu Card */}
+            <Link
+              href="/admin/collections/drinks"
+              className="glassy-card card-blue"
+              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+            >
+              <div>
+                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  📋 Drinks Menu Manager
+                </span>
+                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
+                  إدارة قائمة المشروبات: إضافة مشروبات جديدة، إيقاف الأصناف غير المتوفرة مؤقتاً، وتعديل المتاح في الهدايا.
+                </span>
+              </div>
+              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#150958", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <span>إدارة قائمة المشروبات</span>
+                <span>←</span>
+              </div>
+            </Link>
+
+            {/* Vouchers List Card */}
+            <Link
+              href="/admin/collections/drink-entitlements"
+              className="glassy-card card-brown"
+              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+            >
+              <div>
+                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  🎫 Vouchers & Entitlements
+                </span>
+                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
+                  استعراض الكوبونات: البحث برقم التليفون أو الكود للتحقق من حالة الكوبون وموعد وتاريخ صرفه.
+                </span>
+              </div>
+              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#64748B", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <span>استعراض الكوبونات</span>
+                <span>←</span>
+              </div>
+            </Link>
           </div>
         </div>
       )}
-
-      {/* Main Content Sections split in two columns */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: "2rem",
-          alignItems: "start",
-        }}
-      >
-        {/* Verification and Cashier Widget */}
-        <VerifyWidget />
-
-        {/* Recent Claims Table Widget */}
-        <ClaimsTable initialClaims={recentClaims} />
-      </div>
     </Gutter>
   );
 }

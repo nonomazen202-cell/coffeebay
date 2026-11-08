@@ -62,6 +62,7 @@ export interface ClaimEntitlementResult {
     | 'CAMPAIGN_EXPIRED'
     | 'CAMPAIGN_EXHAUSTED'
     | 'ALREADY_CLAIMED'
+    | 'ACTIVE_VOUCHER_EXISTS'
     | 'INVALID_DRINK'
     | 'INTERNAL_ERROR';
   voucher?: {
@@ -320,13 +321,10 @@ export class DrinkCampaignService {
       };
     }
 
-    if (!customerName || customerName.trim().length === 0) {
-      return {
-        success: false,
-        reason: 'INVALID_SESSION',
-        message: 'يرجى إدخال اسم العميل بشكل صحيح.',
-      };
-    }
+    const resolvedCustomerName =
+      typeof customerName === 'string' && customerName.trim().length > 0
+        ? customerName.trim()
+        : 'Guest';
 
     if (!campaignSlug || campaignSlug.trim().length === 0) {
       return {
@@ -354,7 +352,8 @@ export class DrinkCampaignService {
 
         // A. Lock Campaign row for update to prevent concurrent race condition over max_claims
         const campaignRows = await tx.execute(sql`
-          SELECT id, slug, title, active, start_date, end_date, max_claims, total_claimed
+          SELECT id, slug, title, active, start_date, end_date, max_claims, total_claimed,
+                 max_claims_per_phone, allow_repeat_mode
           FROM drink_campaigns
           WHERE id = ${campaignId}
           FOR UPDATE
@@ -373,6 +372,8 @@ export class DrinkCampaignService {
           end_date: string;
           max_claims: number | null;
           total_claimed: number;
+          max_claims_per_phone?: number | null;
+          allow_repeat_mode?: 'NEVER' | 'AFTER_REDEMPTION' | 'ANYTIME' | null;
         };
 
         // Prevent cross-campaign session replay
@@ -380,11 +381,11 @@ export class DrinkCampaignService {
           throw new Error('INVALID_SESSION');
         }
 
-        // B. Live Once-Per-Campaign & Idempotent Retry check (strictly transactional, LEFT JOIN so deleted drinks never orphan a voucher)
+        // B. Live Multi-Claim & Eligibility check (strictly transactional, LEFT JOIN so deleted drinks never orphan a voucher)
         const existingEntitlement = await tx.execute(sql`
           SELECT e.id, e.voucher_code, e.customer_name, e.phone,
                  e.issued_at, e.expires_at, e.branch_id,
-                 e.status, e.redeemed_at,
+                 e.status, e.redeemed_at, e.reclaim_allowed,
                  COALESCE(d.name, 'Coffee Bay Beverage') AS drink_name,
                  m.url AS drink_image_url,
                  b.name AS branch_name
@@ -393,25 +394,31 @@ export class DrinkCampaignService {
           LEFT JOIN media m ON m.id = d.image_id
           LEFT JOIN branches b ON b.id = e.branch_id
           WHERE e.campaign_id = ${campaignId} AND e.phone = ${phone}
-          LIMIT 1
+          ORDER BY e.issued_at DESC
         `);
 
-        if (existingEntitlement.rows && existingEntitlement.rows.length > 0) {
-          const ent = existingEntitlement.rows[0] as {
-            id: number;
-            voucher_code: string;
-            customer_name: string;
-            phone: string;
-            issued_at: string;
-            expires_at: string;
-            branch_id?: number | null;
-            status?: 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
-            redeemed_at?: string | null;
-            drink_name: string;
-            drink_image_url?: string | null;
-            branch_name?: string | null;
-          };
-          const issuedMs = new Date(ent.issued_at).getTime();
+        const rows = (existingEntitlement.rows || []) as {
+          id: number;
+          voucher_code: string;
+          customer_name: string;
+          phone: string;
+          issued_at: string;
+          expires_at: string;
+          branch_id?: number | null;
+          status?: 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
+          redeemed_at?: string | null;
+          reclaim_allowed?: boolean;
+          drink_name: string;
+          drink_image_url?: string | null;
+          branch_name?: string | null;
+        }[];
+
+        let hasAdminOverride = false;
+        if (rows.length > 0) {
+          const latestEnt = rows[0];
+          const issuedMs = new Date(latestEnt.issued_at).getTime();
+
+          // 1. Idempotent Replay if browser just claimed within verified session TTL
           if (
             typeof session.verifiedAt === 'number' &&
             issuedMs >= session.verifiedAt - 15_000
@@ -419,22 +426,56 @@ export class DrinkCampaignService {
             return {
               idempotentReplay: true,
               justExhausted: false,
-              entitlementId: ent.id,
-              voucherCode: ent.voucher_code,
-              customerName: ent.customer_name,
-              phone: ent.phone,
-              drinkName: ent.drink_name,
-              drinkImageUrl: ent.drink_image_url || null,
-              branchId: ent.branch_id || null,
-              branchName: ent.branch_name || null,
+              entitlementId: latestEnt.id,
+              voucherCode: latestEnt.voucher_code,
+              customerName: latestEnt.customer_name,
+              phone: latestEnt.phone,
+              drinkName: latestEnt.drink_name,
+              drinkImageUrl: latestEnt.drink_image_url || null,
+              branchId: latestEnt.branch_id || null,
+              branchName: latestEnt.branch_name || null,
               campaignTitle: camp.title,
-              status: ent.status || 'ISSUED',
-              redeemedAt: ent.redeemed_at ? new Date(ent.redeemed_at).toISOString() : null,
-              expiresAt: new Date(ent.expires_at).toISOString(),
-              issuedAt: new Date(ent.issued_at).toISOString(),
+              status: latestEnt.status || 'ISSUED',
+              redeemedAt: latestEnt.redeemed_at ? new Date(latestEnt.redeemed_at).toISOString() : null,
+              expiresAt: new Date(latestEnt.expires_at).toISOString(),
+              issuedAt: new Date(latestEnt.issued_at).toISOString(),
             };
           }
-          throw new Error('ALREADY_CLAIMED');
+
+          // 2. Active Unredeemed Voucher Check:
+          // A customer cannot hold a second concurrent active voucher while one is still ISSUED (unless reclaim_allowed is true)
+          const activeIssued = rows.find((r) => r.status === 'ISSUED' && !r.reclaim_allowed);
+          if (activeIssued) {
+            throw new Error('ACTIVE_VOUCHER_EXISTS');
+          }
+
+          // 3. Admin Override Check (Per-customer exception)
+          hasAdminOverride = rows.some((r) => r.reclaim_allowed === true);
+
+          // 4. Campaign Repeat Policy Check
+          const maxAllowed = camp.max_claims_per_phone ?? 1;
+          const repeatMode = camp.allow_repeat_mode ?? 'NEVER';
+          const totalClaimedCount = rows.length;
+
+          let isEligible = hasAdminOverride;
+          if (!isEligible && totalClaimedCount < maxAllowed) {
+            if (repeatMode === 'ANYTIME') {
+              isEligible = true;
+            } else if (repeatMode === 'AFTER_REDEMPTION') {
+              const allPastDone = rows.every(
+                (r) => r.status === 'REDEEMED' || r.status === 'EXPIRED',
+              );
+              if (allPastDone) {
+                isEligible = true;
+              } else {
+                throw new Error('ACTIVE_VOUCHER_EXISTS');
+              }
+            }
+          }
+
+          if (!isEligible) {
+            throw new Error('ALREADY_CLAIMED');
+          }
         }
 
         const now = new Date();
@@ -590,7 +631,7 @@ export class DrinkCampaignService {
             ${voucherCode},
             ${campaignId},
             ${phone},
-            ${customerName.trim()},
+            ${resolvedCustomerName},
             ${selectedDrinkRow.id},
             ${resolvedBranchId},
             'ISSUED',
@@ -603,6 +644,15 @@ export class DrinkCampaignService {
           RETURNING id
         `);
         const insertedRow = insertedRes.rows?.[0] as { id: number } | undefined;
+
+        // H2. Consume any prior admin override so each grant applies once
+        if (hasAdminOverride) {
+          await tx.execute(sql`
+            UPDATE drink_entitlements
+            SET reclaim_allowed = false, updated_at = NOW()
+            WHERE campaign_id = ${campaignId} AND phone = ${phone} AND reclaim_allowed = true
+          `);
+        }
 
         // I. Mark OTP challenge consumed
         await tx.execute(sql`
@@ -712,6 +762,13 @@ export class DrinkCampaignService {
       }
       if (errMsg === 'ALREADY_CLAIMED') {
         return { success: false, reason: 'ALREADY_CLAIMED', message: 'لقد تم الاستفادة من هذا العرض مسبقاً لهذا الرقم.' };
+      }
+      if (errMsg === 'ACTIVE_VOUCHER_EXISTS') {
+        return {
+          success: false,
+          reason: 'ACTIVE_VOUCHER_EXISTS',
+          message: 'لديك بالفعل قسيمة مشروب جاهزة للصرف في الفرع. يرجى التوجه للفرع وصرفها أولاً.',
+        };
       }
       if (errMsg === 'INVALID_SESSION') {
         return { success: false, reason: 'INVALID_SESSION', message: 'جلسة التحقق غير صالحة. يرجى إعادة طلب رمز التحقق.' };

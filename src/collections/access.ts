@@ -17,3 +17,4 @@ export const isAdminOrStaff: Access = ({ req: { user } }) => {
 export const isFieldAdmin: FieldAccess = ({ req: { user } }) => {
   return Boolean(user && user.role === 'ADMIN');
 };
+

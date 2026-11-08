@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from './access';
+import { isAdminOrStaff } from './access';
 import { revalidateDrinkItemCache } from '../lib/cache/drink-rewards-cache';
 import { put, del } from '@vercel/blob';
 import fs from 'fs';
@@ -10,9 +10,9 @@ export const Media: CollectionConfig = {
   timestamps: true,
   access: {
     read: () => true, // Publicly readable
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: isAdminOrStaff,
+    update: isAdminOrStaff,
+    delete: isAdminOrStaff,
   },
   upload: {
     // On Vercel, the project directory is read-only, so we use the writeable /tmp folder.

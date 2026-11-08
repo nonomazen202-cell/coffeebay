@@ -1,5 +1,5 @@
 import type { CollectionConfig, CollectionAfterReadHook } from 'payload';
-import { isAdmin, isAdminOrStaff, isFieldAdmin } from './access';
+import { isAdmin, isFieldAdmin } from './access';
 
 const populateClaimDetails: CollectionAfterReadHook = async ({ doc, req }) => {
   if (!doc.entry) return doc;
@@ -63,12 +63,13 @@ export const PrizeClaims: CollectionConfig = {
     afterRead: [populateClaimDetails],
   },
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'verification_code',
     defaultColumns: ['verification_code', 'participant_name', 'participant_phone', 'status', 'verified', 'verified_at'],
     components: {

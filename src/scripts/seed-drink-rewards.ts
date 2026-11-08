@@ -380,6 +380,8 @@ async function seedDrinkRewards(): Promise<void> {
     total_claimed: 0,
     active: true,
     banner_image: chocolateCookieImgId,
+    max_claims_per_phone: 1,
+    allow_repeat_mode: 'NEVER' as const,
   };
 
   let cairoCampaign: { id: number; title: string; slug: string };

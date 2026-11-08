@@ -156,6 +156,10 @@ function getGsm7CompatibleFirstName(rawName?: string): string | null {
   // 1. If basic Latin letters, take first name
   if (/^[a-zA-Z\s.'-]+$/.test(trimmed)) {
     const firstWord = trimmed.split(/\s+/)[0].replace(/[^a-zA-Z]/g, "");
+    const lower = firstWord.toLowerCase();
+    if (lower === "guest" || lower === "customer") {
+      return null;
+    }
     if (firstWord.length >= 2 && firstWord.length <= 15) {
       return firstWord.toUpperCase();
     }

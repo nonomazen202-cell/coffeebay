@@ -1,16 +1,17 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from './access';
+import { isAdmin } from './access';
 
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
   timestamps: true,
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: () => false,
     update: () => false,
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'template', 'status', 'priority', 'attempts', 'providerName', 'createdAt'],
     components: {

@@ -5,6 +5,7 @@ export const DrinkOtpChallenges: CollectionConfig = {
   slug: 'drink-otp-challenges',
   timestamps: true,
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     group: 'Drink Rewards',
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'code', 'campaign', 'attempts', 'expires_at', 'used_at', 'verified_at'],

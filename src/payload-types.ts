@@ -498,6 +498,14 @@ export interface DrinkCampaign {
    */
   max_claims?: number | null;
   /**
+   * Number of vouchers a customer can claim with the same phone number in this campaign (Default: 1).
+   */
+  max_claims_per_phone?: number | null;
+  /**
+   * Determines when a customer is allowed to claim another beverage with the same phone number.
+   */
+  allow_repeat_mode?: ('NEVER' | 'AFTER_REDEMPTION' | 'ANYTIME') | null;
+  /**
    * Automatically managed atomic counter of all vouchers claimed by customers.
    */
   total_claimed: number;
@@ -537,6 +545,10 @@ export interface DrinkEntitlement {
    */
   redeemed_drink?: (number | null) | Drink;
   status: 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
+  /**
+   * When enabled, grants this customer permission to claim another drink regardless of campaign limits.
+   */
+  reclaim_allowed?: boolean | null;
   /**
    * Physical branch where this voucher was processed and served.
    */
@@ -997,6 +1009,8 @@ export interface DrinkCampaignsSelect<T extends boolean = true> {
   end_date?: T;
   allowed_branches?: T;
   max_claims?: T;
+  max_claims_per_phone?: T;
+  allow_repeat_mode?: T;
   total_claimed?: T;
   active?: T;
   banner_image?: T;
@@ -1016,6 +1030,7 @@ export interface DrinkEntitlementsSelect<T extends boolean = true> {
   selected_drink?: T;
   redeemed_drink?: T;
   status?: T;
+  reclaim_allowed?: T;
   branch?: T;
   cashier?: T;
   change_reason?: T;

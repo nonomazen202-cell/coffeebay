@@ -1,6 +1,7 @@
 import React from 'react';
 import { getPayload, type Where } from 'payload';
 import config from '@payload-config';
+import { headers } from 'next/headers';
 import { DrinkVouchersManager, type SerializedVoucher } from './DrinkVouchersManager';
 import { getCachedStats } from './cache';
 
@@ -20,6 +21,12 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
   const statusFilter = resolvedParams.status || 'ALL';
 
   const payload = await getPayload({ config });
+
+  // Authenticate user session
+  const authResult = await payload.auth({
+    headers: await headers(),
+  });
+  const userRole = (authResult?.user?.role as 'ADMIN' | 'STAFF') || 'STAFF';
 
   // 1. Build Query Conditions
   const andConditions: Where[] = [];
@@ -130,6 +137,7 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
       issuedAt: doc.issued_at,
       redeemedAt: doc.redeemed_at || null,
       expiresAt: doc.expires_at,
+      reclaimAllowed: Boolean(doc.reclaim_allowed),
     };
   });
 
@@ -145,6 +153,7 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
       expiredCount={expiredCount}
       initialSearch={search}
       initialStatus={statusFilter}
+      userRole={userRole}
     />
   );
 }

@@ -1,17 +1,18 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from '../access';
+import { isAdmin } from '../access';
 
 export const DrinkCashierAssignments: CollectionConfig = {
   slug: 'drink-cashier-assignments',
   timestamps: true,
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     group: 'Drink Rewards',
     useAsTitle: 'id',
     defaultColumns: ['user', 'branch', 'active', 'createdAt'],
     description: 'Binds staff members to specific Coffee Bay physical branches for server-verified redemptions.',
   },
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,

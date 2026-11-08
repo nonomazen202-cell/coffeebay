@@ -173,11 +173,6 @@ export function DetailsStepClient({
     const trimmedPhone = phone.trim();
     const digitCount = trimmedPhone.replace(/\D/g, "").length;
 
-    if (!trimmedName || trimmedName.length < 2) {
-      setErrorMessage("يرجى إدخال اسمك الكريم بشكل صحيح.");
-      return;
-    }
-
     if (!trimmedPhone || digitCount < 7) {
       setErrorMessage("يرجى إدخال رقم هاتف صالح.");
       return;
@@ -189,7 +184,7 @@ export function DetailsStepClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerName: trimmedName,
+          customerName: trimmedName || "Guest",
           phone: trimmedPhone,
           selectedBranchId,
           campaignSlug: campaign.slug,

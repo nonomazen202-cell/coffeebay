@@ -358,12 +358,11 @@ export function RegistrationStep({
                     <input
                       id="reward-name"
                       type="text"
-                      required
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      placeholder="Your Full Name"
+                      placeholder="Your Full Name (Optional)"
                       style={{ outline: "none", boxShadow: "none" }}
-                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/90 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[16px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
+                      className={`relative z-10 w-full bg-transparent text-white caret-white placeholder:text-white/80 focus:placeholder:text-white/40 group-focus-within:translate-x-0.5 transition-all duration-300 text-[15px] sm:text-[16px] lg:text-[15.5px] font-medium border-0 ring-0 focus:ring-0 focus:outline-none tracking-wide drop-shadow-[0_1px_2px_rgba(0,6,35,0.85)] ${averta.className}`}
                     />
                   </label>
                 </div>

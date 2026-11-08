@@ -11,6 +11,7 @@ export const NotificationAudit: CollectionConfig = {
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'eventType',
     defaultColumns: ['eventType', 'notification', 'fromStatus', 'toStatus', 'actor', 'createdAt'],
   },

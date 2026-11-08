@@ -20,7 +20,7 @@ export const DrinkEntitlements: CollectionConfig = {
   access: {
     read: isAdminOrStaff,
     create: isAdmin,
-    update: isAdminOrStaff,
+    update: isAdmin,
     delete: isAdmin,
   },
   fields: [
@@ -101,6 +101,16 @@ export const DrinkEntitlements: CollectionConfig = {
         { label: 'Cancelled (Administrative)', value: 'CANCELLED' },
       ],
       label: 'Voucher Status',
+    },
+    {
+      name: 'reclaim_allowed',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      label: 'Allow Extra Claim (منح مطالبة إضافية لهذا العميل)',
+      admin: {
+        description: 'When enabled, grants this customer permission to claim another drink regardless of campaign limits.',
+      },
     },
     {
       name: 'branch',

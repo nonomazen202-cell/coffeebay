@@ -1,16 +1,17 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from './access';
+import { isAdmin } from './access';
 
 export const Prizes: CollectionConfig = {
   slug: 'prizes',
   timestamps: true,
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'name',
     defaultColumns: ['name', 'quantity', 'active'],
     components: {

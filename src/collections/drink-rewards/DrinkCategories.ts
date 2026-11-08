@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { isAdminOrStaff } from '../access';
 import { revalidateDrinkCategoryCache } from '../../lib/cache/drink-rewards-cache';
 
 export const DrinkCategories: CollectionConfig = {
@@ -13,9 +13,9 @@ export const DrinkCategories: CollectionConfig = {
   },
   access: {
     read: () => true, // Publicly readable for menu catalog
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: isAdminOrStaff,
+    update: isAdminOrStaff,
+    delete: isAdminOrStaff,
   },
   hooks: {
     afterChange: [

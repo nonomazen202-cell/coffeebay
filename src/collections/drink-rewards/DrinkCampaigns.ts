@@ -6,6 +6,7 @@ export const DrinkCampaigns: CollectionConfig = {
   slug: 'drink-campaigns',
   timestamps: true,
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     group: 'Drink Rewards',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'active', 'start_date', 'end_date', 'total_claimed'],
@@ -109,6 +110,30 @@ export const DrinkCampaigns: CollectionConfig = {
       admin: {
         placeholder: 'e.g. 500 (leave blank for unlimited)',
         description: 'Optional budget ceiling. If set, no new vouchers will be issued once total claimed reaches this number.',
+      },
+    },
+    {
+      name: 'max_claims_per_phone',
+      type: 'number',
+      min: 1,
+      defaultValue: 1,
+      label: 'Max Vouchers Per Phone (أقصى عدد كوبونات لكل رقم)',
+      admin: {
+        description: 'Number of vouchers a customer can claim with the same phone number in this campaign (Default: 1).',
+      },
+    },
+    {
+      name: 'allow_repeat_mode',
+      type: 'select',
+      defaultValue: 'NEVER',
+      label: 'Repeat Claim Eligibility (شرط تكرار الطلب)',
+      options: [
+        { label: 'Once Per Phone (Default / الافتراضي - مرة واحدة فقط)', value: 'NEVER' },
+        { label: 'Only After Previous Voucher is Redeemed (بعد صرف الكوبون السابق بالفرع)', value: 'AFTER_REDEMPTION' },
+        { label: 'Anytime Up to Limit (في أي وقت حتى الحد الأقصى)', value: 'ANYTIME' },
+      ],
+      admin: {
+        description: 'Determines when a customer is allowed to claim another beverage with the same phone number.',
       },
     },
     {

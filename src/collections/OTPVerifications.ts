@@ -11,6 +11,7 @@ export const OTPVerifications: CollectionConfig = {
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'code', 'used', 'expiresAt', 'lastSentAt', 'createdAt'],
   },

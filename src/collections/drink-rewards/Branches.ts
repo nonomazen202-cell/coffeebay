@@ -6,6 +6,7 @@ export const Branches: CollectionConfig = {
   slug: 'branches',
   timestamps: true,
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     group: 'Drink Rewards',
     useAsTitle: 'name',
     defaultColumns: ['name', 'code', 'address', 'active', 'updatedAt'],

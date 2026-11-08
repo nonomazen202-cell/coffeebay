@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrSelf } from './access';
+import { isAdmin, isAdminOrSelf, isFieldAdmin } from './access';
 
 export const AdminUsers: CollectionConfig = {
   slug: 'users',
@@ -14,6 +14,7 @@ export const AdminUsers: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'role'],
+    hidden: ({ user }) => user?.role !== 'ADMIN',
   },
   fields: [
     {
@@ -26,6 +27,9 @@ export const AdminUsers: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'STAFF',
+      access: {
+        update: isFieldAdmin,
+      },
       options: [
         {
           label: 'Admin',

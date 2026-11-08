@@ -1,5 +1,5 @@
 import type { CollectionConfig, PayloadRequest, Where } from 'payload';
-import { isAdmin, isAdminOrStaff } from './access';
+import { isAdmin } from './access';
 
 async function transformWhere(where: Where | undefined, req: PayloadRequest): Promise<Where | undefined> {
   if (!where || typeof where !== 'object') {
@@ -99,12 +99,13 @@ export const Entries: CollectionConfig = {
     ],
   },
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'id',
     defaultColumns: ['participant', 'code', 'result', 'createdAt'],
     listSearchableFields: ['participant', 'ip', 'request_id'],

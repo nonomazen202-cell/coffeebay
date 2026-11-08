@@ -6,6 +6,7 @@ import Link from 'next/link';
 import styles from './DrinkVouchersManager.module.css';
 import { AdminPagination } from '../AdminPagination';
 import { bulkDeleteAction } from './actions';
+import { toggleVoucherReclaimAllowed, bulkToggleReclaimAllowed } from './drink-actions';
 
 export interface SerializedVoucher {
   id: number;
@@ -22,6 +23,7 @@ export interface SerializedVoucher {
   issuedAt: string;
   redeemedAt?: string | null;
   expiresAt: string;
+  reclaimAllowed?: boolean;
 }
 
 interface DrinkVouchersManagerProps {
@@ -35,6 +37,7 @@ interface DrinkVouchersManagerProps {
   expiredCount: number;
   initialSearch?: string;
   initialStatus?: string;
+  userRole?: 'ADMIN' | 'STAFF';
 }
 
 export function DrinkVouchersManager({
@@ -47,7 +50,9 @@ export function DrinkVouchersManager({
   expiredCount,
   initialSearch = '',
   initialStatus = 'ALL',
+  userRole = 'STAFF',
 }: DrinkVouchersManagerProps) {
+  const isAdmin = userRole === 'ADMIN';
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -57,6 +62,8 @@ export function DrinkVouchersManager({
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [deleting, setDeleting] = useState(false);
   const [deletingSingleId, setDeletingSingleId] = useState<number | string | null>(null);
+  const [togglingReclaimId, setTogglingReclaimId] = useState<number | string | null>(null);
+  const [bulkReclaiming, setBulkReclaiming] = useState(false);
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const [searchInput, setSearchInput] = useState(initialSearch);
@@ -202,6 +209,85 @@ export function DrinkVouchersManager({
     }
   };
 
+  // Toggle Re-claim Allowed for a single voucher
+  const handleToggleReclaim = async (voucher: SerializedVoucher, allowed: boolean) => {
+    setTogglingReclaimId(voucher.id);
+    setAlert(null);
+    try {
+      const res = await toggleVoucherReclaimAllowed(voucher.id, allowed);
+      if (res.success) {
+        setAlert({
+          type: 'success',
+          message: allowed
+            ? `Successfully granted extra claim for ${voucher.customerName} (${voucher.phone}) • تم منح إذن استلام مشروب إضافي للعميل بنجاح`
+            : `Revoked extra claim exception for ${voucher.customerName} • تم إلغاء الاستثناء للعميل بنجاح`,
+        });
+        setVouchers((prev) =>
+          prev.map((v) => (v.id === voucher.id ? { ...v, reclaimAllowed: allowed } : v)),
+        );
+        startTransition(() => {
+          router.refresh();
+        });
+      } else {
+        setAlert({
+          type: 'error',
+          message: res.error || 'Failed to update re-claim permission / فشل تعديل إذن المطالبة الإضافية.',
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setAlert({
+        type: 'error',
+        message: 'An error occurred / حدث خطأ أثناء التعديل.',
+      });
+    } finally {
+      setTogglingReclaimId(null);
+    }
+  };
+
+  // Bulk Grant Re-claim for all selected vouchers
+  const handleBulkGrantReclaim = async (allowed: boolean) => {
+    if (selectedIds.length === 0) return;
+    const confirmMsg = allowed
+      ? `Grant extra claim eligibility to ${selectedIds.length} selected customer(s)?\n\nهل تريد منح إمكانية طلب مشروب إضافي لـ ${selectedIds.length} عميل محدد؟`
+      : `Revoke extra claim eligibility from ${selectedIds.length} selected customer(s)?\n\nهل تريد إلغاء استثناء المشروب الإضافي لـ ${selectedIds.length} عميل محدد؟`;
+    if (!window.confirm(confirmMsg)) return;
+
+    setBulkReclaiming(true);
+    setAlert(null);
+    try {
+      const res = await bulkToggleReclaimAllowed(selectedIds, allowed);
+      if (res.success) {
+        setAlert({
+          type: 'success',
+          message: allowed
+            ? `Granted extra claim eligibility to ${res.count} voucher(s) • تم منح الاستثناء لـ ${res.count} كوبون بنجاح`
+            : `Revoked extra claim eligibility from ${res.count} voucher(s) • تم إلغاء الاستثناء لـ ${res.count} كوبون بنجاح`,
+        });
+        setVouchers((prev) =>
+          prev.map((v) => (selectedIds.includes(v.id) ? { ...v, reclaimAllowed: allowed } : v)),
+        );
+        setSelectedIds([]);
+        startTransition(() => {
+          router.refresh();
+        });
+      } else {
+        setAlert({
+          type: 'error',
+          message: res.error || 'Failed to update selected vouchers / فشل التعديل للكوبونات المحددة.',
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setAlert({
+        type: 'error',
+        message: 'An error occurred / حدث خطأ أثناء التعديل الجماعي.',
+      });
+    } finally {
+      setBulkReclaiming(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* ── Header Ribbon ──────────────────────────────────────────────── */}
@@ -344,7 +430,7 @@ export function DrinkVouchersManager({
       )}
 
       {/* ── Bulk Actions Floating Toolbar ─────────────────────────────── */}
-      {selectedIds.length > 0 && (
+      {isAdmin && selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
           <div className={styles.bulkBarInfo}>
             <span className={styles.bulkBarBadge}>{selectedIds.length}</span>
@@ -362,8 +448,17 @@ export function DrinkVouchersManager({
             </button>
             <button
               type="button"
+              onClick={() => handleBulkGrantReclaim(true)}
+              disabled={bulkReclaiming || deleting}
+              className={styles.bulkReclaimBtn}
+              title="Grant extra claim eligibility for selected customers / منح مطالبة إضافية للمحددين"
+            >
+              {bulkReclaiming ? 'Granting... / جاري المنح...' : '🔄 Grant Re-claim / منح مشروب إضافي للمحددين'}
+            </button>
+            <button
+              type="button"
               onClick={handleBulkDelete}
-              disabled={deleting}
+              disabled={deleting || bulkReclaiming}
               className={styles.bulkDeleteBtn}
             >
               {deleting ? (
@@ -392,15 +487,17 @@ export function DrinkVouchersManager({
           <table className={styles.table}>
             <thead className={styles.tableHead}>
               <tr>
-                <th className={styles.selectionTh}>
-                  <input
-                    type="checkbox"
-                    checked={allOnPageSelected}
-                    onChange={handleToggleSelectAll}
-                    className={styles.checkbox}
-                    title="Select all on this page / تحديد الكل"
-                  />
-                </th>
+                {isAdmin && (
+                  <th className={styles.selectionTh}>
+                    <input
+                      type="checkbox"
+                      checked={allOnPageSelected}
+                      onChange={handleToggleSelectAll}
+                      className={styles.checkbox}
+                      title="Select all on this page / تحديد الكل"
+                    />
+                  </th>
+                )}
                 <th className={styles.tableTh}>Voucher Code / كود الكوبون</th>
                 <th className={styles.tableTh}>Customer / الزبون</th>
                 <th className={styles.tableTh}>Beverage / المشروب المطلوب</th>
@@ -413,7 +510,7 @@ export function DrinkVouchersManager({
             <tbody>
               {vouchers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className={styles.emptyState}>
+                  <td colSpan={isAdmin ? 8 : 7} className={styles.emptyState}>
                     <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ margin: '0 auto 0.5rem auto' }}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
@@ -432,14 +529,16 @@ export function DrinkVouchersManager({
                   return (
                     <tr key={voucher.id} className={isSelected ? styles.selectedRow : styles.tableRow}>
                       {/* Selection Checkbox */}
-                      <td className={styles.selectionTd}>
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleToggleRow(voucher.id)}
-                          className={styles.checkbox}
-                        />
-                      </td>
+                      {isAdmin && (
+                        <td className={styles.selectionTd}>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleRow(voucher.id)}
+                            className={styles.checkbox}
+                          />
+                        </td>
+                      )}
 
                       {/* Code */}
                       <td className={styles.tableTd}>
@@ -469,6 +568,35 @@ export function DrinkVouchersManager({
                       <td className={styles.tableTd}>
                         <span className={styles.customerName}>{voucher.customerName}</span>
                         <span className={styles.customerPhone}>{voucher.phone}</span>
+
+                        {voucher.reclaimAllowed ? (
+                          <div className={styles.reclaimGrantedBadge} title="هذا العميل مؤهل للحصول على مشروب جديد">
+                            <span>🟢 Re-claim Allowed / مؤهل لمشروب جديد</span>
+                            {isAdmin && (
+                              <button
+                                type="button"
+                                onClick={() => handleToggleReclaim(voucher, false)}
+                                disabled={togglingReclaimId === voucher.id}
+                                className={styles.revokeReclaimBtn}
+                                title="Revoke exception / إلغاء الاستثناء"
+                              >
+                                إلغاء
+                              </button>
+                            )}
+                          </div>
+                        ) : isAdmin ? (
+                          <div style={{ marginTop: '0.35rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleReclaim(voucher, true)}
+                              disabled={togglingReclaimId === voucher.id}
+                              className={styles.reclaimActionBtn}
+                              title="Allow this customer to claim an additional drink without deleting this record / منح هذا العميل مشروب إضافي"
+                            >
+                              {togglingReclaimId === voucher.id ? 'Granting...' : '🔄 Allow Re-claim / منح مشروب إضافي'}
+                            </button>
+                          </div>
+                        ) : null}
                       </td>
 
                       {/* Drink */}
@@ -565,23 +693,25 @@ export function DrinkVouchersManager({
                             </svg>
                             View
                           </Link>
-                          <button
-                            type="button"
-                            onClick={() => handleSingleDelete(voucher)}
-                            disabled={deletingSingleId === voucher.id || deleting}
-                            className={styles.deleteActionBtn}
-                            title="Delete voucher / حذف الكوبون"
-                          >
-                            {deletingSingleId === voucher.id ? (
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ animation: 'spin 1s linear infinite' }}>
-                                <circle cx="12" cy="12" r="10" strokeWidth="4" strokeDasharray="30" strokeLinecap="round" />
-                              </svg>
-                            ) : (
-                              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            )}
-                          </button>
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => handleSingleDelete(voucher)}
+                              disabled={deletingSingleId === voucher.id || deleting}
+                              className={styles.deleteActionBtn}
+                              title="Delete voucher / حذف الكوبون"
+                            >
+                              {deletingSingleId === voucher.id ? (
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ animation: 'spin 1s linear infinite' }}>
+                                  <circle cx="12" cy="12" r="10" strokeWidth="4" strokeDasharray="30" strokeLinecap="round" />
+                                </svg>
+                              ) : (
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              )}
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

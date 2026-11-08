@@ -1,16 +1,17 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from './access';
+import { isAdmin } from './access';
 
 export const Codes: CollectionConfig = {
   slug: 'codes',
   timestamps: true,
   access: {
-    read: isAdminOrStaff,
+    read: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
   },
   admin: {
+    hidden: ({ user }) => user?.role !== 'ADMIN',
     useAsTitle: 'serial_code',
     defaultColumns: ['serial_code', 'is_winner', 'claimed', 'claimed_at'],
     components: {

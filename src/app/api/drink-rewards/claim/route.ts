@@ -105,18 +105,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate input only after the caller is authenticated (prevents leaking validation details to anonymous callers)
+    // Resolve customer name (optional: defaults to 'Guest' if omitted)
     const customerName =
       typeof body.customerName === 'string' && body.customerName.trim().length > 0
         ? body.customerName.trim()
-        : existingSession?.customerName?.trim() || '';
-
-    if (!customerName) {
-      return NextResponse.json(
-        { success: false, reason: 'INVALID_SESSION', message: 'اسم العميل مطلوب.' },
-        { status: 400 },
-      );
-    }
+        : existingSession?.customerName?.trim() || 'Guest';
 
     const selectedBranchId =
       typeof body.selectedBranchId === 'number' ||

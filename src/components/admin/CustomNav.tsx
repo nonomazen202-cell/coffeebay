@@ -18,6 +18,7 @@ export function CustomNav() {
 
   const nameInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
   const displayRole = user?.role || "STAFF";
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <div className="custom-sidebar">
@@ -89,147 +90,155 @@ export function CustomNav() {
             Dashboard Overview
           </Link>
 
-          <Link
-            href="/admin/collections/prize-claims"
-            className={`custom-sidebar-link ${isActive("/admin/collections/prize-claims") ? "active" : ""}`}
-          >
-            {/* Prize Claims Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {isAdmin && (
+            <Link
+              href="/admin/collections/prize-claims"
+              className={`custom-sidebar-link ${isActive("/admin/collections/prize-claims") ? "active" : ""}`}
             >
-              <rect width="20" height="12" x="2" y="6" rx="2" />
-              <path d="M12 12h.01" />
-              <path d="M17 12h.01" />
-              <path d="M7 12h.01" />
-            </svg>
-            Prize Claims Pipeline
-          </Link>
+              {/* Prize Claims Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="20" height="12" x="2" y="6" rx="2" />
+                <path d="M12 12h.01" />
+                <path d="M17 12h.01" />
+                <path d="M7 12h.01" />
+              </svg>
+              Prize Claims Pipeline
+            </Link>
+          )}
         </div>
 
-        <div
-          style={{
-            height: "1px",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            margin: "0.25rem 0.5rem",
-          }}
-        />
+        {isAdmin && (
+          <div
+            style={{
+              height: "1px",
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              margin: "0.25rem 0.5rem",
+            }}
+          />
+        )}
 
         {/* Campaign Assets */}
-        <div className="custom-sidebar-group">
-          <Link
-            href="/admin/collections/prizes"
-            className={`custom-sidebar-link ${isActive("/admin/collections/prizes") ? "active" : ""}`}
-          >
-            {/* Prizes Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {isAdmin && (
+          <div className="custom-sidebar-group">
+            <Link
+              href="/admin/collections/prizes"
+              className={`custom-sidebar-link ${isActive("/admin/collections/prizes") ? "active" : ""}`}
             >
-              <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-              <line x1="6" x2="6" y1="2" y2="4" />
-              <line x1="10" x2="10" y1="2" y2="4" />
-              <line x1="14" x2="14" y1="2" y2="4" />
-            </svg>
-            Prizes Catalog
-          </Link>
+              {/* Prizes Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                <line x1="6" x2="6" y1="2" y2="4" />
+                <line x1="10" x2="10" y1="2" y2="4" />
+                <line x1="14" x2="14" y1="2" y2="4" />
+              </svg>
+              Prizes Catalog
+            </Link>
 
-          <Link
-            href="/admin/collections/codes"
-            className={`custom-sidebar-link ${isActive("/admin/collections/codes") ? "active" : ""}`}
-          >
-            {/* Codes Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <Link
+              href="/admin/collections/codes"
+              className={`custom-sidebar-link ${isActive("/admin/collections/codes") ? "active" : ""}`}
             >
-              <path d="M3 5v14" />
-              <path d="M21 5v14" />
-              <path d="M7 5v14" />
-              <path d="M11 5v14" />
-              <path d="M17 5v14" />
-              <path d="M14 5v14" />
-            </svg>
-            Seeded Serial Codes
-          </Link>
-        </div>
+              {/* Codes Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 5v14" />
+                <path d="M21 5v14" />
+                <path d="M7 5v14" />
+                <path d="M11 5v14" />
+                <path d="M17 5v14" />
+                <path d="M14 5v14" />
+              </svg>
+              Seeded Serial Codes
+            </Link>
+          </div>
+        )}
 
-        <div
-          style={{
-            height: "1px",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            margin: "0.25rem 0.5rem",
-          }}
-        />
+        {isAdmin && (
+          <div
+            style={{
+              height: "1px",
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              margin: "0.25rem 0.5rem",
+            }}
+          />
+        )}
 
         {/* Customer Data */}
-        <div className="custom-sidebar-group">
-          <Link
-            href="/admin/collections/participants"
-            className={`custom-sidebar-link ${isActive("/admin/collections/participants") ? "active" : ""}`}
-          >
-            {/* Customers Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {isAdmin && (
+          <div className="custom-sidebar-group">
+            <Link
+              href="/admin/collections/participants"
+              className={`custom-sidebar-link ${isActive("/admin/collections/participants") ? "active" : ""}`}
             >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            Registered Customers
-          </Link>
+              {/* Customers Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              Registered Customers
+            </Link>
 
-          <Link
-            href="/admin/collections/entries"
-            className={`custom-sidebar-link ${isActive("/admin/collections/entries") ? "active" : ""}`}
-          >
-            {/* Entries Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <Link
+              href="/admin/collections/entries"
+              className={`custom-sidebar-link ${isActive("/admin/collections/entries") ? "active" : ""}`}
             >
-              <path d="M12 20h9" />
-              <path d="M3 20v-8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8" />
-              <path d="M3 12V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6" />
-              <path d="M14 12V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4" />
-            </svg>
-            Scan Activity Log
-          </Link>
+              {/* Entries Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path d="M3 20v-8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8" />
+                <path d="M3 12V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6" />
+                <path d="M14 12V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4" />
+              </svg>
+              Scan Activity Log
+            </Link>
 
-          {user?.role === "ADMIN" && (
             <Link
               href="/admin/collections/otp-verifications"
               className={`custom-sidebar-link ${isActive("/admin/collections/otp-verifications") ? "active" : ""}`}
@@ -249,8 +258,8 @@ export function CustomNav() {
               </svg>
               OTP Verifications
             </Link>
-          )}
-        </div>
+          </div>
+        )}
 
         <div
           style={{
@@ -310,24 +319,26 @@ export function CustomNav() {
             </Link>
           )}
 
-          <Link
-            href="/admin/collections/drink-campaigns"
-            className={`custom-sidebar-link ${isActive("/admin/collections/drink-campaigns") ? "active" : ""}`}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {isAdmin && (
+            <Link
+              href="/admin/collections/drink-campaigns"
+              className={`custom-sidebar-link ${isActive("/admin/collections/drink-campaigns") ? "active" : ""}`}
             >
-              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-            </svg>
-            Drink Campaigns
-          </Link>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+              </svg>
+              Drink Campaigns
+            </Link>
+          )}
 
           <Link
             href="/admin/collections/drink-entitlements"
@@ -393,46 +404,50 @@ export function CustomNav() {
             Drink Categories
           </Link>
 
-          <Link
-            href="/admin/collections/branches"
-            className={`custom-sidebar-link ${isActive("/admin/collections/branches") ? "active" : ""}`}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {isAdmin && (
+            <Link
+              href="/admin/collections/branches"
+              className={`custom-sidebar-link ${isActive("/admin/collections/branches") ? "active" : ""}`}
             >
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            Branches
-          </Link>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Branches
+            </Link>
+          )}
 
-          <Link
-            href="/admin/collections/drink-cashier-assignments"
-            className={`custom-sidebar-link ${isActive("/admin/collections/drink-cashier-assignments") ? "active" : ""}`}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {isAdmin && (
+            <Link
+              href="/admin/collections/drink-cashier-assignments"
+              className={`custom-sidebar-link ${isActive("/admin/collections/drink-cashier-assignments") ? "active" : ""}`}
             >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <polyline points="16 11 18 13 22 9" />
-            </svg>
-            Cashier Assignments
-          </Link>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <polyline points="16 11 18 13 22 9" />
+              </svg>
+              Cashier Assignments
+            </Link>
+          )}
 
           {user?.role === "ADMIN" && (
             <Link
@@ -457,32 +472,36 @@ export function CustomNav() {
           )}
         </div>
 
-        <div
-          style={{
-            height: "1px",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            margin: "0.25rem 0.5rem",
-          }}
-        />
-        <Link
-          href="/admin/collections/notifications"
-          className={`custom-sidebar-link ${isActive("/admin/collections/notifications") ? "active" : ""}`}
-        >
-          {/* WhatsApp Icon */}
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {isAdmin && (
+          <div
+            style={{
+              height: "1px",
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              margin: "0.25rem 0.5rem",
+            }}
+          />
+        )}
+        {isAdmin && (
+          <Link
+            href="/admin/collections/notifications"
+            className={`custom-sidebar-link ${isActive("/admin/collections/notifications") ? "active" : ""}`}
           >
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          Notifications Queue
-        </Link>
+            {/* WhatsApp Icon */}
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Notifications Queue
+          </Link>
+        )}
         {/* System Administration */}
         <div className="custom-sidebar-group">
           <Link
@@ -507,26 +526,28 @@ export function CustomNav() {
             Media Library
           </Link>
 
-          <Link
-            href="/admin/collections/users"
-            className={`custom-sidebar-link ${isActive("/admin/collections/users") ? "active" : ""}`}
-          >
-            {/* Users Icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {isAdmin && (
+            <Link
+              href="/admin/collections/users"
+              className={`custom-sidebar-link ${isActive("/admin/collections/users") ? "active" : ""}`}
             >
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            Admin & Staff Users
-          </Link>
+              {/* Users Icon */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Admin & Staff Users
+            </Link>
+          )}
 
           {user?.role === "ADMIN" && (
             <Link
