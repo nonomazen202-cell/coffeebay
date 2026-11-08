@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import styles from './CashierDrinkTerminal.module.css';
 
 interface VoucherLookupData {
@@ -210,6 +211,19 @@ export function CashierDrinkTerminal() {
 
   return (
     <div className={styles.terminalWrapper}>
+      {/* ── Top Navigation Bar / Breadcrumb ───────────────────────────── */}
+      <div className={styles.topBar}>
+        <Link href="/admin" className={styles.backButton}>
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>العودة للوحة التحكم الرئيسية / Back to Dashboard</span>
+        </Link>
+        <div className={styles.topBarMeta}>
+          <span className={styles.topBarBadge}>Coffee Bay Branch Operations • Drink Rewards Terminal</span>
+        </div>
+      </div>
+
       {/* ── Terminal & Dashboard Banner ───────────────────────────────── */}
       <div className={styles.headerCard}>
         <div className={styles.headerWave} />
