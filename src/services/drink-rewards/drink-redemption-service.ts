@@ -240,6 +240,8 @@ export class DrinkRedemptionService {
     if (!upperQuery.includes('-')) {
       codeCandidates.push(`CB-${upperQuery}`);
       codeCandidates.push(`DRK-${upperQuery}`);
+    } else if (upperQuery.startsWith('CB-')) {
+      codeCandidates.push(upperQuery.replace(/^CB-/, ''));
     }
 
     const entitlementDocs = await payload.find({

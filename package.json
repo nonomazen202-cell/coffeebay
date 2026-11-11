@@ -12,6 +12,7 @@
     "payload": "payload",
     "generate:types": "payload generate:types",
     "notification-worker": "tsx src/workers/notification.worker.ts",
+    "extend-vouchers": "tsx src/scripts/extend-vouchers-expiry.ts",
     "update-prizes": "tsx src/scripts/update-campaign-prizes.ts",
     "seed:drink-rewards": "tsx src/scripts/seed-drink-rewards.ts",
     "generate:importmap": "payload generate:importmap"

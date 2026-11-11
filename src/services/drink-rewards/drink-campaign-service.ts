@@ -84,19 +84,13 @@ export interface ClaimEntitlementResult {
 
 export class DrinkCampaignService {
   /**
-   * Generates a cryptographically secure 9-character voucher code (e.g. CB-XXXXXX).
-   * Shorter, clean format (CB- prefix + 6 unambiguous alphanumeric characters)
-   * specifically engineered for effortless verbal dictation across the coffee bar counter.
-   * Uses CSPRNG and unambiguous alphanumeric characters (omits 0/O, 1/I, L).
-   * 30^6 = ~729,000,000 combinations.
+   * Generates a 5-digit numeric voucher code with CB- prefix (e.g. CB-48291).
+   * Range: 10000 to 99999 (90,000 combinations).
+   * Effortless to speak, memorize, and type across the coffee bar counter.
    */
   generateVoucherCode(): string {
-    const chars = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
-    let randomPart = '';
-    for (let i = 0; i < 6; i++) {
-      randomPart += chars.charAt(crypto.randomInt(0, chars.length));
-    }
-    return `CB-${randomPart}`;
+    const randomNum = crypto.randomInt(10000, 100000);
+    return `CB-${randomNum}`;
   }
 
   /**

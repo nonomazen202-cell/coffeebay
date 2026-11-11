@@ -20,9 +20,26 @@ export const DrinkCampaigns: CollectionConfig = {
   },
   hooks: {
     afterChange: [
-      ({ doc, req, previousDoc }) => {
+      async ({ doc, req, previousDoc }) => {
         if (doc?.slug) {
           revalidateDrinkCampaignCache(doc.slug, req?.transactionID, previousDoc?.slug);
+        }
+
+        // If campaign end_date was extended/modified, cascade to all active unredeemed vouchers
+        if (doc?.id && doc?.end_date && previousDoc?.end_date && doc.end_date !== previousDoc.end_date) {
+          try {
+            const { sql } = await import('drizzle-orm');
+            const newExpiryIso = new Date(doc.end_date).toISOString();
+            await req.payload.db.drizzle.execute(sql`
+              UPDATE drink_entitlements
+              SET expires_at = ${newExpiryIso}, updated_at = NOW()
+              WHERE campaign_id = ${doc.id}
+                AND status = 'ISSUED'
+            `);
+            req.payload.logger.info(`[DrinkCampaigns] Synchronized expiry date to ${newExpiryIso} for all active vouchers in campaign ${doc.id}`);
+          } catch (err) {
+            req.payload.logger.error(`[DrinkCampaigns] Failed to cascade expiry update to entitlements: ${err}`);
+          }
         }
       },
     ],

@@ -353,7 +353,7 @@ export function CashierDrinkTerminal() {
               Verify Voucher & Dispense Drink <span style={{ fontSize: '1rem', fontWeight: 600, color: '#64748B' }}>/ دوّر على الكوبون وسلّم المشروب</span>
             </h2>
             <p className={styles.lookupSubtitle}>
-              اكتب كود الكوبون (مثل CB-XXXXXX) أو رقم هاتف العميل (01XXXXXXXXX) للتحقق الفوري
+              اكتب كود الكوبون (مثل 58392 أو CB-58392) أو رقم هاتف العميل (01XXXXXXXXX) للتحقق الفوري
             </p>
 
             <form onSubmit={handleLookup} className={styles.searchForm}>
@@ -364,7 +364,7 @@ export function CashierDrinkTerminal() {
                   autoFocus
                   value={codeInput}
                   onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                  placeholder="e.g. CB-XXXXXX or 01XXXXXXXXX"
+                  placeholder="e.g. 58392, CB-58392 or 01XXXXXXXXX"
                   className={styles.searchInput}
                 />
               </div>

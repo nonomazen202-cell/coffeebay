@@ -47,6 +47,7 @@ next-env.d.ts
 !/src/scripts/update-campaign-prizes.ts
 !/src/scripts/seed-drink-rewards.ts
 !/src/scripts/test-drink-rewards-journey.ts
+!/src/scripts/extend-vouchers-expiry.ts
 # !/src/scripts/inspect-db-codes.ts
 !/src/scripts/testing/
 /src/scripts/testing/*
