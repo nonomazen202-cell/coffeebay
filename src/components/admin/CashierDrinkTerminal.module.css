@@ -294,8 +294,8 @@
 }
 
 .kpiIconTop {
-  background: #FEF3C7;
-  color: #D97706;
+  background: #EEF2FF;
+  color: #150958;
 }
 
 .kpiMeta {
@@ -330,38 +330,40 @@
 /* ── POS Lookup Form Card ────────────────────────────────────────────────── */
 .lookupCard {
   background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 22px;
-  padding: 2.25rem 2rem;
-  box-shadow: 0 6px 24px rgba(21, 9, 88, 0.05);
+  border: 2px solid #E2E8F0;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 10px 30px rgba(21, 9, 88, 0.05);
   text-align: center;
 }
 
 .lookupTitle {
-  font-size: 1.55rem;
+  font-size: 1.7rem;
   font-weight: 900;
   color: #150958;
-  margin: 0 0 0.45rem 0;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
 }
 
 .lookupSubtitle {
   font-size: 1.05rem;
   color: #64748B;
-  margin: 0 0 1.75rem 0;
-  line-height: 1.5;
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
 }
 
 .searchForm {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  max-width: 680px;
+  gap: 1rem;
+  max-width: 720px;
   margin: 0 auto;
 }
 
 @media (min-width: 640px) {
   .searchForm {
     flex-direction: row;
+    align-items: stretch;
   }
 }
 
@@ -372,52 +374,52 @@
 
 .searchInput {
   width: 100%;
-  padding: 1.1rem 1.5rem;
-  border-radius: 14px;
+  height: 64px;
+  padding: 0 1.5rem;
+  border-radius: 16px;
   background: #F8FAFC;
   border: 2px solid #CBD5E1;
   color: #150958;
   font-family: monospace;
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.45rem;
+  font-weight: 900;
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
-  min-height: 58px;
 }
 
 .searchInput:focus {
   outline: none;
   background: #FFFFFF;
   border-color: #150958;
-  box-shadow: 0 0 0 4px rgba(21, 9, 88, 0.12);
+  box-shadow: 0 0 0 4px rgba(21, 9, 88, 0.14);
 }
 
 .searchButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 1.1rem 2.25rem;
-  border-radius: 14px;
-  background: #150958;
+  gap: 0.75rem;
+  height: 64px;
+  padding: 0 2.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 100%);
   color: #FFFFFF;
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 900;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.25);
+  box-shadow: 0 8px 24px rgba(21, 9, 88, 0.28);
   white-space: nowrap;
-  min-height: 58px;
 }
 
 .searchButton:hover:not(:disabled) {
-  background: #1E1270;
+  background: linear-gradient(135deg, #1E1270 0%, #2A1B8C 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(21, 9, 88, 0.35);
+  box-shadow: 0 12px 30px rgba(21, 9, 88, 0.36);
 }
 
 .searchButton:disabled {
@@ -456,81 +458,88 @@
 /* ── Voucher Verification Card ───────────────────────────────────────────── */
 .voucherCard {
   background: #FFFFFF;
-  border: 2px solid #C7D2FE;
-  border-radius: 22px;
-  padding: 2.25rem;
-  box-shadow: 0 12px 36px rgba(21, 9, 88, 0.08);
+  border: 2px solid #CBD5E1;
+  border-radius: 24px;
+  padding: 2.5rem 2.25rem;
+  box-shadow: 0 16px 45px rgba(21, 9, 88, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .voucherHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #E2E8F0;
-  padding-bottom: 1.25rem;
+  border-bottom: 1.5px solid #E2E8F0;
+  padding-bottom: 1.5rem;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .voucherCodeLabel {
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .voucherCodeValue {
   font-family: monospace;
-  font-size: 1.85rem;
+  font-size: 2.25rem;
   font-weight: 900;
   color: #150958;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  line-height: 1;
 }
 
 .statusPill {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.15rem;
+  gap: 0.6rem;
+  padding: 0.65rem 1.35rem;
   border-radius: 9999px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 800;
 }
 
 .statusIssued {
   background: #ECFDF5;
-  color: #059669;
-  border: 1px solid #A7F3D0;
+  color: #065F46;
+  border: 1.5px solid #A7F3D0;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
 }
 
 .statusRedeemed {
   background: #EEF2FF;
   color: #150958;
-  border: 1px solid #C7D2FE;
+  border: 1.5px solid #C7D2FE;
 }
 
 .statusExpired {
   background: #F1F5F9;
   color: #64748B;
-  border: 1px solid #CBD5E1;
+  border: 1.5px solid #CBD5E1;
 }
 
 .statusCancelled {
   background: #FEF2F2;
   color: #DC2626;
-  border: 1px solid #FECACA;
+  border: 1.5px solid #FECACA;
 }
 
 .statusPulseDot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #10B981;
   animation: pulse 2s infinite;
+  box-shadow: 0 0 8px #10B981;
 }
 
 @keyframes pulse {
@@ -539,76 +548,104 @@
   100% { opacity: 1; }
 }
 
-/* Info Grid */
+/* Info Grid - 4 Refined VIP Tiles */
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1.25rem;
-  background: #F8FAFC;
-  padding: 1.5rem;
-  border-radius: 16px;
-  border: 1px solid #E2E8F0;
-  text-align: left;
 }
 
 @media (min-width: 640px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
   .infoGrid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
+.infoTile {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+}
+
+.infoTile:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.05);
+  transform: translateY(-2px);
+}
+
 .infoItemLabel {
-  font-size: 0.825rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 800;
   color: #64748B;
-  display: block;
-  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .infoItemValue {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #1E293B;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #150958;
+  word-break: break-word;
 }
 
-/* Beverage Choice Display */
+/* Beverage Choice Display - Spotlight Hero Box */
 .selectedDrinkBox {
-  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  background: linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%);
   border: 2px solid #C7D2FE;
-  border-radius: 16px;
-  padding: 1.5rem 1.75rem;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 1.5rem;
   text-align: left;
+  box-shadow: 0 6px 20px rgba(21, 9, 88, 0.04);
 }
 
 .selectedDrinkLabel {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #4338CA;
+  color: #150958;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 0.35rem;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
 }
 
 .selectedDrinkName {
-  font-size: 1.65rem;
+  font-size: 2.1rem;
   font-weight: 900;
   color: #150958;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 /* Audit box if redeemed */
 .auditBox {
-  background: #F1F5F9;
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem;
+  background: #F8FAFC;
+  border-radius: 16px;
+  padding: 1.35rem 1.65rem;
   font-size: 0.95rem;
   color: #475569;
   line-height: 1.7;
-  border: 1px solid #E2E8F0;
+  border: 1.5px solid #E2E8F0;
   text-align: left;
 }
 
@@ -640,7 +677,7 @@
   gap: 0.75rem;
   padding: 1.25rem 2.25rem;
   border-radius: 16px;
-  background: #150958;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 100%);
   color: #FFFFFF;
   font-size: 1.2rem;
   font-weight: 900;
@@ -652,7 +689,7 @@
 }
 
 .redeemPrimaryButton:hover:not(:disabled) {
-  background: #1E1270;
+  background: linear-gradient(135deg, #1E1270 0%, #2A1B8C 100%);
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(21, 9, 88, 0.38);
 }
@@ -684,17 +721,18 @@
   border-color: #150958;
 }
 
-/* Substitution Form */
+/* Substitution Form - Strict Coffee Bay Brand Colors */
 .substituteBox {
-  background: #FFFDF5;
-  border: 2px solid #FCD34D;
-  border-radius: 20px;
-  padding: 2rem;
+  background: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  border-left: 6px solid #150958;
+  border-radius: 22px;
+  padding: 2.25rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
   text-align: left;
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.08);
+  box-shadow: 0 12px 32px rgba(21, 9, 88, 0.07);
 }
 
 .substituteHeader {
@@ -703,23 +741,24 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 1.5px solid #FEF08A;
+  padding-bottom: 1.15rem;
+  border-bottom: 1.5px solid #F1F5F9;
 }
 
 .substituteTitle {
   font-weight: 900;
-  color: #92400E;
+  color: #150958;
   font-size: 1.35rem;
+  letter-spacing: -0.01em;
 }
 
 .substituteCancelBtn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
+  padding: 0.65rem 1.25rem;
   border-radius: 12px;
-  background: #FFFFFF;
+  background: #F8FAFC;
   border: 1.5px solid #CBD5E1;
   color: #475569;
   font-size: 0.95rem;
@@ -729,17 +768,17 @@
 }
 
 .substituteCancelBtn:hover {
-  background: #F1F5F9;
-  border-color: #94A3B8;
-  color: #1E293B;
+  background: #EEF2FF;
+  border-color: #150958;
+  color: #150958;
 }
 
 .subFieldLabel {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #78350F;
+  color: #150958;
   display: block;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
 }
 
 /* Drink selection grid */
@@ -750,14 +789,14 @@
 }
 
 .drinkCardBtn {
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.25rem;
   border-radius: 14px;
   background: #FFFFFF;
   border: 2px solid #E2E8F0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.35rem;
+  gap: 0.4rem;
   cursor: pointer;
   text-align: left;
   transition: all 0.18s ease;
@@ -766,24 +805,24 @@
 }
 
 .drinkCardBtn:hover {
-  border-color: #D97706;
-  background: #FFFBEB;
+  border-color: #150958;
+  background: #F8FAFC;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.12);
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.08);
 }
 
 .drinkCardBtnActive {
   background: #150958 !important;
   border-color: #150958 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.28) !important;
+  box-shadow: 0 8px 22px rgba(21, 9, 88, 0.28) !important;
   transform: translateY(-2px);
 }
 
 .drinkCardName {
   font-size: 1.15rem;
   font-weight: 900;
-  color: #1E293B;
+  color: #150958;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -795,7 +834,7 @@
 }
 
 .drinkCardCat {
-  font-size: 0.825rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #64748B;
 }
@@ -807,17 +846,17 @@
 .originalBadge {
   font-size: 0.72rem;
   font-weight: 800;
-  padding: 0.2rem 0.55rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 9999px;
-  background: #FEF3C7;
-  color: #92400E;
-  border: 1px solid #FDE68A;
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
 }
 
 .drinkCardBtnActive .originalBadge {
   background: rgba(255, 255, 255, 0.2);
   color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Quick reason chips */
@@ -829,11 +868,11 @@
 }
 
 .reasonChip {
-  padding: 0.6rem 1.15rem;
+  padding: 0.65rem 1.25rem;
   border-radius: 9999px;
   background: #FFFFFF;
-  border: 1.5px solid #FCD34D;
-  color: #92400E;
+  border: 1.5px solid #CBD5E1;
+  color: #334155;
   font-size: 0.95rem;
   font-weight: 800;
   cursor: pointer;
@@ -842,35 +881,36 @@
 }
 
 .reasonChip:hover {
-  background: #FEF3C7;
-  border-color: #D97706;
+  background: #EEF2FF;
+  border-color: #150958;
+  color: #150958;
   transform: translateY(-1px);
 }
 
 .reasonChipActive {
-  background: #D97706 !important;
-  border-color: #D97706 !important;
+  background: #150958 !important;
+  border-color: #150958 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 4px 14px rgba(21, 9, 88, 0.25);
 }
 
 .subInput {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 1.05rem 1.35rem;
   border-radius: 12px;
-  border: 2px solid #FCD34D;
+  border: 2px solid #CBD5E1;
   background: #FFFFFF;
-  color: #1E293B;
-  font-size: 1.1rem;
+  color: #150958;
+  font-size: 1.05rem;
   box-sizing: border-box;
-  min-height: 52px;
+  min-height: 54px;
   transition: all 0.2s ease;
 }
 
 .subInput:focus {
   outline: none;
-  border-color: #D97706;
-  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15);
+  border-color: #150958;
+  box-shadow: 0 0 0 4px rgba(21, 9, 88, 0.12);
 }
 
 .subConfirmButton {
@@ -878,9 +918,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 2.25rem;
   border-radius: 16px;
-  background: #D97706;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 100%);
   color: #FFFFFF;
   font-weight: 900;
   font-size: 1.25rem;
@@ -888,13 +928,13 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 62px;
-  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 8px 24px rgba(21, 9, 88, 0.28);
 }
 
 .subConfirmButton:hover:not(:disabled) {
-  background: #B45309;
+  background: linear-gradient(135deg, #1E1270 0%, #2A1B8C 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(217, 119, 6, 0.38);
+  box-shadow: 0 12px 30px rgba(21, 9, 88, 0.38);
 }
 
 .subConfirmButton:disabled {

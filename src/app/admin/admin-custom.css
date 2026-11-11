@@ -478,6 +478,18 @@ aside.nav button,
   z-index: 1;
 }
 
+/* Explicitly disable any PNG background wave image overlays on all cards across admin */
+.cb-wave-card::after,
+.glassy-card::after,
+.card-blue::after,
+.card-brown::after,
+.card::after,
+[class*="card"]::after {
+  content: none !important;
+  display: none !important;
+  background-image: none !important;
+}
+
 /* ==========================================================================
    Coffee Bay Form and Input Fields Styling (Clean Light Surface + Silver Border)
    ========================================================================== */

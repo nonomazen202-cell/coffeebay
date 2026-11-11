@@ -197,6 +197,11 @@ export async function CustomDashboard(props: { user?: User | null }) {
           border-top-left-radius: 0.875rem;
           border-bottom-left-radius: 0.875rem;
         }
+        .glassy-card::after {
+          content: none !important;
+          display: none !important;
+          background-image: none !important;
+        }
         .glassy-card:hover {
           background: #FFFFFF;
           border-color: #CBD5E1;
