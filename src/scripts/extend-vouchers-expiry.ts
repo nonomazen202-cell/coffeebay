@@ -41,11 +41,14 @@ async function main() {
   console.table(vouchersBefore.rows);
 
   // 3. Update active ISSUED vouchers to new target expiry date
+  // STRICT SAFETY: Only vouchers that are 'ISSUED' AND have NOT expired yet (expires_at >= NOW())
+  // Expired, redeemed, or cancelled vouchers are strictly protected and never touched.
   const updateRes = await payload.db.drizzle.execute(sql`
     UPDATE drink_entitlements
     SET expires_at = ${targetExpiryIso}, updated_at = NOW()
     WHERE campaign_id = ${campaign.id}
       AND status = 'ISSUED'
+      AND expires_at >= NOW()
     RETURNING id, voucher_code, customer_name, phone, status, expires_at
   `);
 
@@ -68,3 +71,4 @@ main().catch((err) => {
   console.error('Fatal error running migration:', err);
   process.exit(1);
 });
+
