@@ -686,72 +686,220 @@
 
 /* Substitution Form */
 .substituteBox {
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: #FFFDF5;
+  border: 2px solid #FCD34D;
+  border-radius: 20px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1.5rem;
   text-align: left;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.08);
 }
 
 .substituteHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid #FEF08A;
 }
 
 .substituteTitle {
-  font-weight: 800;
+  font-weight: 900;
   color: #92400E;
-  font-size: 1.05rem;
+  font-size: 1.35rem;
 }
 
-.substituteCancelLink {
-  background: none;
-  border: none;
-  color: #B45309;
-  font-size: 0.9rem;
+.substituteCancelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+  font-size: 0.95rem;
   font-weight: 800;
   cursor: pointer;
-  text-decoration: underline;
+  transition: all 0.2s ease;
+}
+
+.substituteCancelBtn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  color: #1E293B;
 }
 
 .subFieldLabel {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
   color: #78350F;
   display: block;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.65rem;
 }
 
-.subSelect,
+/* Drink selection grid */
+.drinkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.85rem;
+}
+
+.drinkCardBtn {
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  font-family: inherit;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.drinkCardBtn:hover {
+  border-color: #D97706;
+  background: #FFFBEB;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.12);
+}
+
+.drinkCardBtnActive {
+  background: #150958 !important;
+  border-color: #150958 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(21, 9, 88, 0.28) !important;
+  transform: translateY(-2px);
+}
+
+.drinkCardName {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.drinkCardBtnActive .drinkCardName {
+  color: #FFFFFF !important;
+}
+
+.drinkCardCat {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #64748B;
+}
+
+.drinkCardBtnActive .drinkCardCat {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.originalBadge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.drinkCardBtnActive .originalBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Quick reason chips */
+.reasonChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.reasonChip {
+  padding: 0.6rem 1.15rem;
+  border-radius: 9999px;
+  background: #FFFFFF;
+  border: 1.5px solid #FCD34D;
+  color: #92400E;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.reasonChip:hover {
+  background: #FEF3C7;
+  border-color: #D97706;
+  transform: translateY(-1px);
+}
+
+.reasonChipActive {
+  background: #D97706 !important;
+  border-color: #D97706 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
+}
+
 .subInput {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  border: 1.5px solid #FCD34D;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 2px solid #FCD34D;
   background: #FFFFFF;
   color: #1E293B;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   box-sizing: border-box;
+  min-height: 52px;
+  transition: all 0.2s ease;
+}
+
+.subInput:focus {
+  outline: none;
+  border-color: #D97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15);
 }
 
 .subConfirmButton {
-  padding: 0.9rem 1.5rem;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  border-radius: 16px;
   background: #D97706;
   color: #FFFFFF;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 900;
+  font-size: 1.25rem;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  min-height: 62px;
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.28);
 }
 
 .subConfirmButton:hover:not(:disabled) {
   background: #B45309;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(217, 119, 6, 0.38);
+}
+
+.subConfirmButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ── Success Redemption Receipt ─────────────────────────────────────────── */

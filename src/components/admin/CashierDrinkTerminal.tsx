@@ -597,42 +597,89 @@ export function CashierDrinkTerminal() {
                     /* Substitution Mode */
                     <div className={styles.substituteBox}>
                       <div className={styles.substituteHeader}>
-                        <span className={styles.substituteTitle}>
-                          Dispense Alternative / صرف مشروب بديل معتمد
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                          <span style={{ fontSize: '1.4rem' }}>🔄</span>
+                          <span className={styles.substituteTitle}>
+                            Dispense Alternative / صرف مشروب بديل
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => setIsSubstituting(false)}
-                          className={styles.substituteCancelLink}
+                          className={styles.substituteCancelBtn}
                         >
-                          Cancel / تراجع
+                          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          <span>إلغاء وتراجع / Cancel</span>
                         </button>
                       </div>
 
+                      {/* 1. Fast Visual Drink Selection Grid */}
                       <div>
-                        <label className={styles.subFieldLabel}>Alternative Beverage / المشروب البديل المتاح:</label>
-                        <select
-                          value={selectedSubstituteId}
-                          onChange={(e) => setSelectedSubstituteId(e.target.value)}
-                          className={styles.subSelect}
-                        >
-                          <option value="">اختار المشروب البديل من القائمة المعتمدة...</option>
-                          {voucher.allowedAlternativeDrinks.map((alt) => (
-                            <option key={alt.id} value={alt.id}>
-                              {alt.name} {alt.id === voucher.selectedDrink.id ? '(المشروب الأصلي)' : ''}
-                            </option>
-                          ))}
-                        </select>
+                        <label className={styles.subFieldLabel}>
+                          1. اختار المشروب البديل / Select Alternative Beverage:
+                        </label>
+                        <div className={styles.drinkGrid}>
+                          {voucher.allowedAlternativeDrinks.map((alt) => {
+                            const isCurrentSelected = String(alt.id) === selectedSubstituteId;
+                            const isOriginal = alt.id === voucher.selectedDrink.id;
+                            return (
+                              <button
+                                key={alt.id}
+                                type="button"
+                                onClick={() => setSelectedSubstituteId(String(alt.id))}
+                                className={`${styles.drinkCardBtn} ${isCurrentSelected ? styles.drinkCardBtnActive : ''}`}
+                              >
+                                <div className={styles.drinkCardName}>
+                                  <span>{alt.name}</span>
+                                  {isCurrentSelected && <span style={{ fontSize: '1.15rem' }}>✓</span>}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem', width: '100%', justifyContent: 'space-between' }}>
+                                  {alt.categoryName && (
+                                    <span className={styles.drinkCardCat}>{alt.categoryName}</span>
+                                  )}
+                                  {isOriginal && (
+                                    <span className={styles.originalBadge}>المشروب الأصلي</span>
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
 
+                      {/* 2. Substitution Reason with One-Touch Preset Chips */}
                       <div>
-                        <label className={styles.subFieldLabel}>Substitution Reason / سبب الاستبدال (مطلوب لأغراض الجرد والمحاسبة):</label>
+                        <label className={styles.subFieldLabel}>
+                          2. سبب الاستبدال / Substitution Reason (مطلوب لأغراض الجرد والمحاسبة):
+                        </label>
+
+                        {/* Quick Reason Chips */}
+                        <div className={styles.reasonChipsRow}>
+                          {[
+                            'رغبة العميل في صنف آخر',
+                            'الصنف غير متوفر حالياً',
+                            'نفاد الحليب / المكونات',
+                            'عطل مؤقت في ماكينة المشروب',
+                          ].map((presetReason) => (
+                            <button
+                              key={presetReason}
+                              type="button"
+                              onClick={() => setChangeReason(presetReason)}
+                              className={`${styles.reasonChip} ${changeReason === presetReason ? styles.reasonChipActive : ''}`}
+                            >
+                              {presetReason}
+                            </button>
+                          ))}
+                        </div>
+
                         <input
                           type="text"
                           required
                           value={changeReason}
                           onChange={(e) => setChangeReason(e.target.value)}
-                          placeholder="مثال: الصنف غير متوفر حالياً / رغبة العميل في صنف بديل"
+                          placeholder="أو اكتب سبب الاستبدال هنا بالتفصيل..."
                           className={styles.subInput}
                         />
                       </div>
@@ -643,7 +690,16 @@ export function CashierDrinkTerminal() {
                         disabled={redeeming || !selectedSubstituteId || !changeReason.trim()}
                         className={styles.subConfirmButton}
                       >
-                        {redeeming ? 'جاري التأكيد...' : 'Confirm Alternative Handover / أكّد صرف المشروب البديل'}
+                        {redeeming ? (
+                          'جاري تأكيد الصرف والتسجيل...'
+                        ) : (
+                          <>
+                            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Confirm Alternative Handover / تأكيد صرف المشروب البديل
+                          </>
+                        )}
                       </button>
                     </div>
                   )}
