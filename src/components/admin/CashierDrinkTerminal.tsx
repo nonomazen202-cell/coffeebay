@@ -104,6 +104,7 @@ export function CashierDrinkTerminal() {
   const [redeeming, setRedeeming] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [voucher, setVoucher] = useState<VoucherLookupData | null>(null);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   // Substitution state
   const [isSubstituting, setIsSubstituting] = useState(false);
@@ -166,14 +167,14 @@ export function CashierDrinkTerminal() {
       if (!res.ok || !data.found) {
         setErrorMessage(
           data.message ||
-            "ملقيناش أي كوبون بالكود ده أو برقم الموبايل ده، اتأكد من الرقم وجرّب تاني",
+            "لم يتم العثور على أي كوبون بهذا الكود أو برقم الهاتف، يُرجى التأكد من البيانات والمحاولة مجدداً",
         );
         return;
       }
 
       setVoucher(data.voucher);
     } catch {
-      setErrorMessage("النت فاصل أو في مشكلة في السيرفر، جرّب تاني");
+      setErrorMessage("تعذر الاتصال بالخادم، يُرجى التأكد من الاتصال بالإنترنت والمحاولة مجدداً");
     } finally {
       setLoading(false);
     }
@@ -207,7 +208,7 @@ export function CashierDrinkTerminal() {
 
       if (!res.ok || !data.success) {
         setErrorMessage(
-          data.message || "مقدرناش نصرف الكوبون دلوقتي، جرّب تاني",
+          data.message || "تعذر إتمام عملية الصرف، يُرجى المحاولة مرة أخرى",
         );
         return;
       }
@@ -217,7 +218,7 @@ export function CashierDrinkTerminal() {
       setCodeInput("");
       fetchDashboardData();
     } catch {
-      setErrorMessage("حصل خطأ في السيستم أثناء تسجيل الصرف، جرّب كمان مرة");
+      setErrorMessage("حدث خطأ تقني أثناء تسجيل الصرف، يُرجى إعادة المحاولة");
     } finally {
       setRedeeming(false);
     }
@@ -365,13 +366,13 @@ export function CashierDrinkTerminal() {
         </div>
       </div>
 
-      {/* ── Top KPI Metrics Strip ─────────────────────────────────────── */}
+      {/* ── Top KPI Metrics Strip (Luxury Deck) ───────────────────────── */}
       <div className={styles.kpiStrip}>
         <div className={styles.kpiCard}>
           <div className={`${styles.kpiIconWrapper} ${styles.kpiIconToday}`}>
             <svg
-              width="22"
-              height="22"
+              width="24"
+              height="24"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -379,8 +380,8 @@ export function CashierDrinkTerminal() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M5 13l4 4L19 7"
+                strokeWidth={2.2}
+                d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4ZM9 12l2 2 4-4"
               />
             </svg>
           </div>
@@ -390,7 +391,7 @@ export function CashierDrinkTerminal() {
             </span>
             <span className={styles.kpiValue} style={{ color: "#059669" }}>
               {kpi.todayRedeemed.toLocaleString()}{" "}
-              <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+              <span style={{ fontSize: "0.95rem", fontWeight: 700, color: "#64748B" }}>
                 مشروب
               </span>
             </span>
@@ -400,8 +401,8 @@ export function CashierDrinkTerminal() {
         <div className={styles.kpiCard}>
           <div className={`${styles.kpiIconWrapper} ${styles.kpiIconActive}`}>
             <svg
-              width="22"
-              height="22"
+              width="24"
+              height="24"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -409,14 +410,14 @@ export function CashierDrinkTerminal() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                strokeWidth={2.2}
+                d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2ZM13 5v2M13 17v2M13 11v2"
               />
             </svg>
           </div>
           <div className={styles.kpiMeta}>
             <span className={styles.kpiLabel}>
-              Active Unredeemed / قسائم مستنية زباينها
+              Active Unredeemed / قسائم بانتظار الصرف
             </span>
             <span className={styles.kpiValue}>
               {kpi.activeVouchers.toLocaleString()}
@@ -427,8 +428,8 @@ export function CashierDrinkTerminal() {
         <div className={styles.kpiCard}>
           <div className={`${styles.kpiIconWrapper} ${styles.kpiIconTotal}`}>
             <svg
-              width="22"
-              height="22"
+              width="24"
+              height="24"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -436,14 +437,14 @@ export function CashierDrinkTerminal() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                strokeWidth={2.2}
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10ZM9 12l2 2 4-4"
               />
             </svg>
           </div>
           <div className={styles.kpiMeta}>
             <span className={styles.kpiLabel}>
-              Total Redeemed / إجمالي اللي اتصرف
+              Total Redeemed / إجمالي المصروف
             </span>
             <span className={styles.kpiValue} style={{ color: "#2563EB" }}>
               {kpi.totalRedeemed.toLocaleString()}
@@ -454,8 +455,8 @@ export function CashierDrinkTerminal() {
         <div className={styles.kpiCard}>
           <div className={`${styles.kpiIconWrapper} ${styles.kpiIconTop}`}>
             <svg
-              width="22"
-              height="22"
+              width="24"
+              height="24"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -463,8 +464,8 @@ export function CashierDrinkTerminal() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"
+                strokeWidth={2.2}
+                d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a6 6 0 0 1 6 6v3.58a6 6 0 0 1-1.92 4.41L12 19l-4.08-3a6 6 0 0 1-1.92-4.41V8a6 6 0 0 1 6-6Z"
               />
             </svg>
           </div>
@@ -482,23 +483,44 @@ export function CashierDrinkTerminal() {
       {/* ── View 1: POS Station ───────────────────────────────────────── */}
       {activeTab === "POS" && (
         <>
-          {/* Quick Lookup Form Card */}
+          {/* Quick Lookup Form Card (High-Tech POS Terminal) */}
           <div className={styles.lookupCard}>
+            <div className={styles.stationBadge}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              POS BARCODE & PHONE SCANNER • محطة فحص الكوبونات
+            </div>
             <h2 className={styles.lookupTitle}>
               Verify Voucher & Dispense Drink{" "}
               <span
-                style={{ fontSize: "1rem", fontWeight: 600, color: "#64748B" }}
+                style={{ fontSize: "1.1rem", fontWeight: 700, color: "#64748B" }}
               >
                 / دوّر على الكوبون وسلّم المشروب
               </span>
             </h2>
             <p className={styles.lookupSubtitle}>
-              اكتب كود الكوبون (مثل 58392 أو CB-58392) أو رقم هاتف العميل
-              (01XXXXXXXXX) للتحقق الفوري
+              اكتب كود الكوبون المكون من 5 أرقام (مثل 58392 أو CB-58392) أو رقم هاتف العميل (01XXXXXXXXX) للتحقق الفوري
             </p>
 
             <form onSubmit={handleLookup} className={styles.searchForm}>
-              <div className={styles.inputContainer}>
+              <div className={styles.inputWrapper}>
+                <svg
+                  className={styles.inputIcon}
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
                 <input
                   type="text"
                   required
@@ -508,6 +530,19 @@ export function CashierDrinkTerminal() {
                   placeholder="e.g. 58392, CB-58392 or 01XXXXXXXXX"
                   className={styles.searchInput}
                 />
+                {codeInput && (
+                  <button
+                    type="button"
+                    onClick={() => setCodeInput("")}
+                    className={styles.inputClearBtn}
+                    title="مسح الحقل"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                )}
               </div>
               <button
                 type="submit"
@@ -517,8 +552,8 @@ export function CashierDrinkTerminal() {
                 {loading ? (
                   <>
                     <svg
-                      width="18"
-                      height="18"
+                      width="20"
+                      height="20"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -533,13 +568,13 @@ export function CashierDrinkTerminal() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    Searching... / بنبحث...
+                    <span>Searching... / جاري الفحص...</span>
                   </>
                 ) : (
                   <>
                     <svg
-                      width="18"
-                      height="18"
+                      width="20"
+                      height="20"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -547,11 +582,11 @@ export function CashierDrinkTerminal() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
-                    Verify / افحص الكوبون أو الرقم
+                    <span>Verify / افحص الكوبون أو الرقم</span>
                   </>
                 )}
               </button>
@@ -562,19 +597,16 @@ export function CashierDrinkTerminal() {
           {errorMessage && (
             <div className={styles.errorAlert}>
               <svg
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 style={{ flexShrink: 0 }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
+                <circle cx="12" cy="12" r="10" strokeWidth={2} />
+                <line x1="12" y1="8" x2="12" y2="12" strokeWidth={2.5} strokeLinecap="round" />
+                <circle cx="12" cy="16" r="1" fill="currentColor" />
               </svg>
               <span>{errorMessage}</span>
             </div>
@@ -585,8 +617,8 @@ export function CashierDrinkTerminal() {
             <div className={styles.receiptCard}>
               <div className={styles.receiptIconCircle}>
                 <svg
-                  width="32"
-                  height="32"
+                  width="36"
+                  height="36"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -602,7 +634,7 @@ export function CashierDrinkTerminal() {
               <div>
                 <h2 className={styles.receiptTitle}>
                   Drink Dispensed Successfully!{" "}
-                  <span style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+                  <span style={{ fontSize: "1.2rem", fontWeight: 700 }}>
                     / تم تأكيد تسليم المشروب بنجاح
                   </span>
                 </h2>
@@ -618,7 +650,7 @@ export function CashierDrinkTerminal() {
                   </span>
                   <span
                     className={styles.receiptRowValue}
-                    style={{ fontFamily: "monospace" }}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.08em" }}
                   >
                     {receipt.voucherCode}
                   </span>
@@ -681,18 +713,50 @@ export function CashierDrinkTerminal() {
             </div>
           )}
 
-          {/* ── Voucher Verification Details Card ─────────────────────── */}
+          {/* ── Voucher Verification Details Card (Luxury Ticket) ──────── */}
           {voucher && (
             <div className={styles.voucherCard}>
-              {/* Header: Code & Status */}
+              {/* Header: Code with Copy & High-End Status */}
               <div className={styles.voucherHeader}>
-                <div>
-                  <span className={styles.voucherCodeLabel}>
-                    Voucher Code / كود الكوبون:
-                  </span>
-                  <span className={styles.voucherCodeValue}>
-                    {voucher.voucherCode}
-                  </span>
+                <div className={styles.voucherCodeContainer}>
+                  <div className={styles.voucherCodeMeta}>
+                    <span className={styles.voucherCodeTag}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+                      </svg>
+                      VOUCHER CODE / كود الكوبون المعتمد
+                    </span>
+                    <span className={styles.voucherCodeValue}>
+                      {voucher.voucherCode}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(voucher.voucherCode);
+                      setCopiedCode(true);
+                      setTimeout(() => setCopiedCode(false), 2000);
+                    }}
+                    className={styles.copyCodeButton}
+                    title="نسخ الكود"
+                  >
+                    {copiedCode ? (
+                      <>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span style={{ color: "#059669" }}>تم النسخ</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        <span>نسخ الكود</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 <div>
@@ -701,28 +765,46 @@ export function CashierDrinkTerminal() {
                       className={`${styles.statusPill} ${styles.statusIssued}`}
                     >
                       <span className={styles.statusPulseDot} />
-                      Ready to Redeem / جاهز للصرف حالاً 🟢
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Ready to Redeem / جاهز للصرف حالاً
                     </span>
                   )}
                   {voucher.status === "REDEEMED" && (
                     <span
                       className={`${styles.statusPill} ${styles.statusRedeemed}`}
                     >
-                      Already Redeemed / اتصرف خلاص ☕
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                        <line x1="6" y1="2" x2="6" y2="4" />
+                        <line x1="10" y1="2" x2="10" y2="4" />
+                        <line x1="14" y1="2" x2="14" y2="4" />
+                      </svg>
+                      Already Redeemed / تم الصرف مسبقاً
                     </span>
                   )}
                   {voucher.status === "EXPIRED" && (
                     <span
                       className={`${styles.statusPill} ${styles.statusExpired}`}
                     >
-                      Expired / وقته خلص (منتهي) ⏳
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      Expired / منتهي الصلاحية
                     </span>
                   )}
                   {voucher.status === "CANCELLED" && (
                     <span
                       className={`${styles.statusPill} ${styles.statusCancelled}`}
                     >
-                      Cancelled / ملغي من الإدارة 🚫
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                      </svg>
+                      Cancelled / ملغي من الإدارة
                     </span>
                   )}
                 </div>
@@ -732,8 +814,8 @@ export function CashierDrinkTerminal() {
               {!voucher.isBranchAllowed && (
                 <div className={styles.branchWarning}>
                   <svg
-                    width="20"
-                    height="20"
+                    width="22"
+                    height="22"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -750,13 +832,13 @@ export function CashierDrinkTerminal() {
                 </div>
               )}
 
-              {/* Customer & Campaign Grid */}
+              {/* Customer & Campaign Grid (4 VIP Modular Tiles) */}
               <div className={styles.infoGrid}>
                 <div className={styles.infoTile}>
                   <span className={styles.infoItemLabel}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
                     </svg>
                     Customer Name / اسم العميل:
                   </span>
@@ -766,25 +848,25 @@ export function CashierDrinkTerminal() {
                 </div>
                 <div className={styles.infoTile}>
                   <span className={styles.infoItemLabel}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                     </svg>
                     Phone Number / رقم الهاتف:
                   </span>
                   <span
                     className={styles.infoItemValue}
-                    style={{ fontFamily: "monospace", letterSpacing: "0.04em" }}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }}
                   >
                     {voucher.phone || voucher.maskedPhone}
                   </span>
                 </div>
                 <div className={styles.infoTile}>
                   <span className={styles.infoItemLabel}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                     Campaign / اسم الحملة:
                   </span>
@@ -794,11 +876,11 @@ export function CashierDrinkTerminal() {
                 </div>
                 <div className={styles.infoTile}>
                   <span className={styles.infoItemLabel}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
                     </svg>
-                    Expires At / تاريخ الانتهاء:
+                    Expires At / تاريخ الصلاحية:
                   </span>
                   <span className={styles.infoItemValue}>
                     {new Date(voucher.expiresAt).toLocaleDateString("en-US", {
@@ -812,48 +894,42 @@ export function CashierDrinkTerminal() {
                 </div>
               </div>
 
-              {/* Beverage Choice Box - Hero Spotlight */}
+              {/* Beverage Choice Box - Deep Navy Spotlight Hero */}
               <div className={styles.selectedDrinkBox}>
-                <div>
+                <div className={styles.selectedDrinkLeft}>
                   <span className={styles.selectedDrinkLabel}>
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                      <line x1="6" y1="1" x2="6" y2="4"></line>
-                      <line x1="10" y1="1" x2="10" y2="4"></line>
-                      <line x1="14" y1="1" x2="14" y2="4"></line>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                      <path d="M3 8h14v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                      <line x1="6" y1="1" x2="6" y2="4" />
+                      <line x1="10" y1="1" x2="10" y2="4" />
+                      <line x1="14" y1="1" x2="14" y2="4" />
                     </svg>
-                    Customer Choice / المشروب المختار في الكوبون:
+                    CUSTOMER CHOICE / المشروب المختار في الكوبون:
                   </span>
                   <div className={styles.selectedDrinkName}>
                     {voucher.selectedDrink.name}
                   </div>
                 </div>
-                {voucher.selectedDrink.categoryName && (
-                  <span
-                    style={{
-                      fontSize: "0.85rem",
-                      fontWeight: 800,
-                      color: "#150958",
-                      background: "#FFFFFF",
-                      padding: "0.4rem 0.95rem",
-                      borderRadius: "9999px",
-                      border: "1.5px solid #C7D2FE",
-                      boxShadow: "0 2px 8px rgba(21, 9, 88, 0.08)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {voucher.selectedDrink.categoryName}
-                  </span>
-                )}
+                <div className={styles.selectedDrinkRight}>
+                  {voucher.selectedDrink.categoryName && (
+                    <span className={styles.drinkCategoryBadge}>
+                      {voucher.selectedDrink.categoryName}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Audit info if already redeemed */}
               {voucher.status === "REDEEMED" && (
                 <div className={styles.auditBox}>
-                  <p className={styles.auditTitle}>
-                    Redemption Audit Log / اتصرف قبل كده:
-                  </p>
+                  <div className={styles.auditTitle}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>Redemption Audit Log / سجل الصرف السابق:</span>
+                  </div>
                   <p>
                     تاريخ الصرف:{" "}
                     {voucher.redeemedAt
@@ -862,14 +938,14 @@ export function CashierDrinkTerminal() {
                   </p>
                   {voucher.branchName && <p>الفرع: {voucher.branchName}</p>}
                   {voucher.cashierName && (
-                    <p>الكاشير اللي سلمه: {voucher.cashierName}</p>
+                    <p>الكاشير المسلِّم: {voucher.cashierName}</p>
                   )}
                   {voucher.redeemedDrink && (
-                    <p>المشروب اللي أخدوا: {voucher.redeemedDrink.name}</p>
+                    <p>المشروب المُسلَّم: {voucher.redeemedDrink.name}</p>
                   )}
                   {voucher.changeReason && (
                     <p style={{ color: "#150958", fontWeight: 700 }}>
-                      سبب التغيير: {voucher.changeReason}
+                      سبب الاستبدال: {voucher.changeReason}
                     </p>
                   )}
                 </div>
@@ -887,12 +963,17 @@ export function CashierDrinkTerminal() {
                         className={styles.redeemPrimaryButton}
                       >
                         {redeeming ? (
-                          "جاري الصرف والتسجيل..."
+                          <>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ animation: "spin 1s linear infinite" }}>
+                              <circle cx="12" cy="12" r="10" strokeWidth="4" strokeDasharray="30" strokeLinecap="round" />
+                            </svg>
+                            <span>جاري الصرف والتسجيل...</span>
+                          </>
                         ) : (
                           <>
                             <svg
-                              width="20"
-                              height="20"
+                              width="22"
+                              height="22"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -904,8 +985,7 @@ export function CashierDrinkTerminal() {
                                 d="M5 13l4 4L19 7"
                               />
                             </svg>
-                            Dispense Beverage ({voucher.selectedDrink.name}) /
-                            تأكيد تسليم المشروب
+                            <span>Dispense Beverage ({voucher.selectedDrink.name}) / تأكيد تسليم المشروب</span>
                           </>
                         )}
                       </button>
@@ -917,7 +997,13 @@ export function CashierDrinkTerminal() {
                           disabled={redeeming}
                           className={styles.substituteButton}
                         >
-                          Substitute Drink... / اختار مشروب بديل
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                            <path d="M16 21h5v-5" />
+                          </svg>
+                          <span>Substitute Drink... / اختار مشروب بديل</span>
                         </button>
                       )}
                     </div>
@@ -925,17 +1011,23 @@ export function CashierDrinkTerminal() {
                     /* Substitution Mode */
                     <div className={styles.substituteBox}>
                       <div className={styles.substituteHeader}>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.6rem",
-                          }}
-                        >
-                          <span style={{ fontSize: "1.4rem" }}>🔄</span>
-                          <span className={styles.substituteTitle}>
-                            Dispense Alternative / صرف مشروب بديل
-                          </span>
+                        <div className={styles.substituteTitleBox}>
+                          <div className={styles.substituteIconBadge}>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                              <path d="M3 3v5h5" />
+                              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                              <path d="M16 21h5v-5" />
+                            </svg>
+                          </div>
+                          <div>
+                            <span className={styles.substituteTitle}>
+                              Dispense Alternative Beverage / صرف مشروب بديل
+                            </span>
+                            <span className={styles.substituteSubtitle}>
+                              تعديل الصنف المسلَّم للعميل وتوثيق سبب التغيير لأغراض الجرد والمحاسبة
+                            </span>
+                          </div>
                         </div>
                         <button
                           type="button"
@@ -963,6 +1055,10 @@ export function CashierDrinkTerminal() {
                       {/* 1. Fast Visual Drink Selection Grid */}
                       <div>
                         <label className={styles.subFieldLabel}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                            <path d="M3 8h14v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                          </svg>
                           1. اختار المشروب البديل / Select Alternative Beverage:
                         </label>
                         <div className={styles.drinkGrid}>
@@ -983,21 +1079,14 @@ export function CashierDrinkTerminal() {
                                 <div className={styles.drinkCardName}>
                                   <span>{alt.name}</span>
                                   {isCurrentSelected && (
-                                    <span style={{ fontSize: "1.15rem" }}>
-                                      ✓
-                                    </span>
+                                    <div className={styles.drinkCardCheckCircle}>
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                      </svg>
+                                    </div>
                                   )}
                                 </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.4rem",
-                                    marginTop: "0.2rem",
-                                    width: "100%",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
+                                <div className={styles.drinkCardMetaRow}>
                                   {alt.categoryName && (
                                     <span className={styles.drinkCardCat}>
                                       {alt.categoryName}
@@ -1018,8 +1107,13 @@ export function CashierDrinkTerminal() {
                       {/* 2. Substitution Reason with One-Touch Preset Chips */}
                       <div>
                         <label className={styles.subFieldLabel}>
-                          2. سبب الاستبدال / Substitution Reason (مطلوب لأغراض
-                          الجرد والمحاسبة):
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                          </svg>
+                          2. سبب الاستبدال / Substitution Reason (مطلوب لأغراض الجرد والمحاسبة):
                         </label>
 
                         {/* Quick Reason Chips */}
@@ -1029,26 +1123,40 @@ export function CashierDrinkTerminal() {
                             "الصنف غير متوفر حالياً",
                             "نفاد الحليب / المكونات",
                             "عطل مؤقت في ماكينة المشروب",
-                          ].map((presetReason) => (
-                            <button
-                              key={presetReason}
-                              type="button"
-                              onClick={() => setChangeReason(presetReason)}
-                              className={`${styles.reasonChip} ${changeReason === presetReason ? styles.reasonChipActive : ""}`}
-                            >
-                              {presetReason}
-                            </button>
-                          ))}
+                          ].map((presetReason) => {
+                            const isActive = changeReason === presetReason;
+                            return (
+                              <button
+                                key={presetReason}
+                                type="button"
+                                onClick={() => setChangeReason(presetReason)}
+                                className={`${styles.reasonChip} ${isActive ? styles.reasonChipActive : ""}`}
+                              >
+                                {isActive && (
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                )}
+                                <span>{presetReason}</span>
+                              </button>
+                            );
+                          })}
                         </div>
 
-                        <input
-                          type="text"
-                          required
-                          value={changeReason}
-                          onChange={(e) => setChangeReason(e.target.value)}
-                          placeholder="أو اكتب سبب الاستبدال هنا بالتفصيل..."
-                          className={styles.subInput}
-                        />
+                        <div className={styles.subInputWrapper}>
+                          <svg className={styles.subInputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                          </svg>
+                          <input
+                            type="text"
+                            required
+                            value={changeReason}
+                            onChange={(e) => setChangeReason(e.target.value)}
+                            placeholder="أو اكتب سبب الاستبدال هنا بالتفصيل..."
+                            className={styles.subInput}
+                          />
+                        </div>
                       </div>
 
                       <button
@@ -1062,7 +1170,12 @@ export function CashierDrinkTerminal() {
                         className={styles.subConfirmButton}
                       >
                         {redeeming ? (
-                          "جاري تأكيد الصرف والتسجيل..."
+                          <>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ animation: "spin 1s linear infinite" }}>
+                              <circle cx="12" cy="12" r="10" strokeWidth="4" strokeDasharray="30" strokeLinecap="round" />
+                            </svg>
+                            <span>جاري تأكيد الصرف والتسجيل...</span>
+                          </>
                         ) : (
                           <>
                             <svg
@@ -1079,8 +1192,7 @@ export function CashierDrinkTerminal() {
                                 d="M5 13l4 4L19 7"
                               />
                             </svg>
-                            Confirm Alternative Handover / تأكيد صرف المشروب
-                            البديل
+                            <span>Confirm Alternative Handover / تأكيد صرف المشروب البديل</span>
                           </>
                         )}
                       </button>
@@ -1218,14 +1330,15 @@ export function CashierDrinkTerminal() {
                           <span
                             style={{
                               fontSize: "0.65rem",
-                              background: "#FEF3C7",
-                              color: "#92400E",
-                              padding: "0.1rem 0.35rem",
+                              background: "#EEF2FF",
+                              color: "#150958",
+                              padding: "0.15rem 0.5rem",
                               borderRadius: "4px",
                               fontWeight: 700,
+                              border: "1px solid #C7D2FE",
                             }}
                           >
-                            اتبّدل بدل: {r.selectedDrinkName}
+                            استبدال عن: {r.selectedDrinkName}
                           </span>
                         )}
                       </td>
