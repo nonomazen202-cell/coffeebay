@@ -929,15 +929,12 @@ export function CashierDrinkTerminal({
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2.2"
+                        strokeWidth="2.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-                        <line x1="6" y1="2" x2="6" y2="4" />
-                        <line x1="10" y1="2" x2="10" y2="4" />
-                        <line x1="14" y1="2" x2="14" y2="4" />
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                       </svg>
                       Already Redeemed / تم الصرف مسبقاً
                     </span>
@@ -1034,28 +1031,43 @@ export function CashierDrinkTerminal({
                   <div className={styles.statusHeroLeft}>
                     <div className={styles.statusHeroRedeemedCircle}>
                       <svg
-                        width="22"
-                        height="22"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2.5"
+                        strokeWidth="2.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                       </svg>
                     </div>
                     <div className={styles.statusHeroText}>
                       <div className={styles.statusHeroTitleRedeemed}>
-                        Voucher Redeemed / تم صرف القسيمة مسبقاً
+                        ⛔ Voucher Redeemed / تم صرف القسيمة مسبقاً
                       </div>
                       <div className={styles.statusHeroSubtitleRedeemed}>
-                        This voucher has already been redeemed and recorded in
-                        the audit log
+                        This voucher has already been redeemed and recorded in the audit log • لا يجوز صرف هذا الكوبون مرة أخرى
                       </div>
                     </div>
+                  </div>
+                  <div className={styles.statusHeroWatermarkRedeemed}>
+                    <svg
+                      width="52"
+                      height="52"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
                   </div>
                 </div>
               )}
@@ -1300,7 +1312,19 @@ export function CashierDrinkTerminal({
                             voucher.selectedDrink.name}
                         </span>
                         <span className={styles.auditDeliveredPill}>
-                          Delivered / تم التسليم
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          Delivered / تم التسليم مسبقاً
                         </span>
                       </div>
                     </div>
