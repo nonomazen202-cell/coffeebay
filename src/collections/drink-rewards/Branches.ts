@@ -1,22 +1,23 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAdminAccess } from '../../lib/security/roles';
 import { revalidateBranchesCache } from '../../lib/cache/drink-rewards-cache';
 
 export const Branches: CollectionConfig = {
   slug: 'branches',
   timestamps: true,
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'name',
     defaultColumns: ['name', 'code', 'address', 'active', 'updatedAt'],
     description: 'Physical Coffee Bay branch locations where complimentary drinks can be redeemed.',
   },
   access: {
     read: () => true, // Publicly readable for branch lists
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   hooks: {
     beforeDelete: [

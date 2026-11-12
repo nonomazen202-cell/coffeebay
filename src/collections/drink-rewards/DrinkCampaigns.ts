@@ -1,22 +1,23 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAdminAccess } from '../../lib/security/roles';
 import { revalidateDrinkCampaignCache } from '../../lib/cache/drink-rewards-cache';
 
 export const DrinkCampaigns: CollectionConfig = {
   slug: 'drink-campaigns',
   timestamps: true,
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'active', 'start_date', 'end_date', 'total_claimed'],
     description: 'Promotional campaigns offering free drinks with multiple allowed beverage categories.',
   },
   access: {
     read: () => true, // Publicly readable for campaign landing pages
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   hooks: {
     afterChange: [

@@ -4,6 +4,7 @@ import { getPayload } from 'payload';
 import config from '@payload-config';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { hasPromotionsAccess, hasPromotionsAdminAccess } from '@/lib/security/roles';
 
 /**
  * Toggles a beverage's active status directly from the Drinks Menu Grid.
@@ -18,8 +19,8 @@ export async function toggleDrinkActive(drinkId: number, active: boolean) {
     });
 
     const user = authResult?.user;
-    if (!user || (user.role !== 'ADMIN' && user.role !== 'STAFF')) {
-      return { success: false, error: 'غير مصرح: يجب تسجيل الدخول لتعديل حالة المشروبات.' };
+    if (!user || !hasPromotionsAccess(user)) {
+      return { success: false, error: 'غير مصرح: يجب تسجيل الدخول كموظف أو مدير حملات لتعديل حالة المشروبات.' };
     }
 
     const updated = await payload.update({
@@ -54,8 +55,8 @@ export async function toggleVoucherReclaimAllowed(voucherId: number, allowed: bo
     });
 
     const user = authResult?.user;
-    if (!user || user.role !== 'ADMIN') {
-      return { success: false, error: 'غير مصرح: يجب أن تكون مديراً لتعديل أذونات المطالبة الإضافية.' };
+    if (!user || !hasPromotionsAdminAccess(user)) {
+      return { success: false, error: 'غير مصرح: يجب أن تكون مديراً للحملات لتعديل أذونات المطالبة الإضافية.' };
     }
 
     const updated = await payload.update({
@@ -90,8 +91,8 @@ export async function bulkToggleReclaimAllowed(voucherIds: (number | string)[], 
     });
 
     const user = authResult?.user;
-    if (!user || user.role !== 'ADMIN') {
-      return { success: false, error: 'غير مصرح: يجب أن تكون مديراً للتعديل الجماعي.' };
+    if (!user || !hasPromotionsAdminAccess(user)) {
+      return { success: false, error: 'غير مصرح: يجب أن تكون مديراً للحملات للتعديل الجماعي.' };
     }
 
     const numericIds = voucherIds.map(Number).filter((n) => !isNaN(n));

@@ -1,8 +1,10 @@
 import React from 'react';
 import { getPayload, type Where } from 'payload';
 import config from '@payload-config';
+import { headers } from 'next/headers';
 import { NotificationsManager } from './NotificationsManager';
 import { getCachedStats } from './cache';
+import { isSuperAdmin, isPromotionsAdmin, isLuckyCupAdmin } from '@/lib/security/roles';
 
 interface CustomListNotificationsProps {
   searchParams?: Promise<{
@@ -21,25 +23,60 @@ export async function CustomListNotifications({ searchParams }: CustomListNotifi
 
   const payload = await getPayload({ config });
 
+  // Authenticate session for domain isolation
+  const authResult = await payload.auth({
+    headers: await headers(),
+  });
+  const currentUser = authResult?.user;
+
   // 1. Build Query Conditions
-  const where: Where = {};
+  const andConditions: Where[] = [];
+
+  // Domain Scope Template Restriction:
+  // - Promotions Admin sees ONLY promotional campaign alerts and vouchers
+  // - Lucky Cup Admin sees ONLY lucky cup verifications and winning notifications
+  // - Super Admin sees all templates
+  if (currentUser && !isSuperAdmin(currentUser)) {
+    if (isPromotionsAdmin(currentUser)) {
+      andConditions.push({
+        template: {
+          in: ['drink-reward-otp', 'drink-reward-voucher', 'drink-reward-admin-alert'],
+        },
+      });
+    } else if (isLuckyCupAdmin(currentUser)) {
+      andConditions.push({
+        template: {
+          in: ['verification', 'winner-notification', 'admin-alert'],
+        },
+      });
+    }
+  }
+
   if (statusFilter !== 'ALL') {
     if (statusFilter === 'SENT') {
-      where.or = [
-        { status: { equals: 'sent' } },
-        { status: { equals: 'provider-accepted' } },
-      ];
+      andConditions.push({
+        or: [
+          { status: { equals: 'sent' } },
+          { status: { equals: 'provider-accepted' } },
+        ],
+      });
     } else {
-      where.status = { equals: statusFilter.toLowerCase() };
+      andConditions.push({
+        status: { equals: statusFilter.toLowerCase() },
+      });
     }
   }
   if (search) {
-    where.or = [
-      { phone: { like: search } },
-      { providerMessageId: { like: search } },
-      { lastError: { like: search } },
-    ];
+    andConditions.push({
+      or: [
+        { phone: { like: search } },
+        { providerMessageId: { like: search } },
+        { lastError: { like: search } },
+      ],
+    });
   }
+
+  const where: Where = andConditions.length > 0 ? { and: andConditions } : {};
 
   // 2. Fetch Paginated Records
   const notificationsResult = await payload.find({
@@ -50,34 +87,47 @@ export async function CustomListNotifications({ searchParams }: CustomListNotifi
     sort: '-createdAt',
   });
 
-  // 3. Cache and Fetch Global Statistics (15-second TTL)
-  const stats = await getCachedStats('notifications-global-stats', 15000, async () => {
+  // 3. Cache and Fetch Domain-Scoped Statistics (15-second TTL)
+  const domainCacheKey = `notifications-stats-${currentUser?.role || 'GLOBAL'}`;
+  const baseDomainWhere: Where = andConditions[0] ? andConditions[0] : {};
+
+  const stats = await getCachedStats(domainCacheKey, 15000, async () => {
+    const combine = (cond: Where): Where => {
+      if (andConditions[0]) {
+        return { and: [baseDomainWhere, cond] };
+      }
+      return cond;
+    };
+
     const [total, sent, queued, retryScheduled, deadLetter, failed] = await Promise.all([
-      payload.count({ collection: 'notifications' }),
       payload.count({
         collection: 'notifications',
-        where: {
+        where: baseDomainWhere,
+      }),
+      payload.count({
+        collection: 'notifications',
+        where: combine({
           or: [
             { status: { equals: 'sent' } },
             { status: { equals: 'provider-accepted' } },
           ],
-        },
+        }),
       }),
       payload.count({
         collection: 'notifications',
-        where: { status: { equals: 'queued' } },
+        where: combine({ status: { equals: 'queued' } }),
       }),
       payload.count({
         collection: 'notifications',
-        where: { status: { equals: 'retry-scheduled' } },
+        where: combine({ status: { equals: 'retry-scheduled' } }),
       }),
       payload.count({
         collection: 'notifications',
-        where: { status: { equals: 'dead-letter' } },
+        where: combine({ status: { equals: 'dead-letter' } }),
       }),
       payload.count({
         collection: 'notifications',
-        where: { status: { equals: 'failed' } },
+        where: combine({ status: { equals: 'failed' } }),
       }),
     ]);
 

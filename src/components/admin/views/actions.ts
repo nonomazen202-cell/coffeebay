@@ -3,6 +3,7 @@
 import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 import { headers } from 'next/headers';
+import { isSuperAdmin, isLuckyCupAdmin } from '@/lib/security/roles';
 
 /**
  * Checks if the given IDs are referenced by critical fields in other collections.
@@ -103,8 +104,8 @@ export async function bulkDeleteAction(collection: string, ids: (string | number
     });
 
     const payloadUser = authResult?.user;
-    if (!payloadUser || payloadUser.role !== 'ADMIN') {
-      return { success: false, error: 'Unauthorized. Only Admins can perform bulk deletion.' };
+    if (!payloadUser || (!isSuperAdmin(payloadUser) && !isLuckyCupAdmin(payloadUser))) {
+      return { success: false, error: 'Unauthorized. Only Lucky Cup or Super Admins can perform bulk deletion.' };
     }
 
     // Safely cast string type parameter to matching collection keys in Payload

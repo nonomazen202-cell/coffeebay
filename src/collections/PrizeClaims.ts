@@ -1,5 +1,6 @@
 import type { CollectionConfig, CollectionAfterReadHook } from 'payload';
-import { isAdmin, isFieldAdmin } from './access';
+import { isLuckyCupAdminAccess, isLuckyCupStaffOrAdminAccess, isFieldAdmin } from './access';
+import { hasLuckyCupAccess } from '../lib/security/roles';
 
 const populateClaimDetails: CollectionAfterReadHook = async ({ doc, req }) => {
   if (!doc.entry) return doc;
@@ -63,13 +64,14 @@ export const PrizeClaims: CollectionConfig = {
     afterRead: [populateClaimDetails],
   },
   access: {
-    read: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isLuckyCupStaffOrAdminAccess,
+    create: isLuckyCupAdminAccess,
+    update: isLuckyCupStaffOrAdminAccess,
+    delete: isLuckyCupAdminAccess,
   },
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
+    group: 'Lucky Cup / مسابقة أكواب الحظ',
+    hidden: ({ user }) => !hasLuckyCupAccess(user),
     useAsTitle: 'verification_code',
     defaultColumns: ['verification_code', 'participant_name', 'participant_phone', 'status', 'verified', 'verified_at'],
     components: {

@@ -1,5 +1,6 @@
 import type { CollectionConfig, PayloadRequest, Where } from 'payload';
-import { isAdmin } from './access';
+import { isLuckyCupAdminAccess } from './access';
+import { hasLuckyCupAdminAccess } from '../lib/security/roles';
 
 async function transformWhere(where: Where | undefined, req: PayloadRequest): Promise<Where | undefined> {
   if (!where || typeof where !== 'object') {
@@ -99,13 +100,14 @@ export const Entries: CollectionConfig = {
     ],
   },
   access: {
-    read: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isLuckyCupAdminAccess,
+    create: isLuckyCupAdminAccess,
+    update: isLuckyCupAdminAccess,
+    delete: isLuckyCupAdminAccess,
   },
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
+    group: 'Lucky Cup / مسابقة أكواب الحظ',
+    hidden: ({ user }) => !hasLuckyCupAdminAccess(user),
     useAsTitle: 'id',
     defaultColumns: ['participant', 'code', 'result', 'createdAt'],
     listSearchableFields: ['participant', 'ip', 'request_id'],

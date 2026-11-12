@@ -1,17 +1,19 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from './access';
+import { isLuckyCupAdminAccess } from './access';
+import { hasLuckyCupAdminAccess } from '../lib/security/roles';
 
 export const OTPVerifications: CollectionConfig = {
   slug: 'otp-verifications',
   timestamps: true,
   access: {
-    read: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isLuckyCupAdminAccess,
+    create: isLuckyCupAdminAccess,
+    update: isLuckyCupAdminAccess,
+    delete: isLuckyCupAdminAccess,
   },
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
+    group: 'Lucky Cup / مسابقة أكواب الحظ',
+    hidden: ({ user }) => !hasLuckyCupAdminAccess(user),
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'code', 'used', 'expiresAt', 'lastSentAt', 'createdAt'],
   },

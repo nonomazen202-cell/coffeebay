@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql, type SQL } from 'drizzle-orm';
 import { getPayloadClient } from '@/lib/payload';
 import { getAuthUser } from '@/lib/security/auth-helper';
+import { isSuperAdmin, isPromotionsAdmin } from '@/lib/security/roles';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getAuthUser();
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || (!isSuperAdmin(user) && !isPromotionsAdmin(user))) {
       return NextResponse.json(
-        { error: 'Unauthorized: Admin access required for operational reports.' },
+        { error: 'Unauthorized: Promotions Admin access required for reports.' },
         { status: 403 },
       );
     }

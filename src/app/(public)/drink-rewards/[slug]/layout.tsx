@@ -126,18 +126,18 @@ export default async function DrinkRewardCampaignLayout({
                   ? "هذا العرض لم يبدأ بعد. ترقبوا الافتتاح قريباً!"
                   : isExhausted
                     ? "عذراً، اكتمل الحد الأقصى للمشروبات المجانية المخصصة لهذا العرض."
-                    : "عذراً، هذا العرض غير مفعل حالياً من قبل الإدارة."}
+                    : "عذراً، هذا العرض غير مفعل حالياً."}
             </p>
           </div>
 
-          <div className="pt-2">
+          {/* <div className="pt-2">
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-colors shadow-lg shadow-sky-600/30"
             >
               Back to Coffee Bay
             </Link>
-          </div>
+          </div> */}
         </div>
       </main>
     );
@@ -149,4 +149,3 @@ export default async function DrinkRewardCampaignLayout({
     </DrinkRewardsJourneyShell>
   );
 }
-

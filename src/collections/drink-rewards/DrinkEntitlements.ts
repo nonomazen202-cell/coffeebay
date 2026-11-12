@@ -1,11 +1,13 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAdminAccess } from '../../lib/security/roles';
 
 export const DrinkEntitlements: CollectionConfig = {
   slug: 'drink-entitlements',
   timestamps: true,
   admin: {
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'voucher_code',
     defaultColumns: ['voucher_code', 'customer_name', 'phone', 'selected_drink', 'status', 'branch', 'redeemed_at'],
     description: 'Vouchers and redemption records for complimentary drinks claimed by customers.',
@@ -18,10 +20,10 @@ export const DrinkEntitlements: CollectionConfig = {
     },
   },
   access: {
-    read: isAdminOrStaff,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isPromotionsAdminAccess,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   fields: [
     {

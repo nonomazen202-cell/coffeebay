@@ -1,21 +1,23 @@
 import type { CollectionConfig } from 'payload';
-import { isAdminOrStaff } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAccess } from '../../lib/security/roles';
 import { revalidateDrinkCategoryCache } from '../../lib/cache/drink-rewards-cache';
 
 export const DrinkCategories: CollectionConfig = {
   slug: 'drink-categories',
   timestamps: true,
   admin: {
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'active', 'updatedAt'],
     description: 'Categories of beverages eligible for promotional rewards (e.g. Hot Drinks, Cold Drinks, Frappes).',
   },
   access: {
     read: () => true, // Publicly readable for menu catalog
-    create: isAdminOrStaff,
-    update: isAdminOrStaff,
-    delete: isAdminOrStaff,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   hooks: {
     afterChange: [

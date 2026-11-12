@@ -37,7 +37,7 @@ interface DrinkVouchersManagerProps {
   expiredCount: number;
   initialSearch?: string;
   initialStatus?: string;
-  userRole?: 'ADMIN' | 'STAFF';
+  userRole?: string;
 }
 
 export function DrinkVouchersManager({
@@ -50,9 +50,9 @@ export function DrinkVouchersManager({
   expiredCount,
   initialSearch = '',
   initialStatus = 'ALL',
-  userRole = 'STAFF',
+  userRole = 'PROMOTIONS_STAFF',
 }: DrinkVouchersManagerProps) {
-  const isAdmin = userRole === 'ADMIN';
+  const isAdmin = userRole === 'ADMIN' || userRole === 'PROMOTIONS_ADMIN' || userRole === 'SUPER_ADMIN';
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

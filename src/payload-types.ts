@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | "Pacific/Midway"
+  | "Pacific/Niue"
+  | "Pacific/Honolulu"
+  | "Pacific/Rarotonga"
+  | "America/Anchorage"
+  | "Pacific/Gambier"
+  | "America/Los_Angeles"
+  | "America/Tijuana"
+  | "America/Denver"
+  | "America/Phoenix"
+  | "America/Chicago"
+  | "America/Guatemala"
+  | "America/New_York"
+  | "America/Bogota"
+  | "America/Caracas"
+  | "America/Santiago"
+  | "America/Buenos_Aires"
+  | "America/Sao_Paulo"
+  | "Atlantic/South_Georgia"
+  | "Atlantic/Azores"
+  | "Atlantic/Cape_Verde"
+  | "Europe/London"
+  | "Europe/Berlin"
+  | "Africa/Lagos"
+  | "Europe/Athens"
+  | "Africa/Cairo"
+  | "Europe/Moscow"
+  | "Asia/Riyadh"
+  | "Asia/Dubai"
+  | "Asia/Baku"
+  | "Asia/Karachi"
+  | "Asia/Tashkent"
+  | "Asia/Calcutta"
+  | "Asia/Dhaka"
+  | "Asia/Almaty"
+  | "Asia/Jakarta"
+  | "Asia/Bangkok"
+  | "Asia/Shanghai"
+  | "Asia/Singapore"
+  | "Asia/Tokyo"
+  | "Asia/Seoul"
+  | "Australia/Brisbane"
+  | "Australia/Sydney"
+  | "Pacific/Guam"
+  | "Pacific/Noumea"
+  | "Pacific/Auckland"
+  | "Pacific/Fiji";
 
 export interface Config {
   auth: {
@@ -72,22 +72,22 @@ export interface Config {
     codes: Code;
     participants: Participant;
     entries: Entry;
-    'prize-claims': PrizeClaim;
+    "prize-claims": PrizeClaim;
     media: Media;
     notifications: Notification;
-    'notification-audit': NotificationAudit;
-    'otp-verifications': OtpVerification;
-    'drink-categories': DrinkCategory;
+    "notification-audit": NotificationAudit;
+    "otp-verifications": OtpVerification;
+    "drink-categories": DrinkCategory;
     drinks: Drink;
     branches: Branch;
-    'drink-campaigns': DrinkCampaign;
-    'drink-entitlements': DrinkEntitlement;
-    'drink-cashier-assignments': DrinkCashierAssignment;
-    'drink-otp-challenges': DrinkOtpChallenge;
-    'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "drink-campaigns": DrinkCampaign;
+    "drink-entitlements": DrinkEntitlement;
+    "drink-cashier-assignments": DrinkCashierAssignment;
+    "drink-otp-challenges": DrinkOtpChallenge;
+    "payload-kv": PayloadKv;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
@@ -96,22 +96,40 @@ export interface Config {
     codes: CodesSelect<false> | CodesSelect<true>;
     participants: ParticipantsSelect<false> | ParticipantsSelect<true>;
     entries: EntriesSelect<false> | EntriesSelect<true>;
-    'prize-claims': PrizeClaimsSelect<false> | PrizeClaimsSelect<true>;
+    "prize-claims": PrizeClaimsSelect<false> | PrizeClaimsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
-    'notification-audit': NotificationAuditSelect<false> | NotificationAuditSelect<true>;
-    'otp-verifications': OtpVerificationsSelect<false> | OtpVerificationsSelect<true>;
-    'drink-categories': DrinkCategoriesSelect<false> | DrinkCategoriesSelect<true>;
+    "notification-audit":
+      | NotificationAuditSelect<false>
+      | NotificationAuditSelect<true>;
+    "otp-verifications":
+      | OtpVerificationsSelect<false>
+      | OtpVerificationsSelect<true>;
+    "drink-categories":
+      | DrinkCategoriesSelect<false>
+      | DrinkCategoriesSelect<true>;
     drinks: DrinksSelect<false> | DrinksSelect<true>;
     branches: BranchesSelect<false> | BranchesSelect<true>;
-    'drink-campaigns': DrinkCampaignsSelect<false> | DrinkCampaignsSelect<true>;
-    'drink-entitlements': DrinkEntitlementsSelect<false> | DrinkEntitlementsSelect<true>;
-    'drink-cashier-assignments': DrinkCashierAssignmentsSelect<false> | DrinkCashierAssignmentsSelect<true>;
-    'drink-otp-challenges': DrinkOtpChallengesSelect<false> | DrinkOtpChallengesSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "drink-campaigns": DrinkCampaignsSelect<false> | DrinkCampaignsSelect<true>;
+    "drink-entitlements":
+      | DrinkEntitlementsSelect<false>
+      | DrinkEntitlementsSelect<true>;
+    "drink-cashier-assignments":
+      | DrinkCashierAssignmentsSelect<false>
+      | DrinkCashierAssignmentsSelect<true>;
+    "drink-otp-challenges":
+      | DrinkOtpChallengesSelect<false>
+      | DrinkOtpChallengesSelect<true>;
+    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+    "payload-locked-documents":
+      | PayloadLockedDocumentsSelect<false>
+      | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences":
+      | PayloadPreferencesSelect<false>
+      | PayloadPreferencesSelect<true>;
+    "payload-migrations":
+      | PayloadMigrationsSelect<false>
+      | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -158,7 +176,16 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
-  role: 'ADMIN' | 'STAFF';
+  role:
+    | "PROMOTIONS_ADMIN"
+    | "PROMOTIONS_STAFF"
+    | "LUCKY_CUP_ADMIN"
+    | "LUCKY_CUP_STAFF"
+    | "SUPER_ADMIN";
+  /**
+   * يتم جلب هذا الفرع تلقائياً من جدول تعيينات الفروع  (drink-cashier-assignments).
+   */
+  active_branch_display?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -176,7 +203,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: "users";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -249,7 +276,7 @@ export interface Participant {
   phone: string;
   verified?: boolean | null;
   verifiedAt?: string | null;
-  verificationMethod?: ('otp_whatsapp' | 'sms' | 'manual') | null;
+  verificationMethod?: ("otp_whatsapp" | "sms" | "manual") | null;
   blocked?: boolean | null;
   blockedReason?: string | null;
   updatedAt: string;
@@ -263,7 +290,7 @@ export interface Entry {
   id: number;
   participant: number | Participant;
   code?: (number | null) | Code;
-  result: 'WIN' | 'LOSE' | 'INVALID' | 'ALREADY_USED';
+  result: "WIN" | "LOSE" | "INVALID" | "ALREADY_USED";
   ip?: string | null;
   user_agent?: string | null;
   request_id?: string | null;
@@ -281,7 +308,7 @@ export interface PrizeClaim {
   participant_phone?: string | null;
   serial_code?: string | null;
   verification_code: string;
-  status: 'PENDING' | 'DELIVERED' | 'CANCELLED';
+  status: "PENDING" | "DELIVERED" | "CANCELLED";
   verified: boolean;
   verified_by?: (number | null) | User;
   verified_at?: string | null;
@@ -296,12 +323,12 @@ export interface Notification {
   id: number;
   phone: string;
   template:
-    | 'verification'
-    | 'winner-notification'
-    | 'admin-alert'
-    | 'drink-reward-otp'
-    | 'drink-reward-voucher'
-    | 'drink-reward-admin-alert';
+    | "verification"
+    | "winner-notification"
+    | "admin-alert"
+    | "drink-reward-otp"
+    | "drink-reward-voucher"
+    | "drink-reward-admin-alert";
   payload:
     | {
         [k: string]: unknown;
@@ -313,17 +340,17 @@ export interface Notification {
     | null;
   message?: string | null;
   status:
-    | 'created'
-    | 'queued'
-    | 'locked'
-    | 'sending'
-    | 'provider-accepted'
-    | 'sent'
-    | 'delivered'
-    | 'read'
-    | 'retry-scheduled'
-    | 'failed'
-    | 'dead-letter';
+    | "created"
+    | "queued"
+    | "locked"
+    | "sending"
+    | "provider-accepted"
+    | "sent"
+    | "delivered"
+    | "read"
+    | "retry-scheduled"
+    | "failed"
+    | "dead-letter";
   priority: number;
   attempts: number;
   maxAttempts: number;
@@ -358,7 +385,7 @@ export interface Notification {
  */
 export interface NotificationAudit {
   id: number;
-  eventType: 'notification_transition' | 'recovery_bulk' | 'worker_startup';
+  eventType: "notification_transition" | "recovery_bulk" | "worker_startup";
   notification?: (number | null) | Notification;
   fromStatus?: string | null;
   toStatus?: string | null;
@@ -504,9 +531,9 @@ export interface DrinkCampaign {
   /**
    * Determines when a customer is allowed to claim another beverage with the same phone number.
    */
-  allow_repeat_mode?: ('NEVER' | 'AFTER_REDEMPTION' | 'ANYTIME') | null;
+  allow_repeat_mode?: ("NEVER" | "AFTER_REDEMPTION" | "ANYTIME") | null;
   /**
-   * Automatically managed atomic counter of all vouchers claimed by customers.
+   * Atomic counter of all vouchers claimed by customers. Can be adjusted by Admin.
    */
   total_claimed: number;
   /**
@@ -535,7 +562,7 @@ export interface DrinkEntitlement {
   voucher_code: string;
   campaign: number | DrinkCampaign;
   phone: string;
-  customer_name: string;
+  customer_name?: string | null;
   /**
    * The beverage selected by the customer on the website at time of claiming.
    */
@@ -544,7 +571,7 @@ export interface DrinkEntitlement {
    * The beverage actually prepared and handed over by the barista at the branch.
    */
   redeemed_drink?: (number | null) | Drink;
-  status: 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
+  status: "ISSUED" | "REDEEMED" | "EXPIRED" | "CANCELLED";
   /**
    * When enabled, grants this customer permission to claim another drink regardless of campaign limits.
    */
@@ -659,76 +686,76 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: number | User;
       } | null)
     | ({
-        relationTo: 'prizes';
+        relationTo: "prizes";
         value: number | Prize;
       } | null)
     | ({
-        relationTo: 'codes';
+        relationTo: "codes";
         value: number | Code;
       } | null)
     | ({
-        relationTo: 'participants';
+        relationTo: "participants";
         value: number | Participant;
       } | null)
     | ({
-        relationTo: 'entries';
+        relationTo: "entries";
         value: number | Entry;
       } | null)
     | ({
-        relationTo: 'prize-claims';
+        relationTo: "prize-claims";
         value: number | PrizeClaim;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: "media";
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'notifications';
+        relationTo: "notifications";
         value: number | Notification;
       } | null)
     | ({
-        relationTo: 'notification-audit';
+        relationTo: "notification-audit";
         value: number | NotificationAudit;
       } | null)
     | ({
-        relationTo: 'otp-verifications';
+        relationTo: "otp-verifications";
         value: number | OtpVerification;
       } | null)
     | ({
-        relationTo: 'drink-categories';
+        relationTo: "drink-categories";
         value: number | DrinkCategory;
       } | null)
     | ({
-        relationTo: 'drinks';
+        relationTo: "drinks";
         value: number | Drink;
       } | null)
     | ({
-        relationTo: 'branches';
+        relationTo: "branches";
         value: number | Branch;
       } | null)
     | ({
-        relationTo: 'drink-campaigns';
+        relationTo: "drink-campaigns";
         value: number | DrinkCampaign;
       } | null)
     | ({
-        relationTo: 'drink-entitlements';
+        relationTo: "drink-entitlements";
         value: number | DrinkEntitlement;
       } | null)
     | ({
-        relationTo: 'drink-cashier-assignments';
+        relationTo: "drink-cashier-assignments";
         value: number | DrinkCashierAssignment;
       } | null)
     | ({
-        relationTo: 'drink-otp-challenges';
+        relationTo: "drink-otp-challenges";
         value: number | DrinkOtpChallenge;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   updatedAt: string;
@@ -741,7 +768,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   key?: string | null;
@@ -775,6 +802,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  active_branch_display?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1145,7 +1173,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: 'full';
+  width: "full";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1155,7 +1183,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

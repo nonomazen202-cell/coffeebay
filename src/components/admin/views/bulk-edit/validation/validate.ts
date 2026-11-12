@@ -2,6 +2,7 @@ import { type Payload } from 'payload';
 import { headers } from 'next/headers';
 import { BULK_EDIT_REGISTRY } from '../config/registry';
 import type { User } from '@/payload-types';
+import { canManageUsers } from '@/lib/security/roles';
 
 export interface ValidationResult {
   valid: boolean;
@@ -32,7 +33,7 @@ export async function validateBulkEdit(
   });
   
   const user = authResult?.user;
-  if (!user || user.role !== 'ADMIN') {
+  if (!user || !canManageUsers(user)) {
     return {
       valid: false,
       error: 'Unauthorized. Only Administrators can perform bulk modifications.',

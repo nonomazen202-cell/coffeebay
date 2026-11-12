@@ -1,21 +1,22 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAdminAccess } from '../../lib/security/roles';
 
 export const DrinkOtpChallenges: CollectionConfig = {
   slug: 'drink-otp-challenges',
   timestamps: true,
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'code', 'campaign', 'attempts', 'expires_at', 'used_at', 'verified_at'],
     description: 'Phone verification challenges and OTP codes for promotional drink reward claiming.',
   },
   access: {
-    read: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isPromotionsAdminAccess,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   fields: [
     {

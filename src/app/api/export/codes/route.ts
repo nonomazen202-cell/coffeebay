@@ -4,6 +4,7 @@ import { getPayload } from 'payload';
 import config from '../../../../payload.config';
 import { getAuthUser } from '../../../../lib/security/auth-helper';
 import { securityService } from '../../../../services/security-service';
+import { isSuperAdmin, isLuckyCupAdmin } from '../../../../lib/security/roles';
 import type { Code } from '../../../../payload-types';
 
 export async function GET() {
@@ -19,10 +20,10 @@ export async function GET() {
       );
     }
 
-    // 2. Authorize role (must be ADMIN)
-    if (user.role !== 'ADMIN') {
+    // 2. Authorize role (must be Lucky Cup Admin or Super Admin)
+    if (!isSuperAdmin(user) && !isLuckyCupAdmin(user)) {
       return NextResponse.json(
-        { success: false, errors: ['Forbidden'], requestId },
+        { success: false, errors: ['Forbidden: Lucky Cup Admin access required'], requestId },
         { status: 403 }
       );
     }

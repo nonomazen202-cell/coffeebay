@@ -1,14 +1,16 @@
 import type { GlobalConfig } from 'payload';
-import { isAdmin, isAdminOrStaff } from '../collections/access';
+import { isSuperAdminAccess } from '../collections/access';
+import { isSuperAdmin } from '../lib/security/roles';
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
   access: {
-    read: isAdminOrStaff,
-    update: isAdmin,
+    read: isSuperAdminAccess,
+    update: isSuperAdminAccess,
   },
   admin: {
-    group: 'System Settings',
+    group: 'System Administration / إدارة المنظومة',
+    hidden: ({ user }) => !isSuperAdmin(user),
   },
   fields: [
     {

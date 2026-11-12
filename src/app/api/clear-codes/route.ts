@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 import { getAuthUser } from '@/lib/security/auth-helper';
+import { isSuperAdmin } from '@/lib/security/roles';
 import { sql } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
@@ -65,10 +66,10 @@ async function handleClearCodes(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // 2. Authorize role (must be ADMIN)
-    if (user.role !== 'ADMIN') {
+    // 2. Authorize role (Strictly Super Admin only for destructive schema clears)
+    if (!isSuperAdmin(user)) {
       return NextResponse.json(
-        { success: false, errors: ['Forbidden'] },
+        { success: false, errors: ['Forbidden: Super Admin access required for destructive operations'] },
         { status: 403 }
       );
     }

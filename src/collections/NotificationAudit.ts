@@ -1,17 +1,19 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from './access';
+import { isSuperAdminAccess } from './access';
+import { isSuperAdmin } from '../lib/security/roles';
 
 export const NotificationAudit: CollectionConfig = {
   slug: 'notification-audit',
   timestamps: true,
   access: {
-    read: isAdmin,
+    read: isSuperAdminAccess,
     create: () => false,
     update: () => false,
-    delete: isAdmin,
+    delete: isSuperAdminAccess,
   },
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
+    group: 'System Administration / إدارة المنظومة',
+    hidden: ({ user }) => !isSuperAdmin(user),
     useAsTitle: 'eventType',
     defaultColumns: ['eventType', 'notification', 'fromStatus', 'toStatus', 'actor', 'createdAt'],
   },

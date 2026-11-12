@@ -1,11 +1,12 @@
 import { getPayloadClient } from '../payload';
 import { headers } from 'next/headers';
+import type { AppRole } from './roles';
 
 export interface AuthenticatedUser {
   id: string | number;
   name: string;
   email: string;
-  role: 'ADMIN' | 'STAFF';
+  role: AppRole;
 }
 
 export const authMock = {
@@ -33,7 +34,7 @@ export async function getAuthUser(): Promise<AuthenticatedUser | null> {
       id: authResult.user.id,
       name: authResult.user.name ?? '',
       email: authResult.user.email ?? '',
-      role: authResult.user.role as 'ADMIN' | 'STAFF',
+      role: (authResult.user.role ?? 'PROMOTIONS_STAFF') as AppRole,
     };
   } catch (error) {
     console.error('[AUTH ERROR] Failed to retrieve session user:', error);

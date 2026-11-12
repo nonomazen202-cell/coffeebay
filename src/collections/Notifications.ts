@@ -1,17 +1,19 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from './access';
+import { notificationsReadAccess, isSuperAdminAccess } from './access';
+import { hasPromotionsAdminAccess, hasLuckyCupAdminAccess } from '../lib/security/roles';
 
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
   timestamps: true,
   access: {
-    read: isAdmin,
+    read: notificationsReadAccess,
     create: () => false,
     update: () => false,
-    delete: isAdmin,
+    delete: isSuperAdminAccess,
   },
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
+    group: 'System Administration / إدارة المنظومة',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user) && !hasLuckyCupAdminAccess(user),
     useAsTitle: 'phone',
     defaultColumns: ['phone', 'template', 'status', 'priority', 'attempts', 'providerName', 'createdAt'],
     components: {

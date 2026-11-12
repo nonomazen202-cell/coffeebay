@@ -8,98 +8,183 @@ import { VerifyWidget } from "./VerifyWidget";
 import { ClaimsTable } from "./ClaimsTable";
 import { RefreshButton } from "./RefreshButton";
 import type { User } from "@/payload-types";
+import {
+  isSuperAdmin,
+  isPromotionsAdmin,
+  isPromotionsStaff,
+  isLuckyCupAdmin,
+  isLuckyCupStaff,
+  hasPromotionsAccess,
+  hasLuckyCupAccess,
+  getRoleBadge,
+} from "@/lib/security/roles";
 
 export async function CustomDashboard(props: { user?: User | null }) {
   // 1. Get current logged-in user
   const user = props.user || (await getAuthUser());
-  const isAdmin = user?.role === "ADMIN";
+  const roleBadge = getRoleBadge(user?.role);
+
+  const superAdmin = isSuperAdmin(user);
+  const promotionsAdmin = isPromotionsAdmin(user);
+  const promotionsStaff = isPromotionsStaff(user);
+  const luckyCupAdmin = isLuckyCupAdmin(user);
+  const luckyCupStaff = isLuckyCupStaff(user);
+
+  const showPromotionsSection = superAdmin || hasPromotionsAccess(user);
+  const showLuckyCupSection = superAdmin || hasLuckyCupAccess(user);
 
   // 2. Fetch statistics from PostgreSQL via Payload Local API
   const payload = await getPayload({ config });
 
-  // Query all statistics in parallel for speed
-  const [
-    totalCodesResult,
-    claimedCodesResult,
-    remainingCodesResult,
-    totalWinnersResult,
-    unclaimedWinnersResult,
-    claimedWinnersResult,
-    totalClaimsResult,
-    pendingClaimsResult,
-    deliveredClaimsResult,
-    totalEntriesResult,
-    totalParticipantsResult,
-    recentClaimsResult,
-  ] = await Promise.all([
-    // Group 1: Codes
-    payload.count({ collection: "codes" }),
-    payload.count({
-      collection: "codes",
-      where: { claimed: { equals: true } },
-    }),
-    payload.count({
-      collection: "codes",
-      where: { claimed: { equals: false } },
-    }),
-    // Group 2: Winners
-    payload.count({
-      collection: "codes",
-      where: { is_winner: { equals: true } },
-    }),
-    payload.count({
-      collection: "codes",
-      where: {
-        and: [{ is_winner: { equals: true } }, { claimed: { equals: false } }],
-      },
-    }),
-    payload.count({
-      collection: "codes",
-      where: {
-        and: [{ is_winner: { equals: true } }, { claimed: { equals: true } }],
-      },
-    }),
-    // Group 3: Claims Pipeline
-    payload.count({ collection: "prize-claims" }),
-    payload.count({
-      collection: "prize-claims",
-      where: { status: { equals: "PENDING" } },
-    }),
-    payload.count({
-      collection: "prize-claims",
-      where: { status: { equals: "DELIVERED" } },
-    }),
-    // Group 4: Users and Scans
-    payload.count({ collection: "entries" }),
-    payload.count({ collection: "participants" }),
-    // Recent claims data for the table
-    payload.find({
-      collection: "prize-claims",
-      limit: 50,
-      sort: "-createdAt",
-      depth: 3,
-    }),
-  ]);
+  // Data state holders
+  let totalCodes = 0;
+  let claimedCodes = 0;
+  let remainingCodes = 0;
+  let totalWinners = 0;
+  let unclaimedWinners = 0;
+  let claimedWinners = 0;
+  let totalClaims = 0;
+  let pendingClaims = 0;
+  let deliveredClaims = 0;
+  let totalEntries = 0;
+  let totalParticipants = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let recentClaims: any[] = [];
 
-  const totalCodes = totalCodesResult.totalDocs;
-  const claimedCodes = claimedCodesResult.totalDocs;
-  const remainingCodes = remainingCodesResult.totalDocs;
+  let activeCampaignsCount = 0;
+  let totalVouchersCount = 0;
+  let redeemedVouchersCount = 0;
+  let activeBranchesCount = 0;
 
-  const totalWinners = totalWinnersResult.totalDocs;
-  const unclaimedWinners = unclaimedWinnersResult.totalDocs;
-  const claimedWinners = claimedWinnersResult.totalDocs;
+  // Domain-aware queries to prevent querying unrelated tables
+  const queryPromises: Promise<unknown>[] = [];
 
-  const totalClaims = totalClaimsResult.totalDocs;
-  const pendingClaims = pendingClaimsResult.totalDocs;
-  const deliveredClaims = deliveredClaimsResult.totalDocs;
+  if (showLuckyCupSection) {
+    queryPromises.push(
+      (async () => {
+        const [
+          totalCodesResult,
+          claimedCodesResult,
+          remainingCodesResult,
+          totalWinnersResult,
+          unclaimedWinnersResult,
+          claimedWinnersResult,
+          totalClaimsResult,
+          pendingClaimsResult,
+          deliveredClaimsResult,
+          totalEntriesResult,
+          totalParticipantsResult,
+          recentClaimsResult,
+        ] = await Promise.all([
+          payload.count({ collection: "codes" }),
+          payload.count({
+            collection: "codes",
+            where: { claimed: { equals: true } },
+          }),
+          payload.count({
+            collection: "codes",
+            where: { claimed: { equals: false } },
+          }),
+          payload.count({
+            collection: "codes",
+            where: { is_winner: { equals: true } },
+          }),
+          payload.count({
+            collection: "codes",
+            where: {
+              and: [
+                { is_winner: { equals: true } },
+                { claimed: { equals: false } },
+              ],
+            },
+          }),
+          payload.count({
+            collection: "codes",
+            where: {
+              and: [
+                { is_winner: { equals: true } },
+                { claimed: { equals: true } },
+              ],
+            },
+          }),
+          payload.count({ collection: "prize-claims" }),
+          payload.count({
+            collection: "prize-claims",
+            where: { status: { equals: "PENDING" } },
+          }),
+          payload.count({
+            collection: "prize-claims",
+            where: { status: { equals: "DELIVERED" } },
+          }),
+          payload.count({ collection: "entries" }),
+          payload.count({ collection: "participants" }),
+          payload.find({
+            collection: "prize-claims",
+            limit: 50,
+            sort: "-createdAt",
+            depth: 3,
+          }),
+        ]);
 
-  const totalEntries = totalEntriesResult.totalDocs;
-  const totalParticipants = totalParticipantsResult.totalDocs;
-  const recentClaims = recentClaimsResult.docs;
+        totalCodes = totalCodesResult.totalDocs;
+        claimedCodes = claimedCodesResult.totalDocs;
+        remainingCodes = remainingCodesResult.totalDocs;
+        totalWinners = totalWinnersResult.totalDocs;
+        unclaimedWinners = unclaimedWinnersResult.totalDocs;
+        claimedWinners = claimedWinnersResult.totalDocs;
+        totalClaims = totalClaimsResult.totalDocs;
+        pendingClaims = pendingClaimsResult.totalDocs;
+        deliveredClaims = deliveredClaimsResult.totalDocs;
+        totalEntries = totalEntriesResult.totalDocs;
+        totalParticipants = totalParticipantsResult.totalDocs;
+        recentClaims = recentClaimsResult.docs;
+      })(),
+    );
+  }
 
-  // Calculate percentage progress of codes claimed
-  const progressPercent =
-    totalCodes > 0 ? Math.round((claimedCodes / totalCodes) * 100) : 0;
+  if (showPromotionsSection && (superAdmin || promotionsAdmin)) {
+    queryPromises.push(
+      (async () => {
+        const [campaignsRes, vouchersRes, redeemedRes, branchesRes] =
+          await Promise.all([
+            payload.count({
+              collection: "drink-campaigns",
+              where: { active: { equals: true } },
+            }),
+            payload.count({ collection: "drink-entitlements" }),
+            payload.count({
+              collection: "drink-entitlements",
+              where: { status: { equals: "REDEEMED" } },
+            }),
+            payload.count({
+              collection: "branches",
+              where: { active: { equals: true } },
+            }),
+          ]);
+        activeCampaignsCount = campaignsRes.totalDocs;
+        totalVouchersCount = vouchersRes.totalDocs;
+        redeemedVouchersCount = redeemedRes.totalDocs;
+        activeBranchesCount = branchesRes.totalDocs;
+      })(),
+    );
+  }
+
+  await Promise.all(queryPromises);
+
+  // Dynamic header title
+  const getHeaderTitle = () => {
+    if (superAdmin)
+      return "CoffeeBay Unified Administration / إدارة المنظومة الموحدة";
+    if (promotionsAdmin)
+      return "Promotions & Campaigns Executive Portal / إدارة الحملات والعروض";
+    if (promotionsStaff)
+      return "CoffeeBay Branch Portal / بوابة موظفي الفرع والكاشير";
+    if (luckyCupAdmin)
+      return "Lucky Cup Operations Portal / إدارة مسابقة أكواب الحظ";
+    if (luckyCupStaff)
+      return "Lucky Cup Prize Handover Portal / بوابة تسليم الجوائز";
+    return "CoffeeBay Portal";
+  };
 
   return (
     <Gutter className="dashboard">
@@ -288,14 +373,14 @@ export async function CustomDashboard(props: { user?: User | null }) {
           <div>
             <h1
               style={{
-                fontSize: "1.65rem",
+                fontSize: "1.55rem",
                 fontWeight: "700",
                 letterSpacing: "-0.02em",
                 color: "#FFFFFF",
                 marginBottom: "0.2rem",
               }}
             >
-              {isAdmin ? "CoffeeBay Operations & Campaign System" : "CoffeeBay Branch Portal / بوابة موظفي الفرع"}
+              {getHeaderTitle()}
             </h1>
             <p style={{ color: "#C0C0C0", fontSize: "0.875rem", margin: 0 }}>
               Welcome back,{" "}
@@ -305,16 +390,15 @@ export async function CustomDashboard(props: { user?: User | null }) {
               • Role:{" "}
               <span
                 style={{
-                  textTransform: "uppercase",
                   fontWeight: "700",
                   color: "#FFFFFF",
-                  backgroundColor: "rgba(255, 255, 255, 0.14)",
-                  padding: "0.15rem 0.55rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.16)",
+                  padding: "0.15rem 0.6rem",
                   borderRadius: "9999px",
                   fontSize: "0.75rem",
                 }}
               >
-                {user?.role || "STAFF"}
+                {roleBadge.label}
               </span>
             </p>
           </div>
@@ -322,8 +406,10 @@ export async function CustomDashboard(props: { user?: User | null }) {
         <RefreshButton />
       </div>
 
-      {/* Section 1: Campaign Serials (Visible to Admin Only) */}
-      {isAdmin && (
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {/* 1. PROMOTIONS EXECUTIVE OVERVIEW (Promotions Admin / Super Admin)     */}
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {showPromotionsSection && (superAdmin || promotionsAdmin) && (
         <div className="dashboard-section">
           <h2 className="dashboard-section-title">
             <span className="dashboard-section-title-left">
@@ -344,50 +430,278 @@ export async function CustomDashboard(props: { user?: User | null }) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                  <path d="m3.3 7 8.7 5 8.7-5" />
-                  <path d="M12 22V12" />
+                  <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+                  <path d="M13 5v2" />
+                  <path d="M13 17v2" />
+                  <path d="M13 11v2" />
                 </svg>
               </span>
-              Campaign Codes Management
+              Promotions & Campaigns Overview
             </span>
             <span className="dashboard-section-title-right">
-              متابعة وإدارة أكواد الحملة
+              متابعة حملات العروض والمشروبات
             </span>
           </h2>
           <div className="grid-container">
             <div className="glassy-card card-blue">
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <span className="kpi-title">Total Seeded Codes</span>
-                <span className="kpi-subtitle">إجمالي الأكواد بالمنظومة</span>
+                <span className="kpi-title">Active Campaigns</span>
+                <span className="kpi-subtitle">الحملات الترويجية النشطة</span>
               </div>
-              <div className="kpi-value">{totalCodes.toLocaleString()}</div>
+              <div className="kpi-value">
+                {activeCampaignsCount.toLocaleString()}
+              </div>
             </div>
             <div className="glassy-card card-blue">
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <span className="kpi-title">Scanned / Claimed Serials</span>
-                <span className="kpi-subtitle">
-                  الأكواد الممسوحة والمستخدمة
-                </span>
+                <span className="kpi-title">Total Vouchers Issued</span>
+                <span className="kpi-subtitle">إجمالي الكوبونات المصدرة</span>
               </div>
-              <div className="kpi-value">{claimedCodes.toLocaleString()}</div>
+              <div className="kpi-value">
+                {totalVouchersCount.toLocaleString()}
+              </div>
             </div>
             <div className="glassy-card card-brown">
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <span className="kpi-title">Remaining Active Serials</span>
-                <span className="kpi-subtitle">
-                  الأكواد النشطة المتبقية بالسوق
-                </span>
+                <span className="kpi-title">Redeemed Drinks</span>
+                <span className="kpi-subtitle">المشروبات التي تم صرفها</span>
               </div>
-              <div className="kpi-value">{remainingCodes.toLocaleString()}</div>
+              <div className="kpi-value">
+                {redeemedVouchersCount.toLocaleString()}
+              </div>
+            </div>
+            <div className="glassy-card card-blue">
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span className="kpi-title">Active Branches</span>
+                <span className="kpi-subtitle">الفروع النشطة</span>
+              </div>
+              <div className="kpi-value">
+                {activeBranchesCount.toLocaleString()}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Section 2: Winning Cups Info (Admin Only) */}
-      {isAdmin ? (
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {/* 2. PROMOTIONS STAFF / CASHIER OPERATIONS DECK                         */}
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {showPromotionsSection && promotionsStaff && (
+        <div className="dashboard-section">
+          <h2 className="dashboard-section-title">
+            <span className="dashboard-section-title-left">
+              <span
+                style={{
+                  color: "#150958",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </span>
+              Branch Cashier Operations
+            </span>
+            <span className="dashboard-section-title-right">
+              بوابة عمليات الفرع والكاشير
+            </span>
+          </h2>
+
+          <div
+            className="grid-container"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1.5rem",
+            }}
+          >
+            {/* Terminal Card */}
+            <Link
+              href="/admin/drink-redemption"
+              className="glassy-card card-blue"
+              style={{
+                textDecoration: "none",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <span
+                  className="kpi-title"
+                  style={{
+                    fontSize: "1rem",
+                    color: "#150958",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  Drink Redemption Terminal
+                </span>
+                <span
+                  className="kpi-subtitle"
+                  style={{
+                    display: "block",
+                    marginTop: "0.4rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  شاشة الكاشير اليومية: ابحث برقم هاتف العميل أو كود الكوبون
+                  لصرف المشروب فورياً وتسجيل العملية باسمك والفرع.
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: "1.25rem",
+                  fontWeight: 700,
+                  color: "#150958",
+                  fontSize: "0.875rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                }}
+              >
+                <span>فتح شاشة الصرف</span>
+                <span>←</span>
+              </div>
+            </Link>
+
+            {/* Drinks Menu Card */}
+            <Link
+              href="/admin/collections/drinks"
+              className="glassy-card card-blue"
+              style={{
+                textDecoration: "none",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <span
+                  className="kpi-title"
+                  style={{
+                    fontSize: "1rem",
+                    color: "#150958",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  Drinks Menu Manager
+                </span>
+                <span
+                  className="kpi-subtitle"
+                  style={{
+                    display: "block",
+                    marginTop: "0.4rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  قائمة المشروبات: الاطلاع على الأصناف المتوفرة وتعديل حالة
+                  توفرها في الفرع عند الحاجة.
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: "1.25rem",
+                  fontWeight: 700,
+                  color: "#150958",
+                  fontSize: "0.875rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                }}
+              >
+                <span>قائمة المشروبات</span>
+                <span>←</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {/* 3. LUCKY CUP MODULE (Lucky Cup Admin / Super Admin)                   */}
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {showLuckyCupSection && (superAdmin || luckyCupAdmin) && (
         <>
+          <div className="dashboard-section">
+            <h2 className="dashboard-section-title">
+              <span className="dashboard-section-title-left">
+                <span
+                  style={{
+                    color: "#150958",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                    <path d="m3.3 7 8.7 5 8.7-5" />
+                    <path d="M12 22V12" />
+                  </svg>
+                </span>
+                Campaign Codes Management
+              </span>
+              <span className="dashboard-section-title-right">
+                متابعة وإدارة أكواد الحملة
+              </span>
+            </h2>
+            <div className="grid-container">
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Total Seeded Codes</span>
+                  <span className="kpi-subtitle">إجمالي الأكواد بالمنظومة</span>
+                </div>
+                <div className="kpi-value">{totalCodes.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-blue">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Scanned / Claimed Serials</span>
+                  <span className="kpi-subtitle">
+                    الأكواد الممسوحة والمستخدمة
+                  </span>
+                </div>
+                <div className="kpi-value">{claimedCodes.toLocaleString()}</div>
+              </div>
+              <div className="glassy-card card-brown">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span className="kpi-title">Remaining Active Serials</span>
+                  <span className="kpi-subtitle">
+                    الأكواد النشطة المتبقية بالسوق
+                  </span>
+                </div>
+                <div className="kpi-value">
+                  {remainingCodes.toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="dashboard-section">
             <h2 className="dashboard-section-title">
               <span className="dashboard-section-title-left">
@@ -418,7 +732,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
                 Winning Serials
               </span>
               <span className="dashboard-section-title-right">
-                أكواب الفوز اللي اتوزعت في الحملة
+                أكواب الفوز التي وُزعت في الحملة
               </span>
             </h2>
             <div className="grid-container">
@@ -434,21 +748,28 @@ export async function CustomDashboard(props: { user?: User | null }) {
               <div className="glassy-card card-blue">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Scanned Winners</span>
-                  <span className="kpi-subtitle">الكسبانين المسجلين بالسيستم</span>
+                  <span className="kpi-subtitle">
+                    الكسبانين المسجلين بالسيستم
+                  </span>
                 </div>
-                <div className="kpi-value">{claimedWinners.toLocaleString()}</div>
+                <div className="kpi-value">
+                  {claimedWinners.toLocaleString()}
+                </div>
               </div>
               <div className="glassy-card card-brown">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Unclaimed Winning Cups</span>
-                  <span className="kpi-subtitle">أكواب الفوز المتبقية بالسوق</span>
+                  <span className="kpi-subtitle">
+                    أكواب الفوز المتبقية بالسوق
+                  </span>
                 </div>
-                <div className="kpi-value">{unclaimedWinners.toLocaleString()}</div>
+                <div className="kpi-value">
+                  {unclaimedWinners.toLocaleString()}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Section 3: Staff Delivery Pipeline */}
           <div className="dashboard-section">
             <h2 className="dashboard-section-title">
               <span className="dashboard-section-title-left">
@@ -485,28 +806,35 @@ export async function CustomDashboard(props: { user?: User | null }) {
               <div className="glassy-card card-blue">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Total Registered Claims</span>
-                  <span className="kpi-subtitle">إجمالي طلبات الجوائز المسجلة</span>
+                  <span className="kpi-subtitle">
+                    إجمالي طلبات الجوائز المسجلة
+                  </span>
                 </div>
                 <div className="kpi-value">{totalClaims.toLocaleString()}</div>
               </div>
               <div className="glassy-card card-brown">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Pending Delivery</span>
-                  <span className="kpi-subtitle">الجوائز قيد التسليم للزبائن</span>
+                  <span className="kpi-subtitle">
+                    الجوائز قيد التسليم للزبائن
+                  </span>
                 </div>
-                <div className="kpi-value">{pendingClaims.toLocaleString()}</div>
+                <div className="kpi-value">
+                  {pendingClaims.toLocaleString()}
+                </div>
               </div>
               <div className="glassy-card card-blue">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Delivered Prizes</span>
                   <span className="kpi-subtitle">الجوائز المسلّمة بالكامل</span>
                 </div>
-                <div className="kpi-value">{deliveredClaims.toLocaleString()}</div>
+                <div className="kpi-value">
+                  {deliveredClaims.toLocaleString()}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Section 4: Participation & Engagement */}
           <div className="dashboard-section">
             <h2 className="dashboard-section-title">
               <span className="dashboard-section-title-left">
@@ -543,14 +871,18 @@ export async function CustomDashboard(props: { user?: User | null }) {
               <div className="glassy-card card-blue">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Total Scan Entries</span>
-                  <span className="kpi-subtitle">إجمالي محاولات إدخال الرموز</span>
+                  <span className="kpi-subtitle">
+                    إجمالي محاولات إدخال الرموز
+                  </span>
                 </div>
                 <div className="kpi-value">{totalEntries.toLocaleString()}</div>
               </div>
               <div className="glassy-card card-blue">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span className="kpi-title">Registered Participants</span>
-                  <span className="kpi-subtitle">الزبائن المسجلين والمشاركين</span>
+                  <span className="kpi-subtitle">
+                    الزبائن المسجلين والمشاركين
+                  </span>
                 </div>
                 <div className="kpi-value">
                   {totalParticipants.toLocaleString()}
@@ -558,8 +890,14 @@ export async function CustomDashboard(props: { user?: User | null }) {
               </div>
             </div>
           </div>
+        </>
+      )}
 
-          {/* Verification and Cashier Widget */}
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {/* 4. LUCKY CUP VERIFICATION & CLAIMS WIDGETS                            */}
+      {/* ═════════════════════════════════════════════════════════════════════ */}
+      {showLuckyCupSection &&
+        (superAdmin || luckyCupAdmin || luckyCupStaff) && (
           <div
             style={{
               display: "grid",
@@ -571,110 +909,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
             <VerifyWidget />
             <ClaimsTable initialClaims={recentClaims} />
           </div>
-        </>
-      ) : (
-        /* ── Staff Operations Portal ─────────────────────────────────────── */
-        <div className="dashboard-section">
-          <h2 className="dashboard-section-title">
-            <span className="dashboard-section-title-left">
-              <span
-                style={{
-                  color: "#150958",
-                  display: "inline-flex",
-                  alignItems: "center",
-                }}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                </svg>
-              </span>
-              Branch Operations & Drink Rewards
-            </span>
-            <span className="dashboard-section-title-right">
-              بوابة عمليات الفرع والكاشير
-            </span>
-          </h2>
-
-          <div
-            className="grid-container"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
-            {/* Terminal Card */}
-            <Link
-              href="/admin/drink-redemption"
-              className="glassy-card card-blue"
-              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-            >
-              <div>
-                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  ☕ Drink Redemption Terminal
-                </span>
-                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
-                  شاشة الكاشير اليومية: ابحث برقم هاتف العميل أو كود الكوبون لصرف المشروب فورياً وتسجيل العملية باسمك والفرع.
-                </span>
-              </div>
-              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#150958", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <span>فتح شاشة الصرف</span>
-                <span>←</span>
-              </div>
-            </Link>
-
-            {/* Drinks Menu Card */}
-            <Link
-              href="/admin/collections/drinks"
-              className="glassy-card card-blue"
-              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-            >
-              <div>
-                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  📋 Drinks Menu Manager
-                </span>
-                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
-                  إدارة قائمة المشروبات: إضافة مشروبات جديدة، إيقاف الأصناف غير المتوفرة مؤقتاً، وتعديل المتاح في الهدايا.
-                </span>
-              </div>
-              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#150958", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <span>إدارة قائمة المشروبات</span>
-                <span>←</span>
-              </div>
-            </Link>
-
-            {/* Vouchers List Card */}
-            <Link
-              href="/admin/collections/drink-entitlements"
-              className="glassy-card card-brown"
-              style={{ textDecoration: "none", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-            >
-              <div>
-                <span className="kpi-title" style={{ fontSize: "1rem", color: "#150958", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  🎫 Vouchers & Entitlements
-                </span>
-                <span className="kpi-subtitle" style={{ display: "block", marginTop: "0.4rem", lineHeight: 1.5 }}>
-                  استعراض الكوبونات: البحث برقم التليفون أو الكود للتحقق من حالة الكوبون وموعد وتاريخ صرفه.
-                </span>
-              </div>
-              <div style={{ marginTop: "1.25rem", fontWeight: 700, color: "#64748B", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <span>استعراض الكوبونات</span>
-                <span>←</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      )}
+        )}
     </Gutter>
   );
 }

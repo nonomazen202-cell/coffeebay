@@ -2,8 +2,10 @@ import React from 'react';
 import { getPayload, type Where } from 'payload';
 import config from '@payload-config';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { DrinkVouchersManager, type SerializedVoucher } from './DrinkVouchersManager';
 import { getCachedStats } from './cache';
+import { hasPromotionsAdminAccess } from '@/lib/security/roles';
 
 interface CustomListDrinkVouchersProps {
   searchParams?: Promise<{
@@ -22,11 +24,15 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
 
   const payload = await getPayload({ config });
 
-  // Authenticate user session
+  // Authenticate user session & verify Promotions Admin privileges
   const authResult = await payload.auth({
     headers: await headers(),
   });
-  const userRole = (authResult?.user?.role as 'ADMIN' | 'STAFF') || 'STAFF';
+  const currentUser = authResult?.user;
+  if (!currentUser || !hasPromotionsAdminAccess(currentUser)) {
+    redirect('/admin');
+  }
+  const userRole = (currentUser.role as string) || 'PROMOTIONS_ADMIN';
 
   // 1. Build Query Conditions
   const andConditions: Where[] = [];
@@ -125,7 +131,7 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
     return {
       id: doc.id,
       voucherCode: doc.voucher_code,
-      customerName: doc.customer_name,
+      customerName: doc.customer_name || '',
       phone: doc.phone,
       status: doc.status as 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED',
       campaignTitle,

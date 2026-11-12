@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { securityService } from '../../../services/security-service';
 import { claimService } from '../../../services/claim-service';
 import { getAuthUser } from '../../../lib/security/auth-helper';
+import { hasLuckyCupAccess } from '../../../lib/security/roles';
 
 export async function POST(req: NextRequest) {
   const requestId = securityService.generateRequestId();
@@ -17,8 +18,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Authorize role (must be STAFF or ADMIN)
-    if (user.role !== 'STAFF' && user.role !== 'ADMIN') {
+    // 2. Authorize role (must be Lucky Cup Staff, Admin, or Super Admin)
+    if (!hasLuckyCupAccess(user)) {
       return NextResponse.json(
         { success: false, errors: ['Forbidden'], requestId },
         { status: 403 }

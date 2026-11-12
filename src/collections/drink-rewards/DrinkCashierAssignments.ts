@@ -1,21 +1,22 @@
 import type { CollectionConfig } from 'payload';
-import { isAdmin } from '../access';
+import { isPromotionsAdminAccess } from '../access';
+import { hasPromotionsAdminAccess } from '../../lib/security/roles';
 
 export const DrinkCashierAssignments: CollectionConfig = {
   slug: 'drink-cashier-assignments',
   timestamps: true,
   admin: {
-    hidden: ({ user }) => user?.role !== 'ADMIN',
-    group: 'Drink Rewards',
+    hidden: ({ user }) => !hasPromotionsAdminAccess(user),
+    group: 'Promotions / الحملات والعروض الترويجية',
     useAsTitle: 'id',
     defaultColumns: ['user', 'branch', 'active', 'createdAt'],
     description: 'Binds staff members to specific Coffee Bay physical branches for server-verified redemptions.',
   },
   access: {
-    read: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: isPromotionsAdminAccess,
+    create: isPromotionsAdminAccess,
+    update: isPromotionsAdminAccess,
+    delete: isPromotionsAdminAccess,
   },
   hooks: {
     beforeChange: [

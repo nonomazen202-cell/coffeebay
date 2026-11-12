@@ -689,87 +689,478 @@
   word-break: break-word;
 }
 
-/* Beverage Choice Display - Spotlight Hero Card */
-.selectedDrinkBox {
-  background: linear-gradient(135deg, #150958 0%, #1F1172 100%);
-  border: 2px solid #2B2199;
-  border-radius: 22px;
-  padding: 2rem 2.25rem;
+/* ── Dedicated Anchor for Smooth Auto-Scroll ────────────────────────────── */
+.resultAnchor {
+  scroll-margin-top: 110px;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* ── Status Hero Banners (High-End VIP Pass Status) ──────────────────────── */
+.statusHeroBannerValid {
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 50%, #ECFDF5 100%);
+  border: 1.5px solid #86EFAC;
+  border-radius: 20px;
+  padding: 1.25rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  color: #FFFFFF;
-  box-shadow: 0 12px 32px rgba(21, 9, 88, 0.22);
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-.selectedDrinkLeft {
+.statusHeroBannerRedeemed {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 50%, #E0E7FF 100%);
+  border: 1.5px solid #C7D2FE;
+  border-radius: 20px;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(21, 9, 88, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.statusHeroBannerExpired {
+  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  border: 1.5px solid #CBD5E1;
+  border-radius: 20px;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statusHeroBannerCancelled {
+  background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+  border: 1.5px solid #FCA5A5;
+  border-radius: 20px;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statusHeroLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.statusHeroCheckCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #16A34A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.28);
+}
+
+.statusHeroRedeemedCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #150958;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(21, 9, 88, 0.25);
+}
+
+.statusHeroText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.statusHeroTitle {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #14532D;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.statusHeroSubtitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #166534;
+  line-height: 1.2;
+}
+
+.statusHeroTitleRedeemed {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #150958;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.statusHeroSubtitleRedeemed {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3730A3;
+  line-height: 1.2;
+}
+
+.statusHeroWatermark {
+  color: #4ADE80;
+  opacity: 0.35;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* ── Beverage Choice Display - Spotlight Hero Card (Futuristic Luxury) ─── */
+.selectedDrinkBox {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 255, 0.94) 48%, rgba(240, 244, 255, 0.98) 100%);
+  border: 1.8px solid #818CF8;
+  border-radius: 24px;
+  padding: 1.75rem 2.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 14px 38px rgba(21, 9, 88, 0.09), 0 0 0 1px rgba(99, 102, 241, 0.12);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.selectedDrinkHeroWrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.selectedDrinkIconBadge {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #150958 0%, #1E1270 50%, #2A1B8C 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(21, 9, 88, 0.28), 0 0 0 2px rgba(129, 140, 248, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.selectedDrinkBox:hover .selectedDrinkIconBadge {
+  transform: scale(1.05) rotate(-2deg);
+  box-shadow: 0 16px 36px rgba(21, 9, 88, 0.38), 0 0 0 3px rgba(129, 140, 248, 0.5);
+}
+
+.selectedDrinkCupSvg {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+.selectedDrinkDivider {
+  width: 1.5px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, #CBD5E1 20%, #CBD5E1 80%, transparent);
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+.selectedDrinkContent {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
   text-align: left;
+  min-width: 0;
 }
 
-.selectedDrinkRight {
+.selectedDrinkMetaHeader {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .selectedDrinkLabel {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #C0C0C0;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.selectedDrinkName {
-  font-size: 2.35rem;
-  font-weight: 900;
-  color: #FFFFFF;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.drinkCategoryBadge {
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  padding: 0.45rem 1.1rem;
-  border-radius: 9999px;
-  backdrop-filter: blur(8px);
-  white-space: nowrap;
-}
-
-/* Audit box if redeemed */
-.auditBox {
-  background: #F8FAFC;
-  border-radius: 18px;
-  padding: 1.5rem 1.75rem;
-  font-size: 0.95rem;
-  color: #475569;
-  line-height: 1.75;
-  border: 1.5px solid #E2E8F0;
-  text-align: left;
-}
-
-.auditTitle {
-  font-weight: 900;
   color: #150958;
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* Actions Row */
+.selectedDrinkName {
+  font-size: 2.85rem;
+  font-weight: 950;
+  color: #150958;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.selectedDrinkSubtitle {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.35;
+}
+
+.drinkCategoryBadge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #150958;
+  background: #E0E7FF;
+  border: 1.5px solid #C7D2FE;
+  padding: 0.4rem 1.15rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .selectedDrinkBox {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  .selectedDrinkDivider {
+    display: none;
+  }
+  .selectedDrinkHeroWrapper {
+    width: 100%;
+    justify-content: center;
+  }
+  .selectedDrinkName {
+    font-size: 2.2rem;
+  }
+}
+
+/* ── Modern Redemption Audit Log Card ───────────────────────────────────── */
+.auditCardContainer {
+  background: #FFFFFF;
+  border: 1.8px solid #CBD5E1;
+  border-radius: 22px;
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 10px 30px rgba(21, 9, 88, 0.06);
+  text-align: left;
+}
+
+.auditCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid #F1F5F9;
+}
+
+.auditHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #150958;
+}
+
+.auditClockIcon {
+  color: #150958;
+  flex-shrink: 0;
+}
+
+.auditHeaderTitle {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #150958;
+  letter-spacing: -0.01em;
+}
+
+.auditLastBadge {
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  background: #EEF2FF;
+  color: #3730A3;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border: 1px solid #C7D2FE;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auditSplitRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.auditSplitCol {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.auditColIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  color: #150958;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.auditCupIcon {
+  color: #150958;
+}
+
+.auditDrinkNameWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.auditDrinkNameText {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.auditDeliveredPill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #065F46;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.auditColDivider {
+  width: 1.5px;
+  height: 48px;
+  background: #E2E8F0;
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+.auditDateTimeWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.auditDateText {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0F172A;
+  font-family: monospace;
+}
+
+.auditTimeText {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748B;
+  font-family: monospace;
+}
+
+.auditBranchWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.auditBranchTitle {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.auditBranchSubtitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.auditCashierWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.auditCashierName {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.auditCashierRole {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.auditReasonBanner {
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #92400E;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .auditSplitRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .auditColDivider {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .auditSplitRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Actions Row (Modern Capsule Buttons) ───────────────────────────────── */
 .actionRow {
   display: flex;
   flex-direction: column;
@@ -782,57 +1173,132 @@
   }
 }
 
-.redeemPrimaryButton {
-  flex: 2;
+/* Primary Dispense Action - High Contrast Vibrant Emerald Capsule */
+.redeemCapsuleButton {
+  flex: 1.7;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.85rem;
-  padding: 1.35rem 2.5rem;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #150958 0%, #1E1270 100%);
+  gap: 1rem;
+  padding: 0.85rem 2.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
   color: #FFFFFF;
-  font-size: 1.25rem;
-  font-weight: 900;
-  border: none;
+  border: 2px solid #059669;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(21, 9, 88, 0.28);
-  transition: all 0.2s ease;
-  min-height: 64px;
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.32);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 68px;
 }
 
-.redeemPrimaryButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1E1270 0%, #2A1B8C 100%);
+.redeemCapsuleButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #065F46 100%);
+  border-color: #047857;
   transform: translateY(-2px);
-  box-shadow: 0 14px 34px rgba(21, 9, 88, 0.38);
+  box-shadow: 0 14px 34px rgba(5, 150, 105, 0.45);
 }
 
-.redeemPrimaryButton:disabled {
+.redeemCapsuleButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.substituteButton {
+/* Secondary Action - Crisp White Capsule with Navy Border */
+.substituteCapsuleButton {
   flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  padding: 1.25rem 2rem;
-  border-radius: 18px;
+  gap: 0.85rem;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
   background: #FFFFFF;
   color: #150958;
-  font-size: 1.1rem;
-  font-weight: 800;
-  border: 2px solid #CBD5E1;
+  border: 2.2px solid #150958;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 64px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 68px;
+  box-shadow: 0 4px 16px rgba(21, 9, 88, 0.08);
 }
 
-.substituteButton:hover:not(:disabled) {
-  background: #F8FAFC;
-  border-color: #150958;
+.substituteCapsuleButton:hover:not(:disabled) {
+  background: #F5F7FF;
+  border-color: #312E81;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(21, 9, 88, 0.16);
+}
+
+.substituteCapsuleButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnCheckIconBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.btnRefreshIconBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #EEF2FF;
+  color: #150958;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid #C7D2FE;
+}
+
+.btnTextStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.1rem;
+}
+
+.btnPrimaryText {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.btnSecondaryText {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.2;
+}
+
+.btnPrimaryTextNavy {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #150958;
+  line-height: 1.2;
+}
+
+.btnSecondaryTextNavy {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #150958;
+  line-height: 1.2;
+}
+
+.btnIconSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Substitution Form - Strict Coffee Bay Brand Colors */
@@ -923,6 +1389,94 @@
   align-items: center;
   gap: 0.55rem;
   margin-bottom: 0.85rem;
+}
+
+/* ── Scalable Drink Search & Category Filter ───────────────────────────── */
+.drinkSearchFilterRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.drinkSearchBox {
+  position: relative;
+  width: 100%;
+}
+
+.drinkSearchIcon {
+  position: absolute;
+  left: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.drinkSearchInput {
+  width: 100%;
+  padding: 0.95rem 1.25rem 0.95rem 3.1rem;
+  border-radius: 14px;
+  background: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  color: #0F172A;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.drinkSearchInput:focus {
+  background: #FFFFFF;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.drinkSearchClearBtn {
+  position: absolute;
+  right: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drinkCategoryTabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.drinkCategoryTabBtn {
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.drinkCategoryTabBtn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+.drinkCategoryTabBtnActive {
+  background: #150958 !important;
+  color: #FFFFFF !important;
+  border-color: #150958 !important;
 }
 
 /* Drink selection grid */

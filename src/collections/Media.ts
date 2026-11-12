@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdminOrStaff } from './access';
+import { isAdminOrStaff, isSuperAdminAccess } from './access';
 import { revalidateDrinkItemCache } from '../lib/cache/drink-rewards-cache';
 import { put, del } from '@vercel/blob';
 import fs from 'fs';
@@ -8,11 +8,14 @@ import path from 'path';
 export const Media: CollectionConfig = {
   slug: 'media',
   timestamps: true,
+  admin: {
+    group: 'System Administration / إدارة المنظومة',
+  },
   access: {
     read: () => true, // Publicly readable
     create: isAdminOrStaff,
     update: isAdminOrStaff,
-    delete: isAdminOrStaff,
+    delete: isSuperAdminAccess,
   },
   upload: {
     // On Vercel, the project directory is read-only, so we use the writeable /tmp folder.
