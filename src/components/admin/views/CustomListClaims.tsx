@@ -1,25 +1,31 @@
 import React from 'react';
-import { getPayload, type Where } from 'payload';
+import { getPayload, type Payload, type Where } from 'payload';
+import { sql } from 'drizzle-orm';
 import config from '@payload-config';
 import { ClaimsManager } from './ClaimsManager';
 import { getCachedStats } from './cache';
 
 interface CustomListClaimsProps {
+  payload?: Payload;
   searchParams?: Promise<{
     page?: string;
     search?: string;
     status?: string;
-  }>;
+  }> | {
+    page?: string;
+    search?: string;
+    status?: string;
+  };
 }
 
-export async function CustomListClaims({ searchParams }: CustomListClaimsProps) {
+export async function CustomListClaims({ payload: propPayload, searchParams }: CustomListClaimsProps) {
   const resolvedParams = (await searchParams) || {};
   const page = Number(resolvedParams.page) || 1;
   const limit = 100;
   const search = resolvedParams.search || '';
   const statusFilter = resolvedParams.status || 'ALL';
 
-  const payload = await getPayload({ config });
+  const payload = propPayload || (await getPayload({ config }));
 
   // 1. Trace relations to get matching Entry IDs for search database-side
   let entryIds: (string | number)[] = [];
@@ -94,36 +100,40 @@ export async function CustomListClaims({ searchParams }: CustomListClaimsProps) 
     where.or = orConditions;
   }
 
-  // 3. Fetch Paginated Records
-  const claimsResult = await payload.find({
-    collection: 'prize-claims',
-    page,
-    limit,
-    where,
-    depth: 3, // Populate relationships for entry, code, prizes, and participants
-    sort: '-createdAt',
-  });
+  // 3. Fetch Paginated Records & Single-Query Consolidated KPI Counts in parallel
+  const [claimsResult, stats] = await Promise.all([
+    payload.find({
+      collection: 'prize-claims',
+      page,
+      limit,
+      where,
+      depth: 3, // Populate relationships for entry, code, prizes, and participants
+      sort: '-createdAt',
+    }),
+    getCachedStats('prize-claims-global-stats', 15000, async () => {
+      const res = await payload.db.drizzle.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status = 'PENDING')::int AS pending,
+          count(*) FILTER (WHERE status = 'DELIVERED')::int AS delivered
+        FROM prize_claims;
+      `);
+      const rows = Array.isArray(res)
+        ? res
+        : (res as { rows?: unknown[] }).rows || [];
+      const row = (rows[0] as {
+        total?: number;
+        pending?: number;
+        delivered?: number;
+      }) || {};
 
-  // 4. Cache Statistics (15-second TTL)
-  const stats = await getCachedStats('prize-claims-global-stats', 15000, async () => {
-    const [total, pending, delivered] = await Promise.all([
-      payload.count({ collection: 'prize-claims' }),
-      payload.count({
-        collection: 'prize-claims',
-        where: { status: { equals: 'PENDING' } },
-      }),
-      payload.count({
-        collection: 'prize-claims',
-        where: { status: { equals: 'DELIVERED' } },
-      }),
-    ]);
-
-    return {
-      total: total.totalDocs,
-      pending: pending.totalDocs,
-      delivered: delivered.totalDocs,
-    };
-  });
+      return {
+        total: Number(row.total) || 0,
+        pending: Number(row.pending) || 0,
+        delivered: Number(row.delivered) || 0,
+      };
+    }),
+  ]);
 
   const claims = claimsResult.docs.map((doc) => {
     const entry = doc.entry;

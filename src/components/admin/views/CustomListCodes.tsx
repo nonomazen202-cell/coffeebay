@@ -1,25 +1,31 @@
 import React from 'react';
-import { getPayload, type Where } from 'payload';
+import { getPayload, type Payload, type Where } from 'payload';
+import { sql } from 'drizzle-orm';
 import config from '@payload-config';
 import { CodesManager } from './CodesManager';
 import { getCachedStats } from './cache';
 
 interface CustomListCodesProps {
+  payload?: Payload;
   searchParams?: Promise<{
     page?: string;
     search?: string;
     filter?: string;
-  }>;
+  }> | {
+    page?: string;
+    search?: string;
+    filter?: string;
+  };
 }
 
-export async function CustomListCodes({ searchParams }: CustomListCodesProps) {
+export async function CustomListCodes({ payload: propPayload, searchParams }: CustomListCodesProps) {
   const resolvedParams = (await searchParams) || {};
   const page = Number(resolvedParams.page) || 1;
   const limit = 50;
   const search = resolvedParams.search || '';
   const filter = resolvedParams.filter || 'ALL';
 
-  const payload = await getPayload({ config });
+  const payload = propPayload || (await getPayload({ config }));
 
   // 1. Build Query Conditions
   const andConditions: Where[] = [];
@@ -55,38 +61,41 @@ export async function CustomListCodes({ searchParams }: CustomListCodesProps) {
 
   const where: Where = andConditions.length > 0 ? { and: andConditions } : {};
 
-  // 2. Fetch Paginated Records
-  const codesResult = await payload.find({
-    collection: 'codes',
-    page,
-    limit,
-    where,
-    depth: 1, // Populate the prizes relationship details
-    sort: '-createdAt',
-  });
-
-  // 3. Cache Global Counts (15-second TTL) for the KPI cards
-  const totalCount = await getCachedStats('codes-total-count', 15000, async () => {
-    const res = await payload.count({ collection: 'codes' });
-    return res.totalDocs;
-  });
-
-  const claimedCount = await getCachedStats('codes-claimed-count', 15000, async () => {
-    const res = await payload.count({
+  // 2. Fetch Paginated Records & Single-Query Consolidated KPI Counts in parallel
+  const [codesResult, kpiCounts] = await Promise.all([
+    payload.find({
       collection: 'codes',
-      where: { claimed: { equals: true } },
-    });
-    return res.totalDocs;
-  });
+      page,
+      limit,
+      where,
+      depth: 1, // Populate the prizes relationship details
+      sort: '-createdAt',
+    }),
+    getCachedStats('codes-consolidated-kpi', 15000, async () => {
+      const res = await payload.db.drizzle.execute(sql`
+        SELECT
+          count(*)::int AS total_count,
+          count(*) FILTER (WHERE claimed = true)::int AS claimed_count,
+          count(*) FILTER (WHERE is_winner = true)::int AS winners_count
+        FROM codes;
+      `);
+      const rows = Array.isArray(res)
+        ? res
+        : (res as { rows?: unknown[] }).rows || [];
+      const row = (rows[0] as {
+        total_count?: number;
+        claimed_count?: number;
+        winners_count?: number;
+      }) || {};
+      return {
+        totalCount: Number(row.total_count) || 0,
+        claimedCount: Number(row.claimed_count) || 0,
+        winnersCount: Number(row.winners_count) || 0,
+      };
+    }),
+  ]);
 
-  const winnersCount = await getCachedStats('codes-winners-count', 15000, async () => {
-    const res = await payload.count({
-      collection: 'codes',
-      where: { is_winner: { equals: true } },
-    });
-    return res.totalDocs;
-  });
-
+  const { totalCount, claimedCount, winnersCount } = kpiCounts;
   const losingCount = totalCount - winnersCount;
 
   const codes = codesResult.docs.map(doc => {

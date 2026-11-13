@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { getPayloadClient } from '../payload';
 import { headers } from 'next/headers';
 import type { AppRole } from './roles';
@@ -13,13 +14,7 @@ export const authMock = {
   currentUser: null as AuthenticatedUser | null,
 };
 
-/**
- * Retrieves the currently authenticated user from Payload CMS using request headers.
- */
-export async function getAuthUser(): Promise<AuthenticatedUser | null> {
-  if (authMock.currentUser) {
-    return authMock.currentUser;
-  }
+const getRequestScopedAuthUser = cache(async (): Promise<AuthenticatedUser | null> => {
   try {
     const payload = await getPayloadClient();
     const authResult = await payload.auth({
@@ -40,4 +35,15 @@ export async function getAuthUser(): Promise<AuthenticatedUser | null> {
     console.error('[AUTH ERROR] Failed to retrieve session user:', error);
     return null;
   }
+});
+
+/**
+ * Retrieves the currently authenticated user from Payload CMS using request headers.
+ * Deduplicated per-request via React.cache() in Server Components.
+ */
+export async function getAuthUser(): Promise<AuthenticatedUser | null> {
+  if (authMock.currentUser) {
+    return authMock.currentUser;
+  }
+  return getRequestScopedAuthUser();
 }

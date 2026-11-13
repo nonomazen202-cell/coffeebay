@@ -1,25 +1,31 @@
 import React from 'react';
-import { getPayload, type Where } from 'payload';
+import { getPayload, type Payload, type Where } from 'payload';
+import { sql } from 'drizzle-orm';
 import config from '@payload-config';
 import { EntriesManager } from './EntriesManager';
 import { getCachedStats } from './cache';
 
 interface CustomListEntriesProps {
+  payload?: Payload;
   searchParams?: Promise<{
     page?: string;
     search?: string;
     result?: string;
-  }>;
+  }> | {
+    page?: string;
+    search?: string;
+    result?: string;
+  };
 }
 
-export async function CustomListEntries({ searchParams }: CustomListEntriesProps) {
+export async function CustomListEntries({ payload: propPayload, searchParams }: CustomListEntriesProps) {
   const resolvedParams = (await searchParams) || {};
   const page = Number(resolvedParams.page) || 1;
   const limit = 100;
   const search = resolvedParams.search || '';
   const resultFilter = resolvedParams.result || 'ALL';
 
-  const payload = await getPayload({ config });
+  const payload = propPayload || (await getPayload({ config }));
 
   // 1. Build Query Conditions
   const where: Where = {};
@@ -35,46 +41,46 @@ export async function CustomListEntries({ searchParams }: CustomListEntriesProps
     ];
   }
 
-  // 2. Fetch Paginated Records
-  const entriesResult = await payload.find({
-    collection: 'entries',
-    page,
-    limit,
-    where,
-    depth: 1, // Fetch participant and serial code details
-    sort: '-createdAt',
-  });
+  // 2. Fetch Paginated Records & Single-Query Consolidated KPI Counts in parallel
+  const [entriesResult, stats] = await Promise.all([
+    payload.find({
+      collection: 'entries',
+      page,
+      limit,
+      where,
+      depth: 1, // Fetch participant and serial code details
+      sort: '-createdAt',
+    }),
+    getCachedStats('entries-global-stats', 15000, async () => {
+      const res = await payload.db.drizzle.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE result = 'WIN')::int AS win,
+          count(*) FILTER (WHERE result = 'LOSE')::int AS lose,
+          count(*) FILTER (WHERE result = 'INVALID')::int AS invalid,
+          count(*) FILTER (WHERE result = 'ALREADY_USED')::int AS used
+        FROM entries;
+      `);
+      const rows = Array.isArray(res)
+        ? res
+        : (res as { rows?: unknown[] }).rows || [];
+      const row = (rows[0] as {
+        total?: number;
+        win?: number;
+        lose?: number;
+        invalid?: number;
+        used?: number;
+      }) || {};
 
-  // 3. Cache Global Counts (15-second TTL)
-  const stats = await getCachedStats('entries-global-stats', 15000, async () => {
-    const [total, win, lose, invalid, used] = await Promise.all([
-      payload.count({ collection: 'entries' }),
-      payload.count({
-        collection: 'entries',
-        where: { result: { equals: 'WIN' } },
-      }),
-      payload.count({
-        collection: 'entries',
-        where: { result: { equals: 'LOSE' } },
-      }),
-      payload.count({
-        collection: 'entries',
-        where: { result: { equals: 'INVALID' } },
-      }),
-      payload.count({
-        collection: 'entries',
-        where: { result: { equals: 'ALREADY_USED' } },
-      }),
-    ]);
-
-    return {
-      total: total.totalDocs,
-      win: win.totalDocs,
-      lose: lose.totalDocs,
-      invalid: invalid.totalDocs,
-      used: used.totalDocs,
-    };
-  });
+      return {
+        total: Number(row.total) || 0,
+        win: Number(row.win) || 0,
+        lose: Number(row.lose) || 0,
+        invalid: Number(row.invalid) || 0,
+        used: Number(row.used) || 0,
+      };
+    }),
+  ]);
 
   const entries = entriesResult.docs.map(doc => {
     let participantInfo = null;

@@ -1,34 +1,34 @@
 import React from 'react';
-import { getPayload } from 'payload';
+import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 import { DrinksManager, type SerializedDrink, type SerializedCategory } from './DrinksManager';
 
-export async function CustomListDrinks() {
-  const payload = await getPayload({ config });
+export async function CustomListDrinks({ payload: propPayload }: { payload?: Payload } = {}) {
+  const payload = propPayload || (await getPayload({ config }));
 
-  // 1. Fetch all drink categories for filter tabs
-  const categoriesResult = await payload.find({
-    collection: 'drink-categories',
-    limit: 100,
-    sort: 'name',
-    select: {
-      id: true,
-      name: true,
-    },
-  });
+  // Fetch categories and drinks concurrently to cut cross-datacenter RTT in half
+  const [categoriesResult, drinksResult] = await Promise.all([
+    payload.find({
+      collection: 'drink-categories',
+      limit: 100,
+      sort: 'name',
+      select: {
+        id: true,
+        name: true,
+      },
+    }),
+    payload.find({
+      collection: 'drinks',
+      limit: 200,
+      depth: 1,
+      sort: 'name',
+    }),
+  ]);
 
   const categories: SerializedCategory[] = categoriesResult.docs.map((c) => ({
     id: c.id,
     name: c.name,
   }));
-
-  // 2. Fetch drinks with category & media image populated (depth: 1)
-  const drinksResult = await payload.find({
-    collection: 'drinks',
-    limit: 200,
-    depth: 1,
-    sort: 'name',
-  });
 
   const drinks: SerializedDrink[] = drinksResult.docs.map((doc) => {
     let catInfo = null;

@@ -1,33 +1,49 @@
 import React from 'react';
-import { getPayload, type Where } from 'payload';
+import { getPayload, type Payload, type Where } from 'payload';
+import { sql } from 'drizzle-orm';
 import config from '@payload-config';
 import { headers } from 'next/headers';
 import { NotificationsManager } from './NotificationsManager';
 import { getCachedStats } from './cache';
 import { isSuperAdmin, isPromotionsAdmin, isLuckyCupAdmin } from '@/lib/security/roles';
+import type { User } from '@/payload-types';
 
 interface CustomListNotificationsProps {
+  user?: User | null;
+  payload?: Payload;
   searchParams?: Promise<{
     page?: string;
     search?: string;
     status?: string;
-  }>;
+  }> | {
+    page?: string;
+    search?: string;
+    status?: string;
+  };
 }
 
-export async function CustomListNotifications({ searchParams }: CustomListNotificationsProps) {
+export async function CustomListNotifications({
+  user: propUser,
+  payload: propPayload,
+  searchParams,
+}: CustomListNotificationsProps) {
   const resolvedParams = (await searchParams) || {};
   const page = Number(resolvedParams.page) || 1;
   const limit = 100;
   const search = resolvedParams.search || '';
   const statusFilter = resolvedParams.status || 'ALL';
 
-  const payload = await getPayload({ config });
+  const payload = propPayload || (await getPayload({ config }));
 
-  // Authenticate session for domain isolation
-  const authResult = await payload.auth({
-    headers: await headers(),
-  });
-  const currentUser = authResult?.user;
+  // Reuse Payload's already-authenticated user from ListView serverProps (zero duplicate auth!)
+  const currentUser =
+    propUser !== undefined
+      ? propUser
+      : (
+          await payload.auth({
+            headers: await headers(),
+          })
+        )?.user;
 
   // 1. Build Query Conditions
   const andConditions: Where[] = [];
@@ -78,68 +94,59 @@ export async function CustomListNotifications({ searchParams }: CustomListNotifi
 
   const where: Where = andConditions.length > 0 ? { and: andConditions } : {};
 
-  // 2. Fetch Paginated Records
-  const notificationsResult = await payload.find({
-    collection: 'notifications',
-    page,
-    limit,
-    where,
-    sort: '-createdAt',
-  });
-
-  // 3. Cache and Fetch Domain-Scoped Statistics (15-second TTL)
+  // 2. Fetch Paginated Records & Single-Query Domain-Scoped Statistics in parallel
   const domainCacheKey = `notifications-stats-${currentUser?.role || 'GLOBAL'}`;
-  const baseDomainWhere: Where = andConditions[0] ? andConditions[0] : {};
+  const isPromoScoped = Boolean(currentUser && !isSuperAdmin(currentUser) && isPromotionsAdmin(currentUser));
+  const isLuckyScoped = Boolean(currentUser && !isSuperAdmin(currentUser) && isLuckyCupAdmin(currentUser));
 
-  const stats = await getCachedStats(domainCacheKey, 15000, async () => {
-    const combine = (cond: Where): Where => {
-      if (andConditions[0]) {
-        return { and: [baseDomainWhere, cond] };
-      }
-      return cond;
-    };
+  const [notificationsResult, stats] = await Promise.all([
+    payload.find({
+      collection: 'notifications',
+      page,
+      limit,
+      where,
+      sort: '-createdAt',
+    }),
+    getCachedStats(domainCacheKey, 15000, async () => {
+      const domainClause = isPromoScoped
+        ? sql`WHERE template IN ('drink-reward-otp', 'drink-reward-voucher', 'drink-reward-admin-alert')`
+        : isLuckyScoped
+          ? sql`WHERE template IN ('verification', 'winner-notification', 'admin-alert')`
+          : sql``;
 
-    const [total, sent, queued, retryScheduled, deadLetter, failed] = await Promise.all([
-      payload.count({
-        collection: 'notifications',
-        where: baseDomainWhere,
-      }),
-      payload.count({
-        collection: 'notifications',
-        where: combine({
-          or: [
-            { status: { equals: 'sent' } },
-            { status: { equals: 'provider-accepted' } },
-          ],
-        }),
-      }),
-      payload.count({
-        collection: 'notifications',
-        where: combine({ status: { equals: 'queued' } }),
-      }),
-      payload.count({
-        collection: 'notifications',
-        where: combine({ status: { equals: 'retry-scheduled' } }),
-      }),
-      payload.count({
-        collection: 'notifications',
-        where: combine({ status: { equals: 'dead-letter' } }),
-      }),
-      payload.count({
-        collection: 'notifications',
-        where: combine({ status: { equals: 'failed' } }),
-      }),
-    ]);
+      const res = await payload.db.drizzle.execute(sql`
+        SELECT
+          count(*)::int AS total,
+          count(*) FILTER (WHERE status IN ('sent', 'provider-accepted'))::int AS sent,
+          count(*) FILTER (WHERE status = 'queued')::int AS queued,
+          count(*) FILTER (WHERE status = 'retry-scheduled')::int AS retry_scheduled,
+          count(*) FILTER (WHERE status = 'dead-letter')::int AS dead_letter,
+          count(*) FILTER (WHERE status = 'failed')::int AS failed
+        FROM notifications
+        ${domainClause};
+      `);
+      const rows = Array.isArray(res)
+        ? res
+        : (res as { rows?: unknown[] }).rows || [];
+      const row = (rows[0] as {
+        total?: number;
+        sent?: number;
+        queued?: number;
+        retry_scheduled?: number;
+        dead_letter?: number;
+        failed?: number;
+      }) || {};
 
-    return {
-      total: total.totalDocs,
-      sent: sent.totalDocs,
-      queued: queued.totalDocs,
-      retryScheduled: retryScheduled.totalDocs,
-      deadLetter: deadLetter.totalDocs,
-      failed: failed.totalDocs,
-    };
-  });
+      return {
+        total: Number(row.total) || 0,
+        sent: Number(row.sent) || 0,
+        queued: Number(row.queued) || 0,
+        retryScheduled: Number(row.retry_scheduled) || 0,
+        deadLetter: Number(row.dead_letter) || 0,
+        failed: Number(row.failed) || 0,
+      };
+    }),
+  ]);
 
   const notifications = notificationsResult.docs.map((doc) => ({
     id: doc.id,

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { isPromotionsAdminAccess } from '../access';
 import { hasPromotionsAdminAccess } from '../../lib/security/roles';
+import { invalidateCachedStats } from '../../components/admin/views/cache';
 
 export const DrinkCashierAssignments: CollectionConfig = {
   slug: 'drink-cashier-assignments',
@@ -50,6 +51,18 @@ export const DrinkCashierAssignments: CollectionConfig = {
           }
         }
         return data;
+      },
+    ],
+    afterChange: [
+      ({ doc }) => {
+        invalidateCachedStats('active-cashier-branches-map');
+        return doc;
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        invalidateCachedStats('active-cashier-branches-map');
+        return doc;
       },
     ],
   },

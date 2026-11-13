@@ -1,22 +1,22 @@
 import React from 'react';
-import { getPayload } from 'payload';
+import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 import { PrizesManager } from './PrizesManager';
 
-export async function CustomListPrizes() {
-  // Query all prizes dynamically from PostgreSQL via Payload Local API
-  const payload = await getPayload({ config });
+export async function CustomListPrizes({ payload: propPayload }: { payload?: Payload } = {}) {
+  const payload = propPayload || (await getPayload({ config }));
 
-  const prizesResult = await payload.find({
-    collection: 'prizes',
-    limit: 100,
-    depth: 1, // Populate the media image relationship field
-    sort: 'name',
-  });
-
-  const claimsResult = await payload.count({
-    collection: 'prize-claims',
-  });
+  const [prizesResult, claimsResult] = await Promise.all([
+    payload.find({
+      collection: 'prizes',
+      limit: 100,
+      depth: 1,
+      sort: 'name',
+    }),
+    payload.count({
+      collection: 'prize-claims',
+    }),
+  ]);
 
   const prizes = prizesResult.docs.map(doc => ({
     id: doc.id,

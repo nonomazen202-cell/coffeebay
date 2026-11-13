@@ -11,10 +11,25 @@ import {
   canManageUsers,
   getCanonicalRole,
 } from "../lib/security/roles";
+import { getCachedStats } from "../components/admin/views/cache";
+
+const AUTH_FAST_OPERATIONS = new Set([
+  "login",
+  "me",
+  "refresh",
+  "forgotPassword",
+  "resetPassword",
+  "unlock",
+]);
 
 export const AdminUsers: CollectionConfig = {
   slug: "users",
-  auth: true,
+  auth: {
+    // Lean JWT lookup (users has no relationship fields needed during auth)
+    // and 12-hour shift token lifetime (100% schema-neutral).
+    depth: 0,
+    tokenExpiration: 43200,
+  },
   timestamps: true,
   access: {
     read: usersReadAccess,
@@ -29,6 +44,17 @@ export const AdminUsers: CollectionConfig = {
     hidden: ({ user }) => !canManageUsers(user),
   },
   hooks: {
+    beforeOperation: [
+      ({ args, operation }) => {
+        if (AUTH_FAST_OPERATIONS.has(operation) && args?.req) {
+          args.req.context = {
+            ...(args.req.context || {}),
+            skipBranchLookup: true,
+          };
+        }
+        return args;
+      },
+    ],
     beforeValidate: [
       async ({ data, req, operation }) => {
         if (!data) return data;
@@ -260,29 +286,48 @@ export const AdminUsers: CollectionConfig = {
           async ({ data, req }) => {
             if (!data?.id) return "غير محدد";
             // Only cashiers have branch assignments
-            const role = data?.role;
-            if (role !== "PROMOTIONS_STAFF") {
+            if (data?.role !== "PROMOTIONS_STAFF") {
               return null;
             }
-            if (req?.context?.skipBranchLookup) {
-              return "محفوظ في التعيينات";
+            // Never execute extra SQL during JWT authentication (!req.user)
+            // or login/me/refresh auth operations (skipBranchLookup).
+            if (!req?.user || req?.context?.skipBranchLookup) {
+              return null;
             }
             try {
               if (req?.payload?.db?.drizzle) {
-                const res = await req.payload.db.drizzle.execute(sql`
-                  SELECT b.name as branch_name
-                  FROM drink_cashier_assignments a
-                  JOIN branches b ON a.branch_id = b.id
-                  WHERE a.user_id = ${data.id} AND a.active = true
-                  ORDER BY a.assigned_at DESC, a.id DESC
-                  LIMIT 1;
-                `);
-                if (res.rows && res.rows.length > 0) {
-                  return (
-                    (res.rows[0] as { branch_name: string }).branch_name ||
-                    "لا يوجد فرع نشط حالياً"
-                  );
-                }
+                const drizzle = req.payload.db.drizzle;
+                const branchMap = await getCachedStats<Record<string, string>>(
+                  "active-cashier-branches-map",
+                  10_000,
+                  async () => {
+                    const res = await drizzle.execute(sql`
+                      SELECT DISTINCT ON (a.user_id)
+                        a.user_id,
+                        b.name AS branch_name
+                      FROM drink_cashier_assignments a
+                      JOIN branches b ON a.branch_id = b.id
+                      WHERE a.active = true
+                      ORDER BY a.user_id, a.assigned_at DESC, a.id DESC;
+                    `);
+                    const rows = Array.isArray(res)
+                      ? res
+                      : (res as { rows?: unknown[] }).rows || [];
+                    const map: Record<string, string> = {};
+                    for (const r of rows as Array<{
+                      user_id: number | string;
+                      branch_name: string;
+                    }>) {
+                      if (r.user_id != null && r.branch_name) {
+                        map[String(r.user_id)] = r.branch_name;
+                      }
+                    }
+                    return map;
+                  },
+                );
+                return (
+                  branchMap[String(data.id)] || "لا يوجد فرع نشط حالياً"
+                );
               }
               return "لا يوجد فرع نشط حالياً";
             } catch {

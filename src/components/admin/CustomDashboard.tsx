@@ -1,12 +1,14 @@
 import React from "react";
 import Link from "next/link";
-import { getPayload } from "payload";
+import { getPayload, type Payload } from "payload";
+import { sql } from "drizzle-orm";
 import config from "@payload-config";
 import { getAuthUser } from "@/lib/security/auth-helper";
 import { Gutter } from "@payloadcms/ui";
 import { VerifyWidget } from "./VerifyWidget";
 import { ClaimsTable } from "./ClaimsTable";
 import { RefreshButton } from "./RefreshButton";
+import { getCachedStats } from "./views/cache";
 import type { User } from "@/payload-types";
 import {
   isSuperAdmin,
@@ -19,9 +21,22 @@ import {
   getRoleBadge,
 } from "@/lib/security/roles";
 
-export async function CustomDashboard(props: { user?: User | null }) {
-  // 1. Get current logged-in user
-  const user = props.user || (await getAuthUser());
+interface CustomDashboardProps {
+  user?: User | null;
+  payload?: Payload;
+  initPageResult?: {
+    req?: {
+      user?: User | null;
+      payload?: Payload;
+    };
+  };
+}
+
+export async function CustomDashboard(props: CustomDashboardProps) {
+  // 1. Reuse already-authenticated user from Payload's DashboardView props (zero duplicate auth!)
+  const injectedUser =
+    props.user !== undefined ? props.user : props.initPageResult?.req?.user;
+  const user = injectedUser !== undefined ? injectedUser : await getAuthUser();
   const roleBadge = getRoleBadge(user?.role);
 
   const superAdmin = isSuperAdmin(user);
@@ -32,9 +47,6 @@ export async function CustomDashboard(props: { user?: User | null }) {
 
   const showPromotionsSection = superAdmin || hasPromotionsAccess(user);
   const showLuckyCupSection = superAdmin || hasLuckyCupAccess(user);
-
-  // 2. Fetch statistics from PostgreSQL via Payload Local API
-  const payload = await getPayload({ config });
 
   // Data state holders
   let totalCodes = 0;
@@ -56,120 +68,162 @@ export async function CustomDashboard(props: { user?: User | null }) {
   let redeemedVouchersCount = 0;
   let activeBranchesCount = 0;
 
-  // Domain-aware queries to prevent querying unrelated tables
-  const queryPromises: Promise<unknown>[] = [];
+  const needsLuckyCupKpi = showLuckyCupSection && (superAdmin || luckyCupAdmin);
+  const needsLuckyCupClaims =
+    showLuckyCupSection && (superAdmin || luckyCupAdmin || luckyCupStaff);
+  const needsPromotionsKpi =
+    showPromotionsSection && (superAdmin || promotionsAdmin);
 
-  if (showLuckyCupSection) {
-    queryPromises.push(
-      (async () => {
-        const [
-          totalCodesResult,
-          claimedCodesResult,
-          remainingCodesResult,
-          totalWinnersResult,
-          unclaimedWinnersResult,
-          claimedWinnersResult,
-          totalClaimsResult,
-          pendingClaimsResult,
-          deliveredClaimsResult,
-          totalEntriesResult,
-          totalParticipantsResult,
-          recentClaimsResult,
-        ] = await Promise.all([
-          payload.count({ collection: "codes" }),
-          payload.count({
-            collection: "codes",
-            where: { claimed: { equals: true } },
-          }),
-          payload.count({
-            collection: "codes",
-            where: { claimed: { equals: false } },
-          }),
-          payload.count({
-            collection: "codes",
-            where: { is_winner: { equals: true } },
-          }),
-          payload.count({
-            collection: "codes",
-            where: {
-              and: [
-                { is_winner: { equals: true } },
-                { claimed: { equals: false } },
-              ],
+  // 2. Only initialize DB queries when the current role actually renders KPI sections.
+  //    Cashiers (PROMOTIONS_STAFF) render in <1ms with ZERO extra SQL round-trips!
+  if (needsLuckyCupKpi || needsLuckyCupClaims || needsPromotionsKpi) {
+    const payload =
+      props.payload ||
+      props.initPageResult?.req?.payload ||
+      (await getPayload({ config }));
+    const drizzle = payload.db.drizzle;
+
+    const queryPromises: Promise<unknown>[] = [];
+
+    if (needsLuckyCupKpi) {
+      queryPromises.push(
+        (async () => {
+          const kpi = await getCachedStats(
+            "dashboard-luckycup-kpi",
+            10_000,
+            async () => {
+              const res = await drizzle.execute(sql`
+                SELECT
+                  c.total_codes,
+                  c.claimed_codes,
+                  c.remaining_codes,
+                  c.total_winners,
+                  c.unclaimed_winners,
+                  c.claimed_winners,
+                  pc.total_claims,
+                  pc.pending_claims,
+                  pc.delivered_claims,
+                  (SELECT count(*)::int FROM entries) AS total_entries,
+                  (SELECT count(*)::int FROM participants) AS total_participants
+                FROM
+                  (SELECT
+                    count(*)::int AS total_codes,
+                    count(*) FILTER (WHERE claimed = true)::int AS claimed_codes,
+                    count(*) FILTER (WHERE claimed = false)::int AS remaining_codes,
+                    count(*) FILTER (WHERE is_winner = true)::int AS total_winners,
+                    count(*) FILTER (WHERE is_winner = true AND claimed = false)::int AS unclaimed_winners,
+                    count(*) FILTER (WHERE is_winner = true AND claimed = true)::int AS claimed_winners
+                  FROM codes) c,
+                  (SELECT
+                    count(*)::int AS total_claims,
+                    count(*) FILTER (WHERE status = 'PENDING')::int AS pending_claims,
+                    count(*) FILTER (WHERE status = 'DELIVERED')::int AS delivered_claims
+                  FROM prize_claims) pc;
+              `);
+              const rows = Array.isArray(res)
+                ? res
+                : (res as { rows?: unknown[] }).rows || [];
+              return (
+                (rows[0] as {
+                  total_codes: number;
+                  claimed_codes: number;
+                  remaining_codes: number;
+                  total_winners: number;
+                  unclaimed_winners: number;
+                  claimed_winners: number;
+                  total_claims: number;
+                  pending_claims: number;
+                  delivered_claims: number;
+                  total_entries: number;
+                  total_participants: number;
+                }) || null
+              );
             },
-          }),
-          payload.count({
-            collection: "codes",
-            where: {
-              and: [
-                { is_winner: { equals: true } },
-                { claimed: { equals: true } },
-              ],
+          );
+
+          if (kpi) {
+            totalCodes = Number(kpi.total_codes) || 0;
+            claimedCodes = Number(kpi.claimed_codes) || 0;
+            remainingCodes = Number(kpi.remaining_codes) || 0;
+            totalWinners = Number(kpi.total_winners) || 0;
+            unclaimedWinners = Number(kpi.unclaimed_winners) || 0;
+            claimedWinners = Number(kpi.claimed_winners) || 0;
+            totalClaims = Number(kpi.total_claims) || 0;
+            pendingClaims = Number(kpi.pending_claims) || 0;
+            deliveredClaims = Number(kpi.delivered_claims) || 0;
+            totalEntries = Number(kpi.total_entries) || 0;
+            totalParticipants = Number(kpi.total_participants) || 0;
+          }
+        })(),
+      );
+    }
+
+    if (needsLuckyCupClaims) {
+      queryPromises.push(
+        (async () => {
+          recentClaims = await getCachedStats(
+            "dashboard-recent-claims",
+            10_000,
+            async () => {
+              const res = await payload.find({
+                collection: "prize-claims",
+                limit: 50,
+                sort: "-createdAt",
+                depth: 3,
+              });
+              return res.docs;
             },
-          }),
-          payload.count({ collection: "prize-claims" }),
-          payload.count({
-            collection: "prize-claims",
-            where: { status: { equals: "PENDING" } },
-          }),
-          payload.count({
-            collection: "prize-claims",
-            where: { status: { equals: "DELIVERED" } },
-          }),
-          payload.count({ collection: "entries" }),
-          payload.count({ collection: "participants" }),
-          payload.find({
-            collection: "prize-claims",
-            limit: 50,
-            sort: "-createdAt",
-            depth: 3,
-          }),
-        ]);
+          );
+        })(),
+      );
+    }
 
-        totalCodes = totalCodesResult.totalDocs;
-        claimedCodes = claimedCodesResult.totalDocs;
-        remainingCodes = remainingCodesResult.totalDocs;
-        totalWinners = totalWinnersResult.totalDocs;
-        unclaimedWinners = unclaimedWinnersResult.totalDocs;
-        claimedWinners = claimedWinnersResult.totalDocs;
-        totalClaims = totalClaimsResult.totalDocs;
-        pendingClaims = pendingClaimsResult.totalDocs;
-        deliveredClaims = deliveredClaimsResult.totalDocs;
-        totalEntries = totalEntriesResult.totalDocs;
-        totalParticipants = totalParticipantsResult.totalDocs;
-        recentClaims = recentClaimsResult.docs;
-      })(),
-    );
+    if (needsPromotionsKpi) {
+      queryPromises.push(
+        (async () => {
+          const promoKpi = await getCachedStats(
+            "dashboard-promotions-kpi",
+            10_000,
+            async () => {
+              const res = await drizzle.execute(sql`
+                SELECT
+                  (SELECT count(*)::int FROM drink_campaigns WHERE active = true) AS active_campaigns,
+                  de.total_vouchers,
+                  de.redeemed_vouchers,
+                  (SELECT count(*)::int FROM branches WHERE active = true) AS active_branches
+                FROM (
+                  SELECT
+                    count(*)::int AS total_vouchers,
+                    count(*) FILTER (WHERE status = 'REDEEMED')::int AS redeemed_vouchers
+                  FROM drink_entitlements
+                ) de;
+              `);
+              const rows = Array.isArray(res)
+                ? res
+                : (res as { rows?: unknown[] }).rows || [];
+              return (
+                (rows[0] as {
+                  active_campaigns: number;
+                  total_vouchers: number;
+                  redeemed_vouchers: number;
+                  active_branches: number;
+                }) || null
+              );
+            },
+          );
+
+          if (promoKpi) {
+            activeCampaignsCount = Number(promoKpi.active_campaigns) || 0;
+            totalVouchersCount = Number(promoKpi.total_vouchers) || 0;
+            redeemedVouchersCount = Number(promoKpi.redeemed_vouchers) || 0;
+            activeBranchesCount = Number(promoKpi.active_branches) || 0;
+          }
+        })(),
+      );
+    }
+
+    await Promise.all(queryPromises);
   }
-
-  if (showPromotionsSection && (superAdmin || promotionsAdmin)) {
-    queryPromises.push(
-      (async () => {
-        const [campaignsRes, vouchersRes, redeemedRes, branchesRes] =
-          await Promise.all([
-            payload.count({
-              collection: "drink-campaigns",
-              where: { active: { equals: true } },
-            }),
-            payload.count({ collection: "drink-entitlements" }),
-            payload.count({
-              collection: "drink-entitlements",
-              where: { status: { equals: "REDEEMED" } },
-            }),
-            payload.count({
-              collection: "branches",
-              where: { active: { equals: true } },
-            }),
-          ]);
-        activeCampaignsCount = campaignsRes.totalDocs;
-        totalVouchersCount = vouchersRes.totalDocs;
-        redeemedVouchersCount = redeemedRes.totalDocs;
-        activeBranchesCount = branchesRes.totalDocs;
-      })(),
-    );
-  }
-
-  await Promise.all(queryPromises);
 
   // Dynamic header title
   const getHeaderTitle = () => {
@@ -529,6 +583,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
             {/* Terminal Card */}
             <Link
               href="/admin/drink-redemption"
+              prefetch={false}
               className="glassy-card card-blue"
               style={{
                 textDecoration: "none",
@@ -582,6 +637,7 @@ export async function CustomDashboard(props: { user?: User | null }) {
             {/* Drinks Menu Card */}
             <Link
               href="/admin/collections/drinks"
+              prefetch={false}
               className="glassy-card card-blue"
               style={{
                 textDecoration: "none",

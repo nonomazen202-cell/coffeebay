@@ -34,9 +34,21 @@ import {
   discardPostCommitInvalidations,
 } from "./lib/cache/drink-rewards-cache";
 
+const isBackgroundWorker = process.env.DISABLE_NOTIFICATION_WORKER === "true";
+
 const baseDbAdapter = postgresAdapter({
   pool: {
     connectionString: process.env.DATABASE_URI!,
+    // Size pool cleanly for 50+ concurrent admins + customer traffic while
+    // keeping background worker footprint minimal (total <= 30 connections).
+    max: isBackgroundWorker ? 5 : Number(process.env.PG_POOL_MAX) || 25,
+    // Prevent intermediate NAT/stateful firewalls between web & remote DB
+    // from silently blackholing idle TCP sockets (root cause of silent login hang / NetworkError).
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10_000,
+    idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: 8_000,
+    allowExitOnIdle: false,
   },
   push: false,
 });
@@ -128,6 +140,7 @@ const dbAdapter: typeof baseDbAdapter = {
 export default buildConfig({
   admin: {
     user: "users",
+    autoRefresh: true,
     importMap: {
       baseDir: path.resolve(dirname),
     },

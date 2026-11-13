@@ -1,9 +1,18 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@payloadcms/ui";
+
+/**
+ * Admin sidebar links must NOT trigger Next.js background RSC prefetches on mount:
+ * prefetching 15+ authenticated Payload collection routes simultaneously causes
+ * massive DB query + `payload_preferences` write storms across all logged-in staff.
+ */
+function Link(props: React.ComponentProps<typeof NextLink>) {
+  return <NextLink prefetch={false} {...props} />;
+}
 import {
   isSuperAdmin,
   hasPromotionsAccess,

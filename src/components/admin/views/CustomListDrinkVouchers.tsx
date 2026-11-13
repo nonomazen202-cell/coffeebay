@@ -1,34 +1,50 @@
 import React from 'react';
-import { getPayload, type Where } from 'payload';
+import { getPayload, type Payload, type Where } from 'payload';
+import { sql } from 'drizzle-orm';
 import config from '@payload-config';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { DrinkVouchersManager, type SerializedVoucher } from './DrinkVouchersManager';
 import { getCachedStats } from './cache';
 import { hasPromotionsAdminAccess } from '@/lib/security/roles';
+import type { User } from '@/payload-types';
 
 interface CustomListDrinkVouchersProps {
+  user?: User | null;
+  payload?: Payload;
   searchParams?: Promise<{
     page?: string;
     search?: string;
     status?: string;
-  }>;
+  }> | {
+    page?: string;
+    search?: string;
+    status?: string;
+  };
 }
 
-export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkVouchersProps) {
+export async function CustomListDrinkVouchers({
+  user: propUser,
+  payload: propPayload,
+  searchParams,
+}: CustomListDrinkVouchersProps) {
   const resolvedParams = (await searchParams) || {};
   const page = Number(resolvedParams.page) || 1;
   const limit = 50;
   const search = resolvedParams.search || '';
   const statusFilter = resolvedParams.status || 'ALL';
 
-  const payload = await getPayload({ config });
+  const payload = propPayload || (await getPayload({ config }));
 
-  // Authenticate user session & verify Promotions Admin privileges
-  const authResult = await payload.auth({
-    headers: await headers(),
-  });
-  const currentUser = authResult?.user;
+  // Reuse Payload's already-authenticated user from ListView serverProps (zero duplicate auth!)
+  const currentUser =
+    propUser !== undefined
+      ? propUser
+      : (
+          await payload.auth({
+            headers: await headers(),
+          })
+        )?.user;
   if (!currentUser || !hasPromotionsAdminAccess(currentUser)) {
     redirect('/admin');
   }
@@ -61,45 +77,44 @@ export async function CustomListDrinkVouchers({ searchParams }: CustomListDrinkV
 
   const where: Where = andConditions.length > 0 ? { and: andConditions } : {};
 
-  // 2. Fetch Paginated Records
-  const entitlementsResult = await payload.find({
-    collection: 'drink-entitlements',
-    page,
-    limit,
-    where,
-    depth: 1, // Populate drink, branch, cashier details
-    sort: '-createdAt',
-  });
-
-  // 3. Cached KPI Counts (15-second TTL) to protect DB
-  const totalCount = await getCachedStats('vouchers-total-count', 15000, async () => {
-    const res = await payload.count({ collection: 'drink-entitlements' });
-    return res.totalDocs;
-  });
-
-  const issuedCount = await getCachedStats('vouchers-issued-count', 15000, async () => {
-    const res = await payload.count({
+  // 2. Fetch Paginated Records & Single-Query Consolidated KPI Counts in parallel
+  const [entitlementsResult, kpiCounts] = await Promise.all([
+    payload.find({
       collection: 'drink-entitlements',
-      where: { status: { equals: 'ISSUED' } },
-    });
-    return res.totalDocs;
-  });
+      page,
+      limit,
+      where,
+      depth: 1, // Populate drink, branch, cashier details
+      sort: '-createdAt',
+    }),
+    getCachedStats('vouchers-consolidated-kpi', 15000, async () => {
+      const res = await payload.db.drizzle.execute(sql`
+        SELECT
+          count(*)::int AS total_count,
+          count(*) FILTER (WHERE status = 'ISSUED')::int AS issued_count,
+          count(*) FILTER (WHERE status = 'REDEEMED')::int AS redeemed_count,
+          count(*) FILTER (WHERE status = 'EXPIRED')::int AS expired_count
+        FROM drink_entitlements;
+      `);
+      const rows = Array.isArray(res)
+        ? res
+        : (res as { rows?: unknown[] }).rows || [];
+      const row = (rows[0] as {
+        total_count?: number;
+        issued_count?: number;
+        redeemed_count?: number;
+        expired_count?: number;
+      }) || {};
+      return {
+        totalCount: Number(row.total_count) || 0,
+        issuedCount: Number(row.issued_count) || 0,
+        redeemedCount: Number(row.redeemed_count) || 0,
+        expiredCount: Number(row.expired_count) || 0,
+      };
+    }),
+  ]);
 
-  const redeemedCount = await getCachedStats('vouchers-redeemed-count', 15000, async () => {
-    const res = await payload.count({
-      collection: 'drink-entitlements',
-      where: { status: { equals: 'REDEEMED' } },
-    });
-    return res.totalDocs;
-  });
-
-  const expiredCount = await getCachedStats('vouchers-expired-count', 15000, async () => {
-    const res = await payload.count({
-      collection: 'drink-entitlements',
-      where: { status: { equals: 'EXPIRED' } },
-    });
-    return res.totalDocs;
-  });
+  const { totalCount, issuedCount, redeemedCount, expiredCount } = kpiCounts;
 
   // 4. Map Lean Records
   const vouchers: SerializedVoucher[] = entitlementsResult.docs.map((doc) => {
